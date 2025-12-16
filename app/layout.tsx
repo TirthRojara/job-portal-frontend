@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Source_Serif_4, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppProvider from "@/provider/index.provider";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
+export const inter = Inter({
     subsets: ["latin"],
+    variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
+export const sourceSerif = Source_Serif_4({
     subsets: ["latin"],
+    variable: "--font-source-serif",
+});
+
+export const jetbrainsMono = JetBrains_Mono({
+    subsets: ["latin"],
+    variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
@@ -24,13 +29,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" className=" light">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}
+                //   className={`${aclonica.variable} ${arbutus.variable} ${jetbrainsMono.variable} antialiased`}
             >
-                <AppProvider>
-                    {children}
-                </AppProvider>
+                <AppProvider>{children}</AppProvider>
             </body>
         </html>
     );
