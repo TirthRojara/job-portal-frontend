@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 import Image from "next/image";
 
 export const test = () => {
@@ -15,9 +16,10 @@ export const test = () => {
                     {/* <Button variant={"outline"}>View</Button> */}
                     {/* <Button className="bg-emerald-600">Quick Apply</Button> */}
                     <Button  variant={"outline"}>View</Button>
-                    <Button>Quick Apply</Button>
+                    {/* <Button>Quick Apply</Button> */}
                 </div>
-                <Image src='/recruiter-bg.png' alt="candidate" width={64} height={64} />
+                {/* <Image src='/recruiter-bg.png' alt="candidate" width={64} height={64} /> */}
+                <User className="size-20"/>
             </main>
         </>
     );

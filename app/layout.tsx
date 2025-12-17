@@ -35,6 +35,7 @@ export default function RootLayout({
                 //   className={`${aclonica.variable} ${arbutus.variable} ${jetbrainsMono.variable} antialiased`}
             >
                 <AppProvider>{children}</AppProvider>
+                {/* <h1>hii</h1> */}
             </body>
         </html>
     );
