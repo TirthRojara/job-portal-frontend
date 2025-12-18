@@ -12,7 +12,7 @@ import {
     SidebarSeparator,
     SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { CandidateSidebar } from "@/features/dashboard/candidate/components/candidate-sidebar";
+import { RecruiterSidebar } from "@/features/dashboard/recruiter/components/recruiter-sidebar";
 import { Bell, Moon, SearchIcon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -36,21 +36,21 @@ export default function DashboardLayout({
                     } as React.CSSProperties
                 }
             >
-                <CandidateSidebar />
+                <RecruiterSidebar />
                 <SidebarInset>
                     {/* header */}
                     <header className=" flex items-center justify-between p-2 gap-2 md:my-[10px] md:mx-2 my-2">
                         {/* LEFT SIDE */}
                         <div className=" flex items-center gap-3 w-full md:w-auto ">
                             <SidebarTrigger className="p-2 " />
-                            <div className="flex-1 md:flex-none">
+                            {/* <div className="flex-1 md:flex-none">
                                 <InputGroup className="w-full md:w-[340px]">
                                     <InputGroupInput placeholder="Search jobs..." />
                                     <InputGroupAddon>
                                         <SearchIcon />
                                     </InputGroupAddon>
                                 </InputGroup>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* RIGHT SIDE ICONS */}

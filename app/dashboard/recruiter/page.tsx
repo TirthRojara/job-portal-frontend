@@ -3,7 +3,7 @@ import React from 'react'
 export default function Page() {
   return (
     <>
-    <h1>main area</h1>
+    <h1>recruiter main area</h1>
     </>
   )
 }

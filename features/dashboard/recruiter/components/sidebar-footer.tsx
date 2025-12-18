@@ -26,7 +26,13 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import {
+    BadgeCheck,
+    ChevronsUpDown,
+    CreditCard,
+    LogOut,
+    Sparkles,
+} from "lucide-react";
 import React from "react";
 
 const user = {
@@ -35,7 +41,7 @@ const user = {
     avatar: "TR",
 };
 
-export default function CandidateSidebarFooter() {
+export default function RecruiterSidebarFooter() {
     const { isMobile, state } = useSidebar();
 
     return (
@@ -92,8 +98,19 @@ export default function CandidateSidebarFooter() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem>
+                                        <Sparkles />
+                                        Upgrade to Pro
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem>
                                         <BadgeCheck />
                                         Account
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <CreditCard />
+                                        Billing
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <Dialog>
