@@ -1,18 +1,33 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { CandidateSidebar } from "@/features/dashboard/candidate/components/candidate-sidebar";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarSeparator,
+    SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { CandidateSidebar } from "@/features/dashboard/candidate/components/sidebar";
+import { Bell, Moon, SearchIcon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    return (
-        // <html lang="en">
-        //   <body>
-        //     <main>{children}</main>
-        //   </body>
-        // </html>
+    const [isDarkTheme, setTheme] = useState(false);
 
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    if (!mounted) return null; // or a stable placeholder
+
+    return (
         <>
             <SidebarProvider
                 style={
@@ -21,11 +36,50 @@ export default function DashboardLayout({
                     } as React.CSSProperties
                 }
             >
-              <CandidateSidebar />
-                <main>
-                    <SidebarTrigger />
-                    {children}
-                </main>
+                <CandidateSidebar />
+                <SidebarInset>
+                    {/* header */}
+                    <header className=" flex items-center justify-between p-2 gap-2 md:my-[10px] md:mx-2 my-2">
+                        {/* LEFT SIDE */}
+                        <div className=" flex items-center gap-3 w-full md:w-auto ">
+                            <SidebarTrigger className="p-2 " />
+                            <div className="flex-1 md:flex-none">
+                                <InputGroup className="w-full md:w-[340px]">
+                                    <InputGroupInput placeholder="Search jobs..." />
+                                    <InputGroupAddon>
+                                        <SearchIcon />
+                                    </InputGroupAddon>
+                                </InputGroup>
+                            </div>
+                        </div>
+
+                        {/* RIGHT SIDE ICONS */}
+                        <div className="flex items-center gap-1">
+                            <Button
+                                onClick={() =>
+                                    mounted && setTheme((prev) => !prev)
+                                }
+                                variant="ghost"
+                                size="icon"
+                            >
+                                {/* <Moon className="size-5" /> */}
+                                {isDarkTheme ? (
+                                    <Moon className="size-5" />
+                                ) : (
+                                    <Sun className="size-5" />
+                                )}
+                            </Button>
+                            <Button variant="ghost" size="icon">
+                                <Bell className="size-5" />
+                            </Button>
+                        </div>
+                    </header>
+
+                    <SidebarSeparator className="m-0" />
+                    <main>
+                        <div className=" border-red-500 border">{children}</div>
+                    </main>
+                </SidebarInset>
             </SidebarProvider>
         </>
     );
