@@ -24,7 +24,7 @@ const items = [
     { title: "Dashboard", url: "#", icon: LayoutDashboard },
     { title: "Company", url: "#", icon: Building2 },
     { title: "Job Posts", url: "#", icon: BriefcaseBusiness },
-    { title: "Applicants", url: "#", icon: Users },
+    // { title: "Applicants", url: "#", icon: Users },
     { title: "Message", url: "#", icon: MessageSquareMore },
     { title: "Notification", url: "#", icon: Bell },
 ];

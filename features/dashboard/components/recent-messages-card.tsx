@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
-import { ChatCard } from "../../components/chat-card";
-import { ChatCardSkeleton } from "../../components/chat-card-skeleton";
-import { EmptyChat } from "../../components/empty-chat";
+import { ChatCard } from "./chat-card";
+import { ChatCardSkeleton } from "./chat-card-skeleton";
+import { EmptyChat } from "./empty-chat";
 
 const chat = {
     name: "Mike Chen",

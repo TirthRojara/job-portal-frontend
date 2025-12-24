@@ -1,15 +1,9 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileCompletionCard from "@/features/dashboard/candidate/components/profile-completion-card";
-import RecentMessagesCard from "@/features/dashboard/candidate/components/recent-messages-card";
+import RecentMessagesCard from "@/features/dashboard/components/recent-messages-card";
 import RecommendedJobCard from "@/features/dashboard/candidate/components/recommended-job";
 import CardGroup from "@/features/dashboard/components/card-group";
-import { ChatCard } from "@/features/dashboard/components/chat-card";
-import { ChatCardSkeleton } from "@/features/dashboard/components/chat-card-skeleton";
-import { StatCard } from "@/features/dashboard/components/dashboard-card";
-import { EmptyChat } from "@/features/dashboard/components/empty-chat";
-import { JobPostCard } from "@/features/dashboard/components/job-post-card";
+
 import { Bookmark, CalendarClock, CalendarRange, FileUser } from "lucide-react";
 import React from "react";
 
