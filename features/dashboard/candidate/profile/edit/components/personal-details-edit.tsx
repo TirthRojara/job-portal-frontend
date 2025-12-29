@@ -70,7 +70,7 @@ export default function PersonalDetailsEdit() {
         <>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button>
+                    <Button variant={"outline"}>
                         <PenLine /> Edit
                     </Button>
                 </DialogTrigger>
