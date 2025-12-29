@@ -15,10 +15,16 @@ import {
     FieldLabel,
 } from "./ui/field";
 import { Input } from "./ui/input";
-import { InputHTMLAttributes, ReactNode } from "react";
+import { InputHTMLAttributes, ReactNode, useState } from "react";
 import { Textarea } from "./ui/textarea";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
+import { Switch } from "./ui/switch";
+import { CalendarIcon, ChevronDownIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "@/lib/utils";
 
 type FormControlProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -125,6 +131,7 @@ function FormBase<
                     id: field.name,
                     // "aria-invalid": fieldState.invalid,
                     "aria-invalid": showError,
+                    // ...fieldState
                 });
                 // const errorElem = fieldState.invalid && (
                 // const errorElem = showError && (
@@ -218,8 +225,16 @@ export const FormInput: FormControlFunc<{
     );
 };
 
-export const FormTextarea: FormControlFunc = (props) => {
-    return <FormBase {...props}>{(field) => <Textarea {...field} />}</FormBase>;
+export const FormTextarea: FormControlFunc = ({
+    form,
+    errorReserve,
+    ...props
+}) => {
+    return (
+        <FormBase {...props} form={form} errorReserve={errorReserve}>
+            {(field) => <Textarea {...field} />}
+        </FormBase>
+    );
 };
 
 export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
@@ -229,16 +244,19 @@ export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
 }) => {
     return (
         <FormBase {...props} errorReserve={errorReserve}>
-            {({ onChange, onBlur, ...field }) => (
-                <Select {...field} onValueChange={onChange}>
+            {/* {({ onChange, onBlur, ...field }) => ( */}
+            {(
+                field // ✅ ALL props including fieldState
+            ) => (
+                <Select {...field} onValueChange={field.onChange}>
                     <SelectTrigger
                         aria-invalid={field["aria-invalid"]}
                         id={field.id}
-                        onBlur={onBlur}
+                        onBlur={field.onBlur}
                         className="w-full"
                     >
-                        <SelectValue />
-                    </SelectTrigger >
+                        <SelectValue placeholder={props.placeholder} />
+                    </SelectTrigger>
                     <SelectContent>{children}</SelectContent>
                 </Select>
             )}
@@ -248,18 +266,152 @@ export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
 
 export const FormCheckbox: FormControlFunc = (props) => {
     return (
-        <FormBase {...props} horizontal controlFirst>
+        <FormBase {...props} horizontal controlFirst label={null}>
             {({ onChange, value, ...field }) => (
-                <Checkbox
-                    {...field}
-                    checked={value}
-                    onCheckedChange={onChange}
-                />
+                // <Checkbox
+                //     {...field}
+                //     checked={value}
+                //     onCheckedChange={onChange}
+                // />
+                <label className="flex items-center gap-2 cursor-pointer">
+                    <div className="flex items-center gap-3">
+                        <Checkbox
+                            {...field}
+                            checked={value}
+                            onCheckedChange={onChange}
+                        />
+                        <span className="text-sm font-medium text-foreground">
+                            {props.label}
+                        </span>
+                    </div>
+                </label>
             )}
         </FormBase>
     );
 };
 
+export const FormSwitch: FormControlFunc = ({
+    form,
+    errorReserve,
+    label,
+    ...props
+}) => {
+    return (
+        <FormBase
+            {...props}
+            form={form}
+            errorReserve={errorReserve}
+            // render label next to switch instead of the default placement
+            horizontal={false}
+            controlFirst={false}
+            label={null}
+        >
+            {({ onChange, value, ...field }) => (
+                // <label className="flex items-center gap-3 cursor-pointer">
+                <div className="flex items-center space-x-3">
+                    <label className="flex gap-3">
+                        <span className="text-sm font-medium text-foreground cursor-pointer">
+                            {label}
+                        </span>
+                        <Switch
+                            {...field}
+                            checked={!!value}
+                            onCheckedChange={onChange}
+                        />
+                    </label>
+                </div>
+            )}
+        </FormBase>
+    );
+};
+
+export const FormDate: FormControlFunc<{
+    buttonClassName?: string;
+}> = ({ form, errorReserve, label, buttonClassName, ...props }) => {
+    return (
+        <FormBase
+            {...props}
+            form={form}
+            errorReserve={errorReserve}
+            // normal label placement (above / left), like inputs
+            horizontal={false}
+            controlFirst={false}
+            label={label}
+        >
+            {/* {({ onChange, value }) => { */}
+            {(field) => {
+                const [open, setOpen] = useState(false);
+
+                // const dateValue =
+                //   value instanceof Date || value === null || value === undefined
+                //     ? value
+                //     : value ? new Date(value) : undefined;
+
+                const dateValue =
+                    (field.value as unknown as Date | null) ?? undefined;
+
+                //  const showError = !!fieldState.error && fieldState.isTouched; // ✅ get from field
+                const hasError = field["aria-invalid"];
+
+                return (
+                    <div
+                        id={field.name} // ✅ link to FormBase id
+                        onBlur={field.onBlur} // ✅ trigger touched
+                        tabIndex={-1} // allows blur events
+                    >
+                        <Popover open={open} onOpenChange={setOpen}>
+                            {/* <PopoverTrigger asChild onBlur={field.onBlur} id={field.name}>  */}
+                            <PopoverTrigger
+                                asChild
+                                // onBlur={field.onBlur}
+                                // id={field.name}
+                            >
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setOpen(true)} // ✅ proper focus handling
+                                    // className={
+                                    //     buttonClassName ??
+                                    //     "w-full justify-between font-normal text-left"
+                                    // }
+                                    className={cn(
+                                        "w-full justify-between font-normal text-left",
+                                        // ✅ use aria-invalid for error styling
+                                        hasError &&
+                                            "border-destructive text-destructive hover:bg-destructive/5 focus-visible:ring-destructive",
+                                        !dateValue && "text-muted-foreground"
+                                    )}
+                                >
+                                    {dateValue
+                                        ? dateValue.toLocaleDateString()
+                                        : "Select date"}
+                                    <CalendarIcon className="ml-2 h-4 w-4 opacity-70" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                                className="w-auto overflow-hidden p-0"
+                                align="start"
+                            >
+                                <Calendar
+                                    mode="single"
+                                    captionLayout="dropdown"
+                                    selected={dateValue}
+                                    // react-hook-form expects either Date or null/undefined
+                                    onSelect={(d) => {
+                                        field.onChange(d ?? null);
+                                        setOpen(false);
+                                    }}
+                                />
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+                );
+            }}
+        </FormBase>
+    );
+};
+
+//////////////////////////////////////////////////
 type DisplayProps = {
     label: ReactNode;
     //   description?: ReactNode

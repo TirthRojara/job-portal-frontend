@@ -1,5 +1,5 @@
 
-import PersonalDetails from "@/features/dashboard/candidate/profile/components/personal-details";
+import PersonalDetails from "@/features/dashboard/candidate/profile/edit/components/personal-details";
 
 export default function Page() {
     return (

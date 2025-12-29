@@ -1,5 +1,13 @@
 "use client";
-import { FormDisplay, FormInput, FormSelect } from "@/components/custom-form";
+import {
+    FormCheckbox,
+    FormDate,
+    FormDisplay,
+    FormInput,
+    FormSelect,
+    FormSwitch,
+    FormTextarea,
+} from "@/components/custom-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SelectItem } from "@/components/ui/select";
@@ -12,12 +20,17 @@ const PersonalDetailSchema = z.object({
     fullname: z.string().min(1, "Required"),
     email: z
         .string()
-        .min(1, "Email is required")
+        .min(1, "Required")
         .email("Invalid email address"),
-    gender: z.enum(["MALE", "FEMALE", "OTHER"]),
-    phone: z.number().min(10, 'Phone must be 10 digits').max(10, 'Phone must be 10 digits')
+    gender: z.enum(["MALE", "FEMALE", "OTHER"], {error: 'Please select gender'}),
+    phone: z
+        .string()
+        .min(10, "Phone must be 10 digits")
+        .max(10, "Phone must be 10 digits"),
+    address: z.string().min(1, "Required"),
+    openToWork: z.boolean(),
+    dob: z.date({error: 'Please select dates'})
 });
-
 
 type PersonalDetails = z.infer<typeof PersonalDetailSchema>;
 
@@ -27,7 +40,12 @@ export default function PersonalDetails() {
         defaultValues: {
             fullname: "",
             email: "",
-            gender: "MALE",
+            // gender: "MALE",
+            gender: undefined,
+            phone: "",
+            address: "",
+            openToWork: false,
+            dob: undefined
         },
         mode: "onChange",
         reValidateMode: "onChange",
@@ -35,8 +53,8 @@ export default function PersonalDetails() {
 
     function onSubmit(data: any) {
         console.log({ data });
-        console.log(data.fullname);
-        console.log(data.email);
+        // console.log(data.fullname);
+        // console.log(data.email);
 
         // form.reset();
     }
@@ -44,12 +62,12 @@ export default function PersonalDetails() {
     return (
         <>
             <Card className="max-w-4xl w-full py-4">
-                <CardHeader className=" flex flex-row items-center justify-between px-4">
+                <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                     <CardTitle className=" md:text-lg">
                         Personal Details
                     </CardTitle>
                     <div className="flex gap-2">
-                        {form.formState.isDirty && <Button>Save</Button>}
+                        {form.formState.isDirty && <Button  onClick={form.handleSubmit(onSubmit)}>Save</Button>}
                         {/* <Button variant={"outline"}>Cancel</Button> */}
                     </div>
                 </CardHeader>
@@ -83,6 +101,7 @@ export default function PersonalDetails() {
                             control={form.control}
                             name="gender"
                             label="Gender"
+                            placeholder="Select"
                             errorReserve
                         >
                             <SelectItem key="MALE" value="MALE">
@@ -101,9 +120,34 @@ export default function PersonalDetails() {
                             name="phone"
                             label="Phone"
                             form={form}
-                            placeholder=""
+                            placeholder="1234567890"
                             type="tel"
                             required
+                            errorReserve
+                        />
+
+                        <FormDate
+                            form={form}
+                            control={form.control}
+                            name="dob"
+                            label="Date of birth"
+                            errorReserve
+                        />
+
+                        <FormTextarea
+                            control={form.control}
+                            name="address"
+                            label="Address"
+                            form={form}
+                            required
+                            errorReserve
+                        />
+
+                        <FormSwitch
+                            form={form}
+                            control={form.control}
+                            name="openToWork"
+                            label="Open To Work"
                             errorReserve
                         />
                     </form>
