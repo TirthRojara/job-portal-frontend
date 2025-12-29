@@ -429,7 +429,7 @@ export function FormDisplay({
         <>
             {/* {description && <FieldDescription>{description}</FieldDescription>} */}
             <FieldLabel className="">{label}</FieldLabel>
-            <div className="mt-1 text-sm text-foreground">{value ?? "-"}</div>
+            <div className="mt-1 text-sm text-foreground pl-1">{value ?? "-"}</div>
         </>
     );
 
