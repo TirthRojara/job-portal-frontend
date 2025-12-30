@@ -21,13 +21,6 @@ import {
 } from "@/features/dashboard/components/search-dialog";
 
 // Mock Data for demonstration
-const ALL_SKILLS = [
-    { value: "react", label: "React" },
-    { value: "java", label: "Java" },
-    { value: "javascript", label: "JavaScript" },
-    { value: "css", label: "CSS" },
-    { value: "python", label: "Python" },
-];
 
 const ALL_LANGUAGES = [
     { value: "en", label: "English" },
@@ -57,31 +50,15 @@ type LanguagesTableProps = {
 };
 
 export default function LanguageDetails({ languages }: LanguagesTableProps) {
-    const [skillResults, setSkillResults] = useState<SearchItem[]>(ALL_SKILLS);
-
-    // Function 1: Handle Skill Search
-    const handleSkillSearch = (query: string) => {
-        // In a real app, this would be an API call
-        const filtered = ALL_SKILLS.filter((s) =>
-            s.label.toLowerCase().includes(query.toLowerCase())
-        );
-        setSkillResults(filtered);
-    };
-
-    // Function 2: Handle Skill Selection
-    const handleAddSkill = () => {
-        console.log("Saving Skill to DB:");
-    };
-
     const [langResults, setLangResults] = useState<SearchItem[]>(ALL_LANGUAGES);
 
     // Function 3: Handle Language Search (Different logic!)
     const handleLangSearch = (query: string) => {
-        // const filtered = ALL_LANGUAGES.filter((l) =>
-        //     l.label.toLowerCase().includes(query.toLowerCase())
-        // );
-        // setLangResults(filtered);
-        console.log('handle lang')
+        const filtered = ALL_LANGUAGES.filter((l) =>
+            l.label.toLowerCase().includes(query.toLowerCase())
+        );
+        setLangResults(filtered);
+        console.log("handle lang");
     };
 
     // Function 4: Handle Language Selection
@@ -98,7 +75,7 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
                         title="Languages"
                         inputLabel="Add language"
                         placeholder="e.g. English"
-                        description=''
+                        description=" "
                         trigger={
                             <Button variant="outline">
                                 <Plus className="w-4 h-4 mr-2" /> Add Language

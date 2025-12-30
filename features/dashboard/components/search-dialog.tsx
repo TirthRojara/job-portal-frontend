@@ -65,7 +65,7 @@ export function SearchAddDialog({
       </DialogTrigger>
       
       {/* sm:max-w allows responsiveness. The screenshots show a centered modal. */}
-      <DialogContent className="sm:max-w-[600px] gap-6 absolute top-60">
+      <DialogContent className="sm:max-w-[600px] gap-6 top-[30%]">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-semibold">{title}</DialogTitle>
           {description && <DialogDescription className="text-center sr-only">{description}</DialogDescription>}
