@@ -84,7 +84,7 @@ export default function PersonalDetailsEdit() {
                         <DialogTitle>Personal Details</DialogTitle>
                     </DialogHeader> */}
                     {/* <Card className="max-w-4xl w-full py-4"> */}
-                    <div className="h-full overflow-auto p-6">
+                    <div className="h-full overflow-auto p-3">
                         <Card className="max-w-4xl w-full border-none shadow-none">
                             <DialogHeader>
                                 <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">

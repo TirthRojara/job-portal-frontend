@@ -254,6 +254,7 @@ export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({
                         id={field.id}
                         onBlur={field.onBlur}
                         className="w-full"
+                        tabIndex={0}
                     >
                         <SelectValue placeholder={props.placeholder} />
                     </SelectTrigger>

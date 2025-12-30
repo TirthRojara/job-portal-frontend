@@ -1,10 +1,11 @@
 import { FormInput } from "@/components/custom-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import LanguageDetails from "@/features/dashboard/candidate/profile/components/language-details";
+import LanguageDetails, { Language } from "@/features/dashboard/candidate/profile/components/language-details";
 import ProfileDetails from "@/features/dashboard/candidate/profile/components/profile-details";
 
 import { ProfileSummaryCard } from "@/features/dashboard/candidate/profile/components/profile-summary-card";
+import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 import { string } from "zod";
 
 
@@ -23,9 +24,6 @@ const languages = [
     { id: "3", name: "Gujarati", level: "Intermediate" },
 ];
 
-const lang = [{
-    id: string, name: string, level: string
-}]
 
 export default function Page() {
     return (
@@ -35,6 +33,7 @@ export default function Page() {
                 <ProfileSummaryCard profile={profile} />
                 <ProfileDetails />
                 <LanguageDetails languages={languages} />
+                {/* <LanguageDetails languages={[]} /> */}
                
             </div>
         </>
