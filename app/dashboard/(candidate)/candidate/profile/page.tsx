@@ -7,6 +7,7 @@ import ProfileDetails from "@/features/dashboard/candidate/profile/components/pr
 
 import { ProfileSummaryCard } from "@/features/dashboard/candidate/profile/components/profile-summary-card";
 import SkillsDetails from "@/features/dashboard/candidate/profile/components/skills-details";
+import WorkExperience from "@/features/dashboard/candidate/profile/components/work-experience";
 import { Languages } from "next/dist/lib/metadata/types/alternative-urls-types";
 import { string } from "zod";
 
@@ -38,6 +39,7 @@ export default function Page() {
                 {/* <LanguageDetails languages={[]} /> */}
                 <SkillsDetails />
                 <EducationDetails />
+                <WorkExperience />
                
             </div>
         </>

@@ -138,7 +138,7 @@ function FormBase<
     placeholder,
     required,
 }: FormBaseProps<TFieldValues, TName, TTransformedValues>) {
-    console.log({ errorReserve });
+    // console.log({ errorReserve });
     return (
         <Controller
             control={control}
@@ -370,7 +370,7 @@ export const FormSwitch: FormControlFunc = ({
 
 export const FormDate: FormControlFunc<{
     buttonClassName?: string;
-}> = ({ form, errorReserve, label, buttonClassName, ...props }) => {
+}> = ({ form, errorReserve, label, buttonClassName, placeholder = "Select date",...props }) => {
     return (
         <FormBase
             {...props}
@@ -427,7 +427,8 @@ export const FormDate: FormControlFunc<{
                                 >
                                     {dateValue
                                         ? dateValue.toLocaleDateString()
-                                        : "Select date"}
+                                        // : "Select date"}
+                                        : placeholder}
                                     <CalendarIcon className="ml-2 h-4 w-4 opacity-70" />
                                 </Button>
                             </PopoverTrigger>
