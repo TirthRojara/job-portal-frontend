@@ -1,6 +1,7 @@
 import { FormInput } from "@/components/custom-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import EducationDetails from "@/features/dashboard/candidate/profile/components/education-details";
 import LanguageDetails, { Language } from "@/features/dashboard/candidate/profile/components/language-details";
 import ProfileDetails from "@/features/dashboard/candidate/profile/components/profile-details";
 
@@ -36,6 +37,7 @@ export default function Page() {
                 <LanguageDetails languages={languages} />
                 {/* <LanguageDetails languages={[]} /> */}
                 <SkillsDetails />
+                <EducationDetails />
                
             </div>
         </>

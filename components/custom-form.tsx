@@ -1,10 +1,12 @@
 "use client";
 
 import {
+    Control,
     Controller,
     ControllerProps,
     FieldPath,
     FieldValues,
+    Path,
     UseFormReturn,
 } from "react-hook-form";
 import {
@@ -20,11 +22,51 @@ import { Textarea } from "./ui/textarea";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { Switch } from "./ui/switch";
-import { CalendarIcon, ChevronDownIcon } from "lucide-react";
+import {
+    CalendarIcon,
+    Check,
+    ChevronDownIcon,
+    ChevronsUpDown,
+    Command,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { cn } from "@/lib/utils";
+import {
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "./ui/command";
+import { Label } from "./ui/label";
+
+type ComboOption = {
+    value: string;
+    label: string;
+};
+
+interface FormComboBoxProps<T extends FieldValues> {
+    control: Control<T>;
+    name: Path<T>;
+    options: ComboOption[];
+    label?: string;
+    placeholder?: string;
+    searchPlaceholder?: string;
+    emptyText?: string;
+}
+
+// type ComboOption = {
+//     value: string;
+//     label: string;
+// };
+
+// type ComboBoxProps = {
+//     options: ComboOption[];
+//     emptyText?: string; // Text to show when no search results found
+//     searchPlaceholder?: string; // Placeholder inside the search input
+// };
 
 type FormControlProps<
     TFieldValues extends FieldValues = FieldValues,
@@ -412,6 +454,8 @@ export const FormDate: FormControlFunc<{
     );
 };
 
+
+
 //////////////////////////////////////////////////
 type DisplayProps = {
     label: ReactNode;
@@ -430,7 +474,9 @@ export function FormDisplay({
         <>
             {/* {description && <FieldDescription>{description}</FieldDescription>} */}
             <FieldLabel className="">{label}</FieldLabel>
-            <div className="mt-1 text-sm text-foreground pl-1">{value ?? "-"}</div>
+            <div className="mt-1 text-sm text-foreground pl-1">
+                {value ?? "-"}
+            </div>
         </>
     );
 
