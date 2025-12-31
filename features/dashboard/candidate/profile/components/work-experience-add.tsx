@@ -3,6 +3,7 @@ import {
     FormDate,
     FormDisplay,
     FormInput,
+    FormInputGroup,
     FormSelect,
     FormSwitch,
     FormTextarea,

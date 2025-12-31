@@ -28,6 +28,7 @@ import {
     ChevronDownIcon,
     ChevronsUpDown,
     Command,
+    SearchIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
@@ -41,6 +42,7 @@ import {
     CommandList,
 } from "./ui/command";
 import { Label } from "./ui/label";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 
 type ComboOption = {
     value: string;
@@ -266,6 +268,22 @@ export const FormInput: FormControlFunc<{
         </FormBase>
     );
 };
+export const FormInputGroup: FormControlFunc<{
+    type?: InputHTMLAttributes<HTMLInputElement>["type"];
+}> = ({ form, placeholder, required, type, errorReserve, ...props }) => {
+    return (
+        <FormBase {...props} errorReserve={errorReserve}>
+            {(field) => (
+                <InputGroup>
+                    <InputGroupInput placeholder="Search..."  />
+                    <InputGroupAddon>
+                        <SearchIcon />
+                    </InputGroupAddon>
+                </InputGroup>
+            )}
+        </FormBase>
+    );
+};
 
 export const FormTextarea: FormControlFunc = ({
     form,
@@ -370,7 +388,14 @@ export const FormSwitch: FormControlFunc = ({
 
 export const FormDate: FormControlFunc<{
     buttonClassName?: string;
-}> = ({ form, errorReserve, label, buttonClassName, placeholder = "Select date",...props }) => {
+}> = ({
+    form,
+    errorReserve,
+    label,
+    buttonClassName,
+    placeholder = "Select date",
+    ...props
+}) => {
     return (
         <FormBase
             {...props}
@@ -427,8 +452,8 @@ export const FormDate: FormControlFunc<{
                                 >
                                     {dateValue
                                         ? dateValue.toLocaleDateString()
-                                        // : "Select date"}
-                                        : placeholder}
+                                        : // : "Select date"}
+                                          placeholder}
                                     <CalendarIcon className="ml-2 h-4 w-4 opacity-70" />
                                 </Button>
                             </PopoverTrigger>
@@ -454,8 +479,6 @@ export const FormDate: FormControlFunc<{
         </FormBase>
     );
 };
-
-
 
 //////////////////////////////////////////////////
 type DisplayProps = {
