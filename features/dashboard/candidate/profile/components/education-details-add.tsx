@@ -149,8 +149,6 @@ export default function EducationDetailsAdd({
         reValidateMode: "onChange",
     });
 
-    console.log("Form Control:", form.control);
-
     function onSubmit(data: any) {
         console.log({ data });
         // console.log(data.fullname);
