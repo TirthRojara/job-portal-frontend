@@ -11,6 +11,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+const role = 'CANDIDATE'
+// const role = 'RECRUITER'
+
 const PersonalDetailSchema = z.object({
     filter: z.string({ error: "Required" }).min(1, "Required"),
     location: z.string({ error: "Required" }).min(1, "Required").optional(),
@@ -45,7 +48,7 @@ export default function JobFillter() {
                     label=""
                     form={form}
                     icon={SearchIcon}
-                    placeholder="Search Jobs..."
+                    placeholder={role === 'CANDIDATE' ? "Search Jobs..." : "Fillter your jobs"}
                     required
                     errorReserve
                     className="mt-[-9px]"

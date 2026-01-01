@@ -7,6 +7,7 @@ import {
     Clock,
     Bookmark,
     Send,
+    Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +25,8 @@ interface JobCardProps {
     postedAt?: string;
 }
 
+const role = "CANDIDATE";
+
 export function JobPreviewCard({
     title = "Senior Frontend Developer",
     company = "TechCorp Inc.",
@@ -36,7 +39,12 @@ export function JobPreviewCard({
     return (
         <Card className="cursor-pointer group relative flex w-full max-w-4xl flex-col gap-6 p-6 transition-all hover:shadow-xl hover:scale-101 sm:flex-row sm:items-start">
             <span className="absolute top-6 right-6 text-xs text-muted-foreground sm:hidden">
-                {postedAt}
+                {/* {postedAt} */}
+                <p>{postedAt}</p>
+                <div className="flex justify-end items-center gap-1.5 mt-1.5">
+                    <Eye className="h-4 w-4 " />
+                    <p>1200</p>
+                </div>
             </span>
             {/* 1. Logo Section */}
             <div className="shrink-0">
@@ -83,26 +91,34 @@ export function JobPreviewCard({
             </div>
 
             {/* 3. Actions Section (Right Side) */}
-            <div className=" flex shrink-0 flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-start">
+            {/* <div className=" flex shrink-0 flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-start"> */}
+            <div className=" flex shrink-0 flex-row items-center justify-between md:justify-evenly gap-3 sm:flex-col sm:items-end sm:justify-start">
                 {/* Date (Desktop only) */}
                 <span className="hidden text-xs text-muted-foreground sm:block">
-                    {postedAt}
+                    {/* {postedAt} */}
+                    <p>{postedAt}</p>
+                    <p className="flex gap-1.5 justify-end mt-1.5">
+                        <Eye className="h-4 w-4" />
+                        1200
+                    </p>
                 </span>
 
-                <div className="flex flex-row sm:items-end sm:flex-col-reverse gap-3">
-                    <Button className="flex-1 sm:w-32">
-                        <Send className="mr-2 h-4 w-4" />
-                        Apply
-                    </Button>
+                {role === "CANDIDATE" && (
+                    <div className="flex flex-row sm:items-end sm:flex-col-reverse gap-3">
+                        <Button className="flex-1 sm:w-32">
+                            <Send className="mr-2 h-4 w-4" />
+                            Apply
+                        </Button>
 
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-emerald-600 sm:mt-auto"
-                    >
-                        <Bookmark className="h-5 w-5" />
-                    </Button>
-                </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-muted-foreground hover:text-emerald-600 sm:mt-auto"
+                        >
+                            <Bookmark className="h-5 w-5" />
+                        </Button>
+                    </div>
+                )}
             </div>
         </Card>
     );
