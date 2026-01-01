@@ -28,6 +28,7 @@ import {
     ChevronDownIcon,
     ChevronsUpDown,
     Command,
+    LucideIcon,
     SearchIcon,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -268,16 +269,21 @@ export const FormInput: FormControlFunc<{
         </FormBase>
     );
 };
+
+
 export const FormInputGroup: FormControlFunc<{
     type?: InputHTMLAttributes<HTMLInputElement>["type"];
-}> = ({ form, placeholder, required, type, errorReserve, ...props }) => {
+    icon?: LucideIcon;
+    className?: string;
+}> = ({ form, placeholder = 'Search...', required, type, errorReserve, icon: Icon,...props }) => {
     return (
         <FormBase {...props} errorReserve={errorReserve}>
             {(field) => (
-                <InputGroup>
-                    <InputGroupInput placeholder="Search..."  />
+                <InputGroup className={props.className}>
+                    <InputGroupInput placeholder={placeholder}  />
                     <InputGroupAddon>
-                        <SearchIcon />
+                        {/* <SearchIcon /> */}
+                        {Icon ? <Icon className="size-4" /> : <SearchIcon />}
                     </InputGroupAddon>
                 </InputGroup>
             )}

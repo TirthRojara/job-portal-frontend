@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
     Bell,
+    Bookmark,
     BriefcaseBusiness,
     FileUser,
     LayoutDashboard,
@@ -22,6 +23,7 @@ const items = [
     { title: "Dashboard", url: "#", icon: LayoutDashboard },
     { title: "Profile", url: "#", icon: User },
     { title: "Job", url: "#", icon: BriefcaseBusiness },
+    { title: "Saved Job", url: "#", icon: Bookmark },
     { title: "Quick Apply", url: "#", icon: Zap },
     { title: "Application", url: "#", icon: FileUser },
     { title: "Message", url: "#", icon: MessageSquareMore },
