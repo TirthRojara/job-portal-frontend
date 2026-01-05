@@ -38,13 +38,14 @@ export function JobPreviewCard({
 }: JobCardProps) {
     return (
         <Card className="cursor-pointer group relative flex w-full max-w-4xl flex-col gap-6 p-6 transition-all hover:shadow-xl hover:scale-101 sm:flex-row sm:items-start">
-            <span className="absolute top-6 right-6 text-xs text-muted-foreground sm:hidden">
+            <span className=" flex flex-col items-end absolute top-6 right-6 text-xs text-muted-foreground sm:hidden">
                 {/* {postedAt} */}
                 <p>{postedAt}</p>
-                <div className="flex justify-end items-center gap-1.5 mt-1.5">
+                <div className="flex justify-end items-center gap-1.5 my-1.5">
                     <Eye className="h-4 w-4 " />
                     <p>1200</p>
                 </div>
+                {role !== "CANDIDATE" && <p>Active</p>}
             </span>
             {/* 1. Logo Section */}
             <div className="shrink-0">
@@ -94,13 +95,16 @@ export function JobPreviewCard({
             {/* <div className=" flex shrink-0 flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:justify-start"> */}
             <div className=" flex shrink-0 flex-row items-center justify-between md:justify-evenly gap-3 sm:flex-col sm:items-end sm:justify-start">
                 {/* Date (Desktop only) */}
-                <span className="hidden text-xs text-muted-foreground sm:block">
+                <span className=" hidden text-xs text-muted-foreground sm:block">
                     {/* {postedAt} */}
                     <p>{postedAt}</p>
-                    <p className="flex gap-1.5 justify-end mt-1.5">
-                        <Eye className="h-4 w-4" />
-                        1200
-                    </p>
+                    <div className="flex flex-col items-end gap-1.5 justify-end mt-1.5">
+                        <div className="flex flex-row gap-1.5">
+                            <Eye className="h-4 w-4" />
+                            <p>1200</p>
+                        </div>
+                        {role !== "CANDIDATE" && <p>Active</p>}
+                    </div>
                 </span>
 
                 {role === "CANDIDATE" && (

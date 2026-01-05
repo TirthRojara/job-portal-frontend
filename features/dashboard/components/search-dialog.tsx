@@ -31,6 +31,7 @@ interface SearchAddDialogProps {
   placeholder?: string
   
   // Data & Events
+  // dataObject: Object
   trigger: React.ReactNode // The button that opens the modal
   searchResults: SearchItem[] // The list of filtered items to show
   onSearchChange: (value: string) => void // Function triggered on typing

@@ -298,7 +298,7 @@ export const FormTextarea: FormControlFunc = ({
 }) => {
     return (
         <FormBase {...props} form={form} errorReserve={errorReserve}>
-            {(field) => <Textarea {...field} />}
+            {(field) => <Textarea {...field} placeholder={props.placeholder} />}
         </FormBase>
     );
 };
