@@ -15,7 +15,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
-const role = "CANDIDATEq";
+const role = "CANDIDATE";
 
 const ALL_SKILLS = [
     { value: "react", label: "React" },
