@@ -9,12 +9,14 @@ import {
 import { Cross, Plus, X } from "lucide-react";
 import React, { useState } from "react";
 
+const role = "CANDIDATE";
+
 const ALL_SKILLS = [
     { value: "react", label: "React" },
     { value: "java", label: "Java" },
     { value: "javascript", label: "JavaScript" },
     { value: "css", label: "CSS" },
-    { value: "python", label: "Python" },  
+    { value: "python", label: "Python" },
 ];
 
 export default function SkillsDetails() {
@@ -39,26 +41,31 @@ export default function SkillsDetails() {
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Skills</CardTitle>
                 <div className="flex gap-2">
-                    <SearchAddDialog
-                        title="Skills"
-                        inputLabel="Add skills"
-                        placeholder="e.g. HTML"
-                        description=" "
-                        trigger={
-                            <Button variant={"outline"}>
-                                <Plus /> Add Skill
-                            </Button>
-                        }
-                        searchResults={skillResults}
-                        onSearchChange={handleSkillSearch}
-                        onItemSelect={handleAddSkill}
-                    />
+                    {role === "CANDIDATE" && (
+                        <SearchAddDialog
+                            title="Skills"
+                            inputLabel="Add skills"
+                            placeholder="e.g. HTML"
+                            description=" "
+                            trigger={
+                                <Button variant={"outline"}>
+                                    <Plus /> Add Skill
+                                </Button>
+                            }
+                            searchResults={skillResults}
+                            onSearchChange={handleSkillSearch}
+                            onItemSelect={handleAddSkill}
+                        />
+                    )}
                 </div>
             </CardHeader>
             <CardContent className=" px-4">
                 <div className="flex gap-2 flex-wrap">
                     {ALL_SKILLS.map((skill) => (
-                        <Badge key={skill.value} className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer">
+                        <Badge
+                            key={skill.value}
+                            className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer"
+                        >
                             {skill.label}
                             <X className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Badge>

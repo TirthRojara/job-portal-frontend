@@ -5,6 +5,8 @@ import React from "react";
 import EducationDetailsAdd from "./education-details-add";
 import { EducationItem } from "./education-details-card";
 
+const role = "CANDIDATE";
+
 const edu = {
     id: "1",
     degree: "Bachelor of Science in Computer Science",
@@ -18,14 +20,16 @@ export default function EducationDetails() {
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Education</CardTitle>
                 <div className="flex gap-2">
-                    <EducationDetailsAdd
-                        trigger={
-                            <Button variant={"outline"}>
-                                <Plus />
-                                Add Education
-                            </Button>
-                        }
-                    />
+                    {role === "CANDIDATE" && (
+                        <EducationDetailsAdd
+                            trigger={
+                                <Button variant={"outline"}>
+                                    <Plus />
+                                    Add Education
+                                </Button>
+                            }
+                        />
+                    )}
                     {/* <Button variant={"outline"}>
                         <Plus />
                         Add Education
@@ -51,7 +55,6 @@ export default function EducationDetails() {
                     // onEdit={handleEdit}
                     // onDelete={handleDelete}
                 />
-                
 
                 {/* {true && (
                     <div className="text-center py-12 text-muted-foreground rounded-md border-2 border-dashed border-border">

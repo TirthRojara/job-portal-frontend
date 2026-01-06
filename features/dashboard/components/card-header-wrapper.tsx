@@ -7,6 +7,7 @@ import { SearchAddDialog, SearchItem } from "./search-dialog";
 interface CardHeaderWrapperProps {
     title?: string;
     buttonLabel?: string;
+    isButton?: Boolean;
     lucidIcon?: LucideIcon;
     children?: ReactNode;
     searchDialog?: Boolean;
@@ -26,6 +27,7 @@ const ALL_SKILLS = [
 export default function CardHeaderWrapper({
     title,
     buttonLabel,
+    isButton = true,
     lucidIcon: Icon = Plus,
     children,
     searchDialog = false,
@@ -49,7 +51,7 @@ export default function CardHeaderWrapper({
 
     return (
         // <Card className="max-w-3xl w-full py-4">
-        <Card className={`${width ? width : 'max-w-3xl'} w-full py-4`}>
+        <Card className={`${width ? width : "max-w-3xl"} w-full py-4`}>
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">{title}</CardTitle>
 
@@ -61,23 +63,24 @@ export default function CardHeaderWrapper({
                         description=" "
                         trigger={
                             <Button variant={"outline"}>
-                                 <Icon className="" /> <p>{buttonLabel}</p>
+                                <Icon className="" /> <p>{buttonLabel}</p>
                             </Button>
                         }
                         searchResults={skillResults}
                         onSearchChange={handleSkillSearch}
                         onItemSelect={handleAddSkill}
-                        
                     />
                 ) : (
-                    <Button
-                        variant={"outline"}
-                        className={` ${hidden ? "hidden" : "block"}`}
-                    >
-                        <div className="flex gap-2">
-                            <Icon className="" /> <p>{buttonLabel}</p>
-                        </div>
-                    </Button>
+                    isButton && (
+                        <Button
+                            variant={"outline"}
+                            className={` ${hidden ? "hidden" : "block"}`}
+                        >
+                            <div className="flex gap-2">
+                                <Icon className="" /> <p>{buttonLabel}</p>
+                            </div>
+                        </Button>
+                    )
                 )}
             </CardHeader>
             <CardContent className=" px-4">{children}</CardContent>

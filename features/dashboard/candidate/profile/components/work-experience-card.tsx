@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Dot, MapPin, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+const role = "CANDIDATE";
+
 interface Experience {
     id: number;
     companyName: string;
@@ -54,32 +56,34 @@ export default function WorkExperienceCard({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
-                <WorkExperienceAdd
-                    trigger={
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                            // onClick={() => onEdit?.(id)}
-                        >
-                            <Pencil className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
-                        </Button>
-                    }
-                />
+            {role === "CANDIDATE" && (
+                <div className="flex items-center gap-2">
+                    <WorkExperienceAdd
+                        trigger={
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                // onClick={() => onEdit?.(id)}
+                            >
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit</span>
+                            </Button>
+                        }
+                    />
 
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    //   className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7 p-0"
-                    // onClick={() => onDelete?.(id)}
-                >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                </Button>
-            </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        //   className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7 p-0"
+                        // onClick={() => onDelete?.(id)}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete</span>
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

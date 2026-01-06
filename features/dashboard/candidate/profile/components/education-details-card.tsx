@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import EducationDetailsAdd from "./education-details-add";
 
+const role = "CANDIDATE";
+
 interface EducationItemProps {
     id: string;
     degree: string;
@@ -35,41 +37,34 @@ export function EducationItem({
                 <p className="text-sm text-muted-foreground">{year}</p>
             </div>
 
-            <div className="flex items-center gap-2">
-                <EducationDetailsAdd
-                    trigger={
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => onEdit?.(id)}
-                        >
-                            <Pencil className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
-                        </Button>
-                    }
-                />
-                {/* <Button
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7 text-muted-foreground hover:text-foreground"
-          onClick={() => onEdit?.(id)}
-        >
-          <Pencil className="h-4 w-4" />
-          <span className="sr-only">Edit</span>
-        </Button> */}
+            {role === "CANDIDATE" && (
+                <div className="flex items-center gap-2">
+                    <EducationDetailsAdd
+                        trigger={
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                onClick={() => onEdit?.(id)}
+                            >
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit</span>
+                            </Button>
+                        }
+                    />
 
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    //   className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7 p-0"
-                    onClick={() => onDelete?.(id)}
-                >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete</span>
-                </Button>
-            </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        //   className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7 p-0"
+                        onClick={() => onDelete?.(id)}
+                    >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete</span>
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }

@@ -5,6 +5,8 @@ import React from "react";
 import WorkExperienceAdd from "./work-experience-add";
 import WorkExperienceCard from "./work-experience-card";
 
+const role = "CANDIDATE";
+
 const expe = {
     id: 5,
     companyName: "Google",
@@ -25,14 +27,16 @@ export default function WorkExperience() {
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Work Experience</CardTitle>
                 <div className="flex gap-2">
-                    <WorkExperienceAdd
-                        trigger={
-                            <Button variant={"outline"}>
-                                <Plus />
-                                Add Experience
-                            </Button>
-                        }
-                    />
+                    {role === "CANDIDATE" && (
+                        <WorkExperienceAdd
+                            trigger={
+                                <Button variant={"outline"}>
+                                    <Plus />
+                                    Add Experience
+                                </Button>
+                            }
+                        />
+                    )}
                 </div>
             </CardHeader>
             <CardContent className=" px-4 flex flex-col gap-4">

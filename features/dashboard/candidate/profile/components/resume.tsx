@@ -15,6 +15,8 @@ import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+const role = "CANDIDATE";
+
 // 1. Define Zod Schema
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
@@ -69,13 +71,11 @@ export default function Resume() {
         <Card className="max-w-4xl w-full py-4">
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Resume / CV</CardTitle>
-                <Button variant={"outline"}>
-                    Save
-                </Button>
+                {role === "CANDIDATE" && (
+                    <Button variant={"outline"}>Save</Button>
+                )}
             </CardHeader>
             <CardContent className=" px-4 flex flex-col gap-4">
-
-
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}

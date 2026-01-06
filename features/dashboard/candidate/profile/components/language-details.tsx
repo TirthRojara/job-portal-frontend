@@ -20,7 +20,7 @@ import {
     SearchItem,
 } from "@/features/dashboard/components/search-dialog";
 
-// Mock Data for demonstration
+const role = "CANDIDATE";
 
 const ALL_LANGUAGES = [
     { value: "en", label: "English" },
@@ -71,20 +71,23 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Languages</CardTitle>
                 <div className="flex gap-2">
-                    <SearchAddDialog
-                        title="Languages"
-                        inputLabel="Add language"
-                        placeholder="e.g. English"
-                        description=" "
-                        trigger={
-                            <Button variant="outline">
-                                <Plus className="w-4 h-4 mr-2" /> Add Language
-                            </Button>
-                        }
-                        searchResults={langResults}
-                        onSearchChange={handleLangSearch}
-                        onItemSelect={handleAddLanguage}
-                    />
+                    {role === "CANDIDATE" && (
+                        <SearchAddDialog
+                            title="Languages"
+                            inputLabel="Add language"
+                            placeholder="e.g. English"
+                            description=" "
+                            trigger={
+                                <Button variant="outline">
+                                    <Plus className="w-4 h-4 mr-2" /> Add
+                                    Language
+                                </Button>
+                            }
+                            searchResults={langResults}
+                            onSearchChange={handleLangSearch}
+                            onItemSelect={handleAddLanguage}
+                        />
+                    )}
                     {/* <Button variant={"outline"}>
                         <Plus />
                         Add
@@ -103,9 +106,11 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
                                 <TableHead className="w-[150px] sm:w-[200px]">
                                     Level
                                 </TableHead>
-                                <TableHead className="text-right sm:w-[100px]">
-                                    Actions
-                                </TableHead>
+                                {role === "CANDIDATE" && (
+                                    <TableHead className="text-right sm:w-[100px]">
+                                        Actions
+                                    </TableHead>
+                                )}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -139,21 +144,23 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
                                             {language.level}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-right">
-                                        <div className="flex gap-1 justify-end">
-                                            <EditLanguageDialog
-                                                languageData={lang}
-                                            />
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                                //   onClick={() => onDelete(language.id)}
-                                            >
-                                                <Trash2 className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    </TableCell>
+                                    {role === "CANDIDATE" && (
+                                        <TableCell className="text-right">
+                                            <div className="flex gap-1 justify-end">
+                                                <EditLanguageDialog
+                                                    languageData={lang}
+                                                />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-7 w-7 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                    //   onClick={() => onDelete(language.id)}
+                                                >
+                                                    <Trash2 className="h-3 w-3" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -37,6 +37,8 @@ const PersonalDetailSchema = z.object({
     address: z.string().min(1, "Required"),
     openToWork: z.boolean(),
     dob: z.date({ error: "Please select dates" }),
+    role: z.string().min(1, "Required"),
+    summary: z.string().min(1, "Required"),
 });
 
 type PersonalDetails = z.infer<typeof PersonalDetailSchema>;
@@ -53,6 +55,8 @@ export default function PersonalDetailsEdit() {
             address: "",
             openToWork: false,
             dob: undefined,
+            role: "",
+            summary: ''
         },
         mode: "onChange",
         reValidateMode: "onChange",
@@ -170,6 +174,16 @@ export default function PersonalDetailsEdit() {
                                         errorReserve
                                     />
 
+                                    <FormInput
+                                        control={form.control}
+                                        name="role"
+                                        label="Role"
+                                        form={form}
+                                        placeholder="AI Full Stack developer"
+                                        required
+                                        errorReserve
+                                    />
+
                                     <FormTextarea
                                         control={form.control}
                                         name="address"
@@ -178,6 +192,15 @@ export default function PersonalDetailsEdit() {
                                         required
                                         errorReserve
                                     />
+
+                                    {/* <FormTextarea
+                                        control={form.control}
+                                        name="summary"
+                                        label="Summary"
+                                        form={form}
+                                        required
+                                        errorReserve
+                                    /> */}
 
                                     <FormSwitch
                                         form={form}

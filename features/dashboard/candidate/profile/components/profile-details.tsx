@@ -7,19 +7,23 @@ import { PenLine } from "lucide-react";
 import React from "react";
 import PersonalDetailsEdit from "../edit/components/personal-details-edit";
 
+const role = "CANDIDATE";
+
 export default function ProfileDetails() {
     return (
         <Card className="max-w-4xl w-full py-4">
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">Personal Details</CardTitle>
-                <div className="flex gap-2">
-                    {/* <Button>
+                {role === "CANDIDATE" && (
+                    <div className="flex gap-2">
+                        {/* <Button>
                         <PenLine /> Edit
                     </Button> */}
-                    <PersonalDetailsEdit />
+                        <PersonalDetailsEdit />
 
-                    {/* <Button variant={"outline"}>Cancel</Button> */}
-                </div>
+                        {/* <Button variant={"outline"}>Cancel</Button> */}
+                    </div>
+                )}
             </CardHeader>
             <CardContent className=" px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
@@ -28,6 +32,7 @@ export default function ProfileDetails() {
                     <FormDisplay label="Gender" value="MALE" />
                     <FormDisplay label="Phone" value="1234567890" />
                     <FormDisplay label="Date of Birth" value="07/04/2025" />
+                    <FormDisplay label="Role" value="AI Full Stack developer" />
                     <FormDisplay
                         label="Address"
                         value="Rajkot, Gujarat, India"
