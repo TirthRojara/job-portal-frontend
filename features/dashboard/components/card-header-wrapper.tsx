@@ -10,6 +10,7 @@ interface CardHeaderWrapperProps {
     lucidIcon?: LucideIcon;
     children?: ReactNode;
     searchDialog?: Boolean;
+    width?: string;
 }
 
 const hidden = false;
@@ -28,6 +29,7 @@ export default function CardHeaderWrapper({
     lucidIcon: Icon = Plus,
     children,
     searchDialog = false,
+    width,
 }: CardHeaderWrapperProps) {
     const [skillResults, setSkillResults] = useState<SearchItem[]>(ALL_SKILLS);
 
@@ -46,7 +48,8 @@ export default function CardHeaderWrapper({
     };
 
     return (
-        <Card className="max-w-3xl w-full py-4">
+        // <Card className="max-w-3xl w-full py-4">
+        <Card className={`${width ? width : 'max-w-3xl'} w-full py-4`}>
             <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
                 <CardTitle className=" md:text-lg">{title}</CardTitle>
 

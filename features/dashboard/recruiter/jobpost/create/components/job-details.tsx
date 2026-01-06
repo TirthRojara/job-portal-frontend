@@ -228,6 +228,8 @@ export default function JobDetails() {
                     </div>
                 </CardHeaderWrapper>
             </form>
+
+            {/* mobile view */}
             <div className="w-full flex gap-4 mt-2 mb-1 sm:hidden">
                 <Button variant={"outline"} className="bg-muted">
                     <Save />

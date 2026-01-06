@@ -1,5 +1,9 @@
 // import { useParams } from "next/navigation";
 
+import Header from "@/features/dashboard/recruiter/jobpost/[jobId}/components/header";
+import JobDescription from "@/features/dashboard/recruiter/jobpost/[jobId}/components/job-description";
+import JobDetailsTop from "@/features/dashboard/recruiter/jobpost/[jobId}/components/job-details-top";
+
 export default async function Page({
     params,
 }: {
@@ -10,7 +14,11 @@ export default async function Page({
 
     return (
         <>
-            <h1>job Post: {jobId}</h1>
+             <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
+                <Header />
+                <JobDetailsTop />
+                <JobDescription />
+             </div>
         </>
     );
 }
