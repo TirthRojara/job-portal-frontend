@@ -15,6 +15,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
+const role = "CANDIDATEq";
+
 const ALL_SKILLS = [
     { value: "react", label: "React" },
     { value: "java", label: "Java" },
@@ -53,22 +55,24 @@ export default function JobDetails() {
     }
     return (
         <>
-            <div className="flex flex-col sm:flex-row sm:justify-between max-w-3xl w-full sm:items-center gap-5">
-                <div className="flex flex-col">
-                    <p className="text-2xl font-bold">Create New Post</p>
-                    <p>Post a new position to attract top talent</p>
+            {role === "CANDIDATE" && (
+                <div className="flex flex-col sm:flex-row sm:justify-between max-w-3xl w-full sm:items-center gap-5">
+                    <div className="flex flex-col">
+                        <p className="text-2xl font-bold">Create New Post</p>
+                        <p>Post a new position to attract top talent</p>
+                    </div>
+                    <div className="sm:flex sm:gap-3 sm:block hidden">
+                        <Button variant={"outline"} className="bg-muted">
+                            <Save />
+                            Save as Draft
+                        </Button>
+                        <Button onClick={form.handleSubmit(onSubmit)}>
+                            <Send />
+                            Post Job
+                        </Button>
+                    </div>
                 </div>
-                <div className="sm:flex sm:gap-3 sm:block hidden">
-                    <Button variant={"outline"} className="bg-muted">
-                        <Save />
-                        Save as Draft
-                    </Button>
-                    <Button onClick={form.handleSubmit(onSubmit)}>
-                        <Send />
-                        Post Job
-                    </Button>
-                </div>
-            </div>
+            )}
             <form className="flex flex-col gap-6 w-full max-w-3xl">
                 <CardHeaderWrapper
                     title="Job Details"
@@ -228,7 +232,6 @@ export default function JobDetails() {
                     </div>
                 </CardHeaderWrapper>
             </form>
-
             {/* mobile view */}
             <div className="w-full flex gap-4 mt-2 mb-1 sm:hidden">
                 <Button variant={"outline"} className="bg-muted">
