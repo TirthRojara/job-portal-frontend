@@ -41,43 +41,6 @@ export function PaginationBar({
         }
     };
 
-    //   const getPageNumbers = (): (number | string)[] => {
-    //   const getPageNumbers = (): (number)[] => {
-    //     const pages: number[] = [];
-
-    //     // Always show first page
-    //     pages.push(1);
-
-    //     // If current page is in first 3 pages, show first 5 pages
-    //     if (currentPage <= 3) {
-    //       for (let i = 2; i <= Math.min(5, totalPages); i++) {
-    //         pages.push(i);
-    //       }
-    //     }
-    //     // If current page is in last 3 pages, show last 5 pages
-    //     else if (currentPage >= totalPages - 2) {
-    //       const start = Math.max(1, totalPages - 4);
-    //       for (let i = start; i <= totalPages; i++) {
-    //         pages.push(i);
-    //       }
-    //     }
-    //     // Middle pages: show 5 centered pages around current
-    //     else {
-    //       const half = 2;
-    //       const start = currentPage - half;
-    //       const end = currentPage + half;
-
-    //       for (let i = start; i <= end && i <= totalPages; i++) {
-    //         pages.push(i);
-    //       }
-    //     }
-
-    //     // Remove duplicates
-    //     return pages.filter((page, index, self) =>
-    //       self.indexOf(page) === index
-    //     );
-    //   };
-
     const getPageNumbers = (): number[] => {
         const pages: number[] = [];
         const maxVisible = 5;
@@ -95,8 +58,8 @@ export function PaginationBar({
             }
         } else {
             // Middle pages: show 5 pages centered around current
-            const half = Math.floor((maxVisible - 1) / 2);
-            const start = currentPage - half;
+            const half = Math.floor((maxVisible - 1) / 2);   // 2
+            const start = currentPage - half;                // 2  // current page = 4
             const end = currentPage + half;
 
             for (let i = start; i <= end; i++) {

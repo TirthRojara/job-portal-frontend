@@ -26,6 +26,7 @@ interface JobCardProps {
 }
 
 const role = "CANDIDATE";
+const isBtnHide = true;
 
 export function JobPreviewCard({
     title = "Senior Frontend Developer",
@@ -46,6 +47,7 @@ export function JobPreviewCard({
                     <p>1200</p>
                 </div>
                 {role !== "CANDIDATE" && <p>Active</p>}
+                {role === "CANDIDATE" && <p>Applied</p>}
             </span>
             {/* 1. Logo Section */}
             <div className="shrink-0">
@@ -104,6 +106,7 @@ export function JobPreviewCard({
                             <p>1200</p>
                         </div>
                         {role !== "CANDIDATE" && <p>Active</p>}
+                        {role === "CANDIDATE" && <p>Applied</p>}
                     </div>
                 </span>
 
