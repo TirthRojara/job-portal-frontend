@@ -26,10 +26,10 @@ export default function Industry() {
                 {ALL_SKILLS.map((skill) => (
                     <Badge
                         key={skill.value}
-                        className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer"
+                        className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group "
                     >
                         {skill.label}
-                        <X className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        {/* <X className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" /> */}
                     </Badge>
                 ))}
             </div>
