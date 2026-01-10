@@ -28,6 +28,8 @@ import {
     ChevronDownIcon,
     ChevronsUpDown,
     Command,
+    Eye,
+    EyeOff,
     LucideIcon,
     SearchIcon,
 } from "lucide-react";
@@ -270,17 +272,24 @@ export const FormInput: FormControlFunc<{
     );
 };
 
-
 export const FormInputGroup: FormControlFunc<{
     type?: InputHTMLAttributes<HTMLInputElement>["type"];
     icon?: LucideIcon;
     className?: string;
-}> = ({ form, placeholder = 'Search...', required, type, errorReserve, icon: Icon,...props }) => {
+}> = ({
+    form,
+    placeholder = "Search...",
+    required,
+    type,
+    errorReserve,
+    icon: Icon,
+    ...props
+}) => {
     return (
         <FormBase {...props} errorReserve={errorReserve}>
             {(field) => (
                 <InputGroup className={props.className}>
-                    <InputGroupInput placeholder={placeholder}  />
+                    <InputGroupInput placeholder={placeholder} />
                     <InputGroupAddon>
                         {/* <SearchIcon /> */}
                         {Icon ? <Icon className="size-4" /> : <SearchIcon />}
@@ -482,6 +491,57 @@ export const FormDate: FormControlFunc<{
                     </div>
                 );
             }}
+        </FormBase>
+    );
+};
+
+export const FormPassword: FormControlFunc<{
+    placeholder?: string;
+}> = ({ form, placeholder, required, errorReserve, ...props }) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    return (
+        <FormBase
+            form={form}
+            control={props.control}
+            name={props.name}
+            label={props.label}
+            description={props.description}
+            required={required}
+            errorReserve={errorReserve}
+            placeholder={placeholder}
+        >
+            {(field) => (
+                <div className="relative ">
+                    <Input
+                        // id={field.name}
+                        type={showPassword ? "text" : "password"}
+                        placeholder={placeholder}
+                        className={cn(
+                            "pr-12", // Space for eye icon
+                            field["aria-invalid"] &&
+                                "border-destructive text-destructive focus-visible:ring-destructive"
+                        )}
+                        {...field}
+                    />
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 h-7 w-7 p-0 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                        ) : (
+                            <Eye className="h-4 w-4" />
+                        )}
+                        <span className="sr-only">
+                            {showPassword ? "Hide" : "Show"} password
+                        </span>
+                    </Button>
+                </div>
+            )}
         </FormBase>
     );
 };

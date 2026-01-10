@@ -107,6 +107,7 @@ export function SignupForm({
                                 name="password"
                                 label="Password"
                                 required
+                                type="password"
                             />
 
                             <Field>
