@@ -1,4 +1,5 @@
-import PasswordHandleCard from "@/features/dashboard/components/password-handle-card";
+
+import PasswordHandleCard from "@/features/dashboard/components/account/password-handle-card";
 import React from "react";
 
 export default function Page() {

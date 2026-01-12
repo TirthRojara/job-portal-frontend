@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ghost, MoveLeft } from "lucide-react";
 import React from "react";
 import AccountTab from "./account-tab";
+import ManageSubscriptionTab from "./manage-subscription-tab";
 
 const role = "RECRUITER";
 
@@ -45,15 +46,7 @@ export default function AccountMain() {
 
                         {role === "RECRUITER" && (
                             <TabsContent value="subscription" className="mt-6">
-                                <div className="p-4 border rounded-lg bg-slate-50">
-                                    <h3 className="text-lg font-medium">
-                                        Subscription Plan
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        View and update your billing
-                                        information.
-                                    </p>
-                                </div>
+                                <ManageSubscriptionTab />
                             </TabsContent>
                         )}
                     </Tabs>
