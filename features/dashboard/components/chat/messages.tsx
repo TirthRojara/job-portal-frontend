@@ -1,5 +1,6 @@
+'use client';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 // const userId = '1'
 const currentUserId = "candidate_456";
@@ -90,6 +91,16 @@ const getMessageDateLabel = (dateString: string) => {
 // </div>
 
 export default function Messages() {
+
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll to bottom on new message
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [demoMessages]);
+
     return (
         <div className="flex-1 p-5 space-y-4 ">
             {demoMessages.map((msg) => (
@@ -127,6 +138,7 @@ export default function Messages() {
                     </div>
                 </div>
             ))}
+            <div ref={scrollRef} />
         </div>
     );
 }
