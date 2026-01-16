@@ -33,7 +33,7 @@ export default function ChatInput() {
     };
 
     return (
-        <div className="flex w-full items-center justify-center px-7 py-3">
+        <div className="flex w-full items-center justify-center px-4  md:px-7 py-3">
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex w-full max-w-7xl items-end gap-2"

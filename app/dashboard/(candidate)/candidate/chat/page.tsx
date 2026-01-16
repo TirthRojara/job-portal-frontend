@@ -10,7 +10,7 @@ export default function Page() {
                 <ChatList />
             {/* </div> */}
             <MessageBox />
-            {/* <EmptyChatState /> */}
+            {/* <EmptyChatState />  */} 
         </div>
     );
 }
