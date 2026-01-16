@@ -1,5 +1,6 @@
-'use client';
+"use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 import React, { useEffect, useRef } from "react";
 
 // const userId = '1'
@@ -50,7 +51,7 @@ const demoMessages = [
     {
         content: "Thanks! See you tomorrow 😊",
         senderId: "candidate_456",
-        createdAt: "2026-01-16T16:40:05.000Z",
+        createdAt: "2026-01-17T16:40:05.000Z",
     },
 ];
 
@@ -91,8 +92,27 @@ const getMessageDateLabel = (dateString: string) => {
 // </div>
 
 export default function Messages() {
-
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Group messages by date
+    const groupedMessages = React.useMemo(() => {
+        const groups: { dateKey: string; messages: typeof demoMessages }[] = [];
+        const messagesByDate: Record<string, typeof demoMessages> = {};
+
+        demoMessages.forEach((msg) => {
+            const dateKey = new Date(msg.createdAt).toDateString();
+            if (!messagesByDate[dateKey]) {
+                messagesByDate[dateKey] = [];
+            }
+            messagesByDate[dateKey].push(msg);
+        });
+
+        Object.entries(messagesByDate).forEach(([dateKey, messages]) => {
+            groups.push({ dateKey, messages });
+        });
+
+        return groups;
+    }, []);
 
     // Auto-scroll to bottom on new message
     useEffect(() => {
@@ -103,7 +123,7 @@ export default function Messages() {
 
     return (
         <div className="flex-1 p-5 space-y-4 ">
-            {demoMessages.map((msg) => (
+            {/* {demoMessages.map((msg) => (
                 <div
                     key={msg.createdAt}
                     className={`flex ${
@@ -136,6 +156,57 @@ export default function Messages() {
                             })}
                         </p>
                     </div>
+                </div>
+            ))} */}
+
+            {groupedMessages.map(({ dateKey, messages }) => (
+                <div key={dateKey} className="space-y-4">
+                    {/* Date Separator */}
+                    <div className="flex justify-center my-6">
+                        <div className="bg-muted/50 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
+                            {getMessageDateLabel(dateKey)}
+                        </div>
+                    </div>
+
+                    {/* Messages for this date */}
+                    {messages.map((msg) => (
+                        <div
+                            key={msg.createdAt}
+                            className={cn("flex", {
+                                "justify-end": currentUserId === msg.senderId,
+                                "justify-start": currentUserId !== msg.senderId,
+                            })}
+                        >
+                            <div
+                                className={cn(
+                                    "group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col",
+                                    {
+                                        "bg-primary text-white ml-4 rounded-br-sm":
+                                            currentUserId === msg.senderId,
+                                        "bg-gray-100 border-gray-200 mr-4 rounded-bl-sm":
+                                            currentUserId !== msg.senderId,
+                                    }
+                                )}
+                            >
+                                <p className="text-sm leading-relaxed break-words">
+                                    {msg.content}
+                                </p>
+                                <p
+                                    className={cn(
+                                        "text-xs mt-1 flex items-center gap-1 opacity-75",
+                                        {
+                                            "text-white/90":
+                                                currentUserId === msg.senderId,
+                                            "text-gray-500":
+                                                currentUserId !== msg.senderId,
+                                        }
+                                    )}
+                                >
+                                    {formatTime(msg.createdAt)}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ))}
             <div ref={scrollRef} />

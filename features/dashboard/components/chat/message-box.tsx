@@ -10,8 +10,8 @@ export default function MessageBox() {
             {/* top-bar */}
             <div className="bg-white w-full p-3 shadow-2xl flex-none z-10">
                 <div className="flex items-center gap-3   ">
-                    <Avatar className=" md:size-18 size-12 ">
-                        <AvatarFallback className="bg-primary text-white md:text-2xl text-lg font-semibold">
+                    <Avatar className=" md:size-15 size-12 ">
+                        <AvatarFallback className="bg-emerald-200 text-white md:text-2xl text-lg font-semibold">
                             WJ
                         </AvatarFallback>
                     </Avatar>
