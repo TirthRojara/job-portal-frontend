@@ -6,9 +6,9 @@ import TypeBar from "./type-bar";
 
 export default function MessageBox() {
     return (
-        <div className="h-[calc(100vh-73px)] w-full">
+        <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden">
             {/* top-bar */}
-            <div className="bg-white w-full p-3">
+            <div className="bg-white w-full p-3 shadow-2xl flex-none z-10">
                 <div className="flex items-center gap-3   ">
                     <Avatar className=" size-18 ">
                         <AvatarFallback className="bg-amber-200 text-2xl font-semibold">
@@ -24,12 +24,14 @@ export default function MessageBox() {
             </div>
 
             {/* messages */}
-            <div>
-                <ScrollArea className=" h-168 rounded-md border-0  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+            <div className="flex-1 min-h-0 ">
+                <ScrollArea className=" h-full w-full rounded-md border-0  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                     <Messages />
                 </ScrollArea>
             </div>
-            <div>
+
+            {/* typing bar */}
+            <div className="flex-none ">
                 <TypeBar />
             </div>
         </div>
