@@ -1,16 +1,19 @@
-
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
 
 const appSlice = createSlice({
-    name: 'ui',
+    name: "app",
     initialState: {
-        accessToken: ''
+        accessToken: "",
         // menuIsVisible: false,
         // noProjectSeleted: true,
         // // deleteFor: '',
         // currentProjectName: null
     },
     reducers: {
+        setAccessToken(state, action) {
+            state.accessToken = action.payload;
+        },
+
         // toggleMenu(state) {
         //     state.menuIsVisible = !state.menuIsVisible
         // },
@@ -33,17 +36,12 @@ const appSlice = createSlice({
         //     state.deleteFor = action.payload
         // },
 
-        // setAccessToken(state,action){
-        //     state.token = action.payload
-        // },
-
-
         // setProjectName(state, action){
         //     state.currentProjectName = action.payload
         // }
-    }
-})
+    },
+});
 
-export const appActions = appSlice.actions
+export const appActions = appSlice.actions;
 
-export default appSlice
+export default appSlice;
