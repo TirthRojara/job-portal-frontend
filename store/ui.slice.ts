@@ -1,9 +1,10 @@
 
 import { createSlice } from "@reduxjs/toolkit"
 
-const uiSlice = createSlice({
+const appSlice = createSlice({
     name: 'ui',
     initialState: {
+        accessToken: ''
         // menuIsVisible: false,
         // noProjectSeleted: true,
         // // deleteFor: '',
@@ -32,7 +33,7 @@ const uiSlice = createSlice({
         //     state.deleteFor = action.payload
         // },
 
-        // storeToken(state,action){
+        // setAccessToken(state,action){
         //     state.token = action.payload
         // },
 
@@ -43,6 +44,6 @@ const uiSlice = createSlice({
     }
 })
 
-export const uiActions = uiSlice.actions
+export const appActions = appSlice.actions
 
-export default uiSlice
+export default appSlice

@@ -1,6 +1,8 @@
+'use client';
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 export const test = () => {
     return (
@@ -10,16 +12,35 @@ export const test = () => {
                     Test!
                 </h1>
                 <div className=" flex gap-2">
-                    {/* <Button className="bg-emerald-100" variant={"outline"}>
-                        Full-time
+                    <Button
+                        variant={"outline"}
+                        onClick={() => toast.success("successfull sooner")}
+                    >
+                        success
+                    </Button>
+                    <Button
+                        onClick={() => toast.info("info sooner")}
+                    >
+                        info
+                    </Button>
+                    <Button
+                        onClick={() => toast.warning("warning sooner")}
+                    >
+                        warning
+                    </Button>
+                    <Button
+                        onClick={() => toast.error("error sooner")}
+                    >
+                        error
+                    </Button>
+                    {/* <Button
+                        onClick={() => toast.info("info sooner")}
+                    >
+                        info
                     </Button> */}
-                    {/* <Button variant={"outline"}>View</Button> */}
-                    {/* <Button className="bg-emerald-600">Quick Apply</Button> */}
-                    <Button  variant={"outline"}>View</Button>
-                    {/* <Button>Quick Apply</Button> */}
                 </div>
                 {/* <Image src='/recruiter-bg.png' alt="candidate" width={64} height={64} /> */}
-                <User className="size-20"/>
+                <User className="size-20" />
             </main>
         </>
     );
