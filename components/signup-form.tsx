@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,61 +12,52 @@ import {
     Field,
     FieldDescription,
     FieldGroup,
-    FieldLabel,
     FieldSeparator,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { FormInput } from "./custom-form";
-import { z } from "zod";
+import { FormInput, FormSelect } from "./custom-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-
-
-const loginSchema = z.object({
-    fullname: z.string(),
-    email: z
-        .string()
-        .min(1, "Email is required")
-        .email("Invalid email address"),
-    password: z
-        .string()
-        .min(1, "Password is required")
-        .min(6, "Password must be at least 6 characters long"),
-});
+import { SelectItem } from "./ui/select";
+import { SignupFormData, signupSchema } from "@/features/auth/signup/api/types";
+import { useSignup } from "@/features/auth/signup/api/mutation";
+import { toast } from "sonner";
+import { ApiError } from "@/types/api";
 
 export function SignupForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const { mutate, isPending } = useSignup();
     const router = useRouter();
 
-    const form = useForm({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            fullname: "",
-            email: "",
-            password: "",
-        },
+    const form = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
+        // defaultValues: {
+        //     name: "",
+        //     email: "",
+        //     password: "",
+        //     role: undefined,
+        // },
         mode: "onChange",
         reValidateMode: "onChange",
     });
 
-    function onSubmit(data: any) {
+    function onSubmit(data: SignupFormData) {
         console.log({ data });
-        console.log(data.fullname);
-        console.log(data.email);
-        console.log(data.password);
 
-        // form.reset();
+        mutate(data, {
+            onSuccess: (data: ApiError) => {
+                toast.success(`${data.message}`);
+                console.log("Signup successful:", data);
+                router.push(`/signup/otp`);
+            },
+        });
     }
 
     const onGoogleClick = () => {
         router.push("/signup/role");
-        // redirect("/signup/role");
     };
 
     return (
@@ -87,7 +77,7 @@ export function SignupForm({
                         <FieldGroup>
                             <FormInput
                                 control={form.control}
-                                name="fullname"
+                                name="name"
                                 label="Full Name"
                                 form={form}
                                 placeholder="John Doe"
@@ -110,8 +100,32 @@ export function SignupForm({
                                 type="password"
                             />
 
+                            <FormSelect
+                                control={form.control}
+                                name="role"
+                                label="Role"
+                                placeholder="Select Role"
+                                errorReserve
+                            >
+                                <SelectItem key="CANDIDATE" value="CANDIDATE">
+                                    Candidate
+                                </SelectItem>
+                                <SelectItem key="RECRUITER" value="RECRUITER">
+                                    Recruiter
+                                </SelectItem>
+                            </FormSelect>
+
                             <Field>
-                                <Button type="submit">Create Account</Button>
+                                <Button
+                                    type="submit"
+                                    className={`${
+                                        isPending
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                >
+                                    Create Account
+                                </Button>
                                 <FieldSeparator>
                                     Or continue with
                                 </FieldSeparator>

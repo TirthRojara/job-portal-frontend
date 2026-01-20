@@ -3,7 +3,7 @@ import store from "@/store/index.store";
 import axios, { AxiosInstance } from "axios";
 import { useSelector } from "react-redux";
 
-const SERVER_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+const SERVER_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
 const api: AxiosInstance = axios.create({
     baseURL: SERVER_BASE_URL,
@@ -31,7 +31,7 @@ api.interceptors.response.use(
             try {
                 // Refresh token cookie auto-sent via withCredentials: true
                 const { data } = await api.post("/auth/refresh");
-                store.dispatch(appActions.setAccessToken(data.token))
+                store.dispatch(appActions.setAccessToken(data.token));
 
                 // Retry original request
                 originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
@@ -42,6 +42,14 @@ api.interceptors.response.use(
             }
         }
 
+        // const normalizedError = {
+        //     status: error.response?.status || 500,
+        //     message: error.response?.data?.message || "Unable to reach server",
+        // };
+        // return Promise.reject(normalizedError);
+
         return Promise.reject(error);
     }
 );
+
+export default api;

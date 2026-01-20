@@ -5,8 +5,6 @@ const appSlice = createSlice({
     initialState: {
         accessToken: "",
         // menuIsVisible: false,
-        // noProjectSeleted: true,
-        // // deleteFor: '',
         // currentProjectName: null
     },
     reducers: {
@@ -20,8 +18,6 @@ const appSlice = createSlice({
         // profileClick(state){
         //     state.isProfileClick = true
         // },
-        // profileClose(state){
-        //     state.isProfileClick = false
         // },
         // toggleEditProfile(state, action) {
         //     state.showEditProfileModal = action.payload

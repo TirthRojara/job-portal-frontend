@@ -1,19 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { loginWithOAuth } from "../api/api";
+import {} from "../api/mutation";
+import { useRouter } from "next/navigation";
 
-type Role = "candidate" | "recruiter";
+type Role = "CANDIDATE" | "RECRUITER";
 
 export default function Role() {
-    const [role, setRole] = useState<Role>("candidate");
+    const [role, setRole] = useState<Role>("CANDIDATE");
 
-    const handleContinue = () => {
-        console.log("continue with google as:", role);
+    const router = useRouter();
+    const oAuthHandle = () => {
+        loginWithOAuth(role);
     };
 
     return (
@@ -35,16 +39,16 @@ export default function Role() {
                         {/* Candidate card */}
                         <button
                             type="button"
-                            onClick={() => setRole("candidate")}
+                            onClick={() => setRole("CANDIDATE")}
                             className={cn(
                                 "group relative flex flex-col items-center rounded-xl border px-6 py-6 text-left transition-all focus:outline-none",
                                 "bg-card hover:shadow-md",
-                                role === "candidate"
+                                role === "CANDIDATE"
                                     ? "border-primary shadow-md ring-1 ring-primary/50"
                                     : "border-border"
                             )}
                         >
-                            {role === "candidate" && (
+                            {role === "CANDIDATE" && (
                                 <span className="absolute right-4 top-4 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
                                     <Check />
                                 </span>
@@ -73,16 +77,16 @@ export default function Role() {
                         {/* Recruiter card */}
                         <button
                             type="button"
-                            onClick={() => setRole("recruiter")}
+                            onClick={() => setRole("RECRUITER")}
                             className={cn(
                                 "group relative flex flex-col items-center rounded-xl border px-6 py-6 text-left transition-all focus:outline-none",
                                 "bg-card hover:shadow-md",
-                                role === "recruiter"
+                                role === "RECRUITER"
                                     ? "border-primary shadow-md ring-1 ring-primary/50"
                                     : "border-border"
                             )}
                         >
-                            {role === "recruiter" && (
+                            {role === "RECRUITER" && (
                                 <span className="absolute right-4 top-4 inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
                                     <Check />
                                 </span>
@@ -111,8 +115,8 @@ export default function Role() {
 
                     <div className="mt-8">
                         <Button
-                            className="w-full h-11 text-sm font-medium flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-                            onClick={handleContinue}
+                            className={`w-full h-11 text-sm font-medium flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 `}
+                            onClick={oAuthHandle}
                         >
                             Continue with Google
                         </Button>
