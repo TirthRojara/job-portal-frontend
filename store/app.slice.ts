@@ -4,13 +4,19 @@ const appSlice = createSlice({
     name: "app",
     initialState: {
         accessToken: "",
-        // menuIsVisible: false,
-        // currentProjectName: null
+        resetToken: "",
+        role: "",
     },
     reducers: {
         setAccessToken(state, action) {
             state.accessToken = action.payload;
         },
+        setResetToken(state, action) {
+            state.resetToken = action.payload;
+        },
+        setRole(state, action) {
+            state.role = action.payload;
+        }
 
         // toggleMenu(state) {
         //     state.menuIsVisible = !state.menuIsVisible
@@ -19,22 +25,13 @@ const appSlice = createSlice({
         //     state.isProfileClick = true
         // },
         // },
-        // toggleEditProfile(state, action) {
-        //     state.showEditProfileModal = action.payload
-        // },
+
         // addIconProject(state) {
         //     state.noProjectSeleted = true
         //     // state.isProjectSeleted = false
         //     state.isAddProjectClick = false
         // },
 
-        // deleteFor(state, action){
-        //     state.deleteFor = action.payload
-        // },
-
-        // setProjectName(state, action){
-        //     state.currentProjectName = action.payload
-        // }
     },
 });
 

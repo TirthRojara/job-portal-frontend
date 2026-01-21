@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useResendForgotOTP } from "@/features/auth/forgotpassword/api/mutation";
+import { useResendSignupOTP } from "@/features/auth/signup/otp/mutation";
 import { UseMutationOptions, UseMutationResult } from "@tanstack/react-query";
+import Link from "next/link";
 import { useState } from "react";
 
 // type MutationFn = (variables: any) => Promise<any>;
@@ -13,15 +16,28 @@ type MutationHook<TData, TError, TVariables> = (
 
 export function OTPForm<TData = any, TError = unknown, TVariables = any>({
     mutation,
+    type,
     ...props
-}: React.ComponentProps<typeof Card> & { mutation: MutationHook<TData, TError, TVariables> }) {
+}: React.ComponentProps<typeof Card> & { mutation: MutationHook<TData, TError, TVariables> } & {
+    type: "forgot-password" | "signup";
+}) {
     const { mutate, isPending } = mutation();
+    const { mutate: resendMutate } = useResendSignupOTP();
+    const { mutate: resendForgotMutate } = useResendForgotOTP();
     const [otpValue, setOtpValue] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log({ otpValue });
         mutate({ otp: Number(otpValue) } as any);
+    };
+
+    const handdleResend = () => {
+        if (type === "signup") {
+            resendMutate({ type });
+        } else {
+            resendForgotMutate({ type });
+        }
     };
 
     return (
@@ -51,7 +67,10 @@ export function OTPForm<TData = any, TError = unknown, TVariables = any>({
                         <FieldGroup>
                             <Button type="submit">Verify</Button>
                             <FieldDescription className="text-center">
-                                Didn&apos;t receive the code? <a href="#">Resend</a>
+                                Didn&apos;t receive the code?{" "}
+                                <Link href="#" onClick={handdleResend}>
+                                    Resend
+                                </Link>
                             </FieldDescription>
                         </FieldGroup>
                     </FieldGroup>

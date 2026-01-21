@@ -7,8 +7,9 @@ import z from "zod";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CardHeaderWrapper from "../card-header-wrapper";
+import { useSetNewPassword } from "@/features/auth/forgotpassword/api/mutation";
 
-const authType = "OAUTH";
+// const authType = "OAUTH";
 const isPasswordSet = true;
 const isForgotPassword = false;
 
@@ -28,27 +29,19 @@ const ForgotPasswordSchema = z.object({
     newPassword: z.string().min(1, "Required"),
 });
 
-const schema = zodResolver(
-    isForgotPassword
-        ? ForgotPasswordSchema
-        : isPasswordSet
-        ? ChangePasswordSchema
-        : SetPasswordSchema
-);
+// const schema = zodResolver(isForgotPassword ? ForgotPasswordSchema : isPasswordSet ? ChangePasswordSchema : SetPasswordSchema);
 
 type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
 type ChangePassword = z.infer<typeof ChangePasswordSchema>;
 type SetPassword = z.infer<typeof SetPasswordSchema>;
 
-type Password = ChangePassword | SetPassword | ForgotPassword;
-
 interface PasswordHandleCardProps {
-  isForgotPasswordProp?: boolean;
+    isForgotPasswordProp?: boolean;
 }
 
-export default function PasswordHandleCard({isForgotPasswordProp = false}: PasswordHandleCardProps) {
-    const form = useForm<Password>({
-        resolver: schema,
+const ChangePassword = () => {
+    const form = useForm<ChangePassword>({
+        resolver: zodResolver(ChangePasswordSchema),
         defaultValues: {},
         mode: "onChange",
         reValidateMode: "onChange",
@@ -58,15 +51,10 @@ export default function PasswordHandleCard({isForgotPasswordProp = false}: Passw
         console.log({ data });
     }
 
-    const changePassword = (
-        <CardHeaderWrapper
-            title={isPasswordSet ? "Change Password" : "Set Password"}
-            isButton={false}
-            width="max-w-md"
-        >
-            {/* change password */}
-            <div className="flex flex-col gap-6 w-full">
-                {isPasswordSet ? (
+    return (
+        <CardHeaderWrapper title="Change Password" isButton={false} width="max-w-md">
+            <form>
+                <div className="flex flex-col gap-6 w-full">
                     <div className="flex flex-col gap-6">
                         <FormPassword
                             control={form.control}
@@ -88,14 +76,37 @@ export default function PasswordHandleCard({isForgotPasswordProp = false}: Passw
                         />
 
                         <Link
-                            href=""
+                            href="/forgotpassword"
                             className="hover:underline w-fit text-blue-600 hover:text-blue-800 transition-colors "
                         >
                             Forgot Password?
                         </Link>
                     </div>
-                ) : (
-                    <>
+
+                    <Button>Update Password</Button>
+                </div>
+            </form>
+        </CardHeaderWrapper>
+    );
+};
+
+const SetPassword = () => {
+    const form = useForm<SetPassword>({
+        resolver: zodResolver(SetPasswordSchema),
+        defaultValues: {},
+        mode: "onChange",
+        reValidateMode: "onChange",
+    });
+
+    function onSubmit(data: any) {
+        console.log({ data });
+    }
+
+    return (
+        <>
+            <CardHeaderWrapper title="Set Password" isButton={false} width="max-w-md">
+                <form>
+                    <div className="flex flex-col gap-6 w-full">
                         <FormPassword
                             control={form.control}
                             form={form}
@@ -114,39 +125,59 @@ export default function PasswordHandleCard({isForgotPasswordProp = false}: Passw
                             required
                             errorReserve
                         />
-                    </>
-                )}
-                <Button>
-                    {isPasswordSet ? "Update Password" : "Set Password"}
-                </Button>
-            </div>
+
+                        <Button>Set Password</Button>
+                    </div>
+                </form>
+            </CardHeaderWrapper>
+        </>
+    );
+};
+
+const ForgotPassword = () => {
+    const { mutate } = useSetNewPassword();
+
+    const form = useForm<ForgotPassword>({
+        resolver: zodResolver(ForgotPasswordSchema),
+        defaultValues: {
+            newPassword: ""
+        },
+        mode: "onChange",
+        reValidateMode: "onChange",
+    });
+
+    function onSubmit(data: ForgotPassword) {
+        console.log({ data });
+        mutate(data.newPassword);
+    }
+
+    return (
+        <CardHeaderWrapper title={isPasswordSet ? "Change Password" : "Set Password"} isButton={false} width="max-w-md">
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+                <div className="flex flex-col gap-6 w-full">
+                    <FormPassword
+                        control={form.control}
+                        form={form}
+                        name="newPassword"
+                        label="New Password"
+                        placeholder="Enter new password"
+                        required
+                        errorReserve
+                    />
+                    <Button>Set New Password</Button>
+                </div>
+            </form>
         </CardHeaderWrapper>
     );
+};
 
-    const forgotPassword = (
-        <CardHeaderWrapper
-            title={isPasswordSet ? "Change Password" : "Set Password"}
-            isButton={false}
-            width="max-w-md"
-        >
-            {/* change password */}
-            <div className="flex flex-col gap-6 w-full">
-                <FormPassword
-                    control={form.control}
-                    form={form}
-                    name="newPassword"
-                    label="New Password"
-                    placeholder="Enter new password"
-                    required
-                    errorReserve
-                />
+export default function PasswordHandleCard({ isForgotPasswordProp = false }: PasswordHandleCardProps) {
+    const isPasswordSet = true; // => we have to check it from backend and for that create a new endpoint
+    // const isForgotPasswordProp = false; // => this is got from props
 
-                <Button>
-                    Set New Password
-                </Button>
-            </div>
-        </CardHeaderWrapper>
-    );
+    if (isForgotPasswordProp) {
+        return <ForgotPassword />;
+    }
 
-    return <>{isForgotPasswordProp ? forgotPassword : changePassword}</>;
+    return <>{isPasswordSet ? <ChangePassword /> : <SetPassword />}</>;
 }
