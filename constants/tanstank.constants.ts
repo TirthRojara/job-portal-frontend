@@ -7,7 +7,8 @@
 export const MUTATION = {
     AUTH: {
         login: "auth_login",
-        setRole: "set_role",
+        signup: "auth_signup",
+        verifySignupOTP: "auth_verify_signup_otp",
     },
 };
 

@@ -265,6 +265,7 @@ export const FormInput: FormControlFunc<{
                     placeholder={placeholder}
                     required={required}
                     type={type}
+                    value={field.value ?? ""}
                     // type='color'
                 />
             )}

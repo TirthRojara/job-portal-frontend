@@ -3,6 +3,7 @@ import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { SignupFormData } from "./types";
 import { signUp } from "./api";
+import { MUTATION } from "@/constants/tanstank.constants";
 
 // export const useSetRole = (
 //     options?: UseMutationOptions<ApiResponse<ISetRole>, ApiError, string>
@@ -27,8 +28,9 @@ export const useSignup = (
         SignupFormData
     >
 ) => {
+
     return useMutation({
-        mutationKey: [],
+        mutationKey: [MUTATION.AUTH.signup],
         mutationFn: (payload: SignupFormData) => signUp(payload),
     });
 };

@@ -7,13 +7,7 @@ import { toast } from "sonner";
 import store from "@/store/index.store";
 import { appActions } from "@/store/app.slice";
 
-export const useLogin = (
-    options?: UseMutationOptions<
-        ApiResponse<LoginResponse>,
-        ApiError,
-        LoginPayLoad
-    >
-) => {
+export const useLogin = (options?: UseMutationOptions<ApiResponse<LoginResponse>, ApiError, LoginPayLoad>) => {
     return useMutation({
         mutationKey: [MUTATION.AUTH.login],
         mutationFn: (payload) => login(payload),
@@ -22,7 +16,13 @@ export const useLogin = (
             store.dispatch(appActions.setAccessToken(data.data?.token));
         },
         onError: (error: any) => {
-            toast.error(`Login failed: ${error.response.data?.message}`);
+            // toast.error(`Login failed: ${error.response.data?.message}`);
+            if (error.response?.status === 400) {
+                toast.error(`Login failed: ${error.response.data?.message}`);
+            } else {
+                // Fallback for all other errors (500, 404, network errors, etc.)
+                toast.error("Something went wrong. Please try again later.");
+            }
         },
         ...options,
     });

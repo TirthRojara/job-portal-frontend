@@ -1,19 +1,8 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-import {
-    Field,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-} from "@/components/ui/field";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { FormInput } from "./custom-form";
 import Link from "next/link";
@@ -22,27 +11,22 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { ApiResponse } from "@/types/api";
-import {
-    LoginPayLoad,
-    LoginResponse,
-    loginSchema,
-} from "@/features/auth/login/api/types";
+import { LoginPayLoad, LoginResponse, loginSchema } from "@/features/auth/login/api/types";
 import { useLogin } from "@/features/auth/login/api/mutation";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { appActions } from "@/store/app.slice";
 import { useAppDispatch } from "@/store/index.store";
 import api from "@/lib/axios/client";
 import { loginWithOAuth } from "@/features/auth/login/api/api";
+import { useEffect, useRef } from "react";
 
-
-export function LoginForm({
-    className,
-    ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
     const { mutate, isPending } = useLogin();
 
     const dispatch = useAppDispatch();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const toastShown = useRef(false);
 
     const form = useForm<LoginPayLoad>({
         resolver: zodResolver(loginSchema),
@@ -71,17 +55,30 @@ export function LoginForm({
     }
 
     const oAuthHandle = async () => {
-        loginWithOAuth()
+        loginWithOAuth();
     };
+    useEffect(() => {
+        // 1. Check storage
+        const sessionExpired = sessionStorage.getItem("session_expired");
+
+        if (sessionExpired === "true") {
+            // 2. Clear storage immediately (so it doesn't loop)
+            sessionStorage.removeItem("session_expired");
+
+            // 3. WRAP IN TIMEOUT (Crucial Fix)
+            // A 100ms delay ensures the <Toaster /> is mounted and listening.
+            setTimeout(() => {
+                toast.error("Session expired. Please log in again.");
+            }, 100);
+        }
+    }, []);
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
                 <CardHeader>
                     <CardTitle>Login to your account</CardTitle>
-                    <CardDescription>
-                        Enter your email below to login to your account
-                    </CardDescription>
+                    <CardDescription>Enter your email below to login to your account</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -102,26 +99,18 @@ export function LoginForm({
                                 name="email"
                                 render={({ field, fieldState }) => (
                                     <Field>
-                                        <FieldLabel htmlFor="email">
-                                            Email
-                                        </FieldLabel>
+                                        <FieldLabel htmlFor="email">Email</FieldLabel>
                                         <Input
                                             {...field} // Spreads onChange, onBlur, value, ref
                                             id="email"
                                             type="email"
                                             placeholder="m@example.com"
                                             // Show red border if error exists (optional, depends on your UI)
-                                            className={
-                                                fieldState.error
-                                                    ? "border-red-500"
-                                                    : ""
-                                            }
+                                            className={fieldState.error ? "border-red-500" : ""}
                                         />
                                         {/* Show Error Message */}
                                         {fieldState.error && (
-                                            <span className="text-sm text-red-500">
-                                                {fieldState.error.message}
-                                            </span>
+                                            <span className="text-sm text-red-500">{fieldState.error.message}</span>
                                         )}
                                     </Field>
                                 )}
@@ -134,30 +123,22 @@ export function LoginForm({
                                 render={({ field, fieldState }) => (
                                     <Field>
                                         <div className="flex items-center">
-                                            <FieldLabel htmlFor="password">
-                                                Password
-                                            </FieldLabel>
-                                            <a
-                                                href="#"
+                                            <FieldLabel htmlFor="password">Password</FieldLabel>
+                                            <Link
+                                                href="/forgotpassword"
                                                 className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                                             >
                                                 Forgot your password?
-                                            </a>
+                                            </Link>
                                         </div>
                                         <Input
                                             {...field}
                                             id="password"
                                             type="password"
-                                            className={
-                                                fieldState.error
-                                                    ? "border-red-500"
-                                                    : ""
-                                            }
+                                            className={fieldState.error ? "border-red-500" : ""}
                                         />
                                         {fieldState.error && (
-                                            <span className="text-sm text-red-500">
-                                                {fieldState.error.message}
-                                            </span>
+                                            <span className="text-sm text-red-500">{fieldState.error.message}</span>
                                         )}
                                     </Field>
                                 )}
@@ -179,26 +160,14 @@ export function LoginForm({
                             </Field> */}
 
                             <Field>
-                                <Button
-                                    type="submit"
-                                    className={
-                                        isPending
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : ""
-                                    }
-                                >
+                                <Button type="submit" className={isPending ? "opacity-50 cursor-not-allowed" : ""}>
                                     {isPending ? "Logging in..." : "Login"}
                                 </Button>
-                                <Button
-                                    variant="outline"
-                                    type="button"
-                                    onClick={oAuthHandle}
-                                >
+                                <Button variant="outline" type="button" onClick={oAuthHandle}>
                                     Login with Google
                                 </Button>
                                 <FieldDescription className="text-center">
-                                    Don&apos;t have an account?{" "}
-                                    <Link href="/signup">Sign up</Link>
+                                    Don&apos;t have an account? <Link href="/signup">Sign up</Link>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>

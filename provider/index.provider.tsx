@@ -12,6 +12,7 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     position="top-center"
                     richColors
                     theme="system"
+                    style={{ zIndex: 99999 }}
                 />
             </TanStackProvider>
         </ReduxProvider>
