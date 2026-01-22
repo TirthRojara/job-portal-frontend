@@ -4,7 +4,7 @@ import { MapPin } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-export default function Location() {
+export default function LocationBox({location}: {location:string}) {
     return (
         <CardHeaderWrapper isButton={false} title="Location" width="max-w-5xl">
             <div className=" flex gap-3 items-start">
@@ -17,7 +17,8 @@ export default function Location() {
                         href=""
                         className="hover:text-blue-600 hover:underline transition-colors duration-200 text-muted-foreground"
                     >
-                        123 Innovation Drive, San Francisco, CA 94105
+                        {/* 123 Innovation Drive, San Francisco, CA 94105 */}
+                        {location}
                     </Link>
                 </div>
             </div>

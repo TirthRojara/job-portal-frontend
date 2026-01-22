@@ -6,6 +6,7 @@ const appSlice = createSlice({
         accessToken: "",
         resetToken: "",
         role: "",
+        companyId: '',
     },
     reducers: {
         setAccessToken(state, action) {
@@ -16,6 +17,9 @@ const appSlice = createSlice({
         },
         setRole(state, action) {
             state.role = action.payload;
+        },
+        setCompanyId(state, action) {
+            state.companyId = action.payload
         }
 
         // toggleMenu(state) {

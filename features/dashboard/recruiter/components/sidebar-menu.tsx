@@ -1,3 +1,4 @@
+"use client";
 import {
     SidebarContent,
     SidebarGroup,
@@ -7,31 +8,29 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from "@/components/ui/sidebar";
-import {
-    Bell,
-    BriefcaseBusiness,
-    Building2,
-    FileUser,
-    LayoutDashboard,
-    MessageSquareMore,
-    User,
-    Users,
-    Zap,
-} from "lucide-react";
+import { Bell, BriefcaseBusiness, Building2, FileUser, LayoutDashboard, MessageSquareMore, User, Users, Zap } from "lucide-react";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 const items = [
-    { title: "Dashboard", url: "#", icon: LayoutDashboard },
-    { title: "Company", url: "#", icon: Building2 },
-    { title: "Job Posts", url: "#", icon: BriefcaseBusiness },
+    { title: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
+    { title: "Company", url: "/dashboard/recruiter/company", icon: Building2 },
+    { title: "Job Posts", url: "/dashboard/recruiter/jobpost", icon: BriefcaseBusiness },
     // { title: "Applicants", url: "#", icon: Users },
-    { title: "Message", url: "#", icon: MessageSquareMore },
-    { title: "Notification", url: "#", icon: Bell },
+    { title: "Message", url: "/dashboard/recruiter/chat", icon: MessageSquareMore },
+    { title: "Notification", url: "/dashboard/recruiter/notification", icon: Bell },
 ];
 
 export default function RecruiterSidebarMenu() {
     const { isMobile, state } = useSidebar();
     const isCollapsed = state === "collapsed";
+    const pathname = usePathname();
+
+    const isItemActive = (itemUrl: string) => {
+        if (pathname === itemUrl) return true;
+        if (itemUrl === "/dashboard/recruiter") return false;
+        return pathname.startsWith(`${itemUrl}/`);
+    };
 
     return (
         <>
@@ -43,6 +42,7 @@ export default function RecruiterSidebarMenu() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         asChild
+                                        isActive={isItemActive(item.url)}
                                         tooltip={item.title}
                                         size={"lg"}
                                         // className="[&_.lucide]:h-6 [&_.lucide]:w-6"
@@ -52,20 +52,9 @@ export default function RecruiterSidebarMenu() {
                                                 : "justify-start gap-2 [&_.lucide]:h-5 [&_.lucide]:w-6"
                                         }
                                     >
-                                        <a
-                                            href={item.url}
-                                            className="flex items-center gap-2"
-                                        >
-                                            <item.icon
-                                                className={
-                                                    isCollapsed
-                                                        ? "pl-[5px]"
-                                                        : ""
-                                                }
-                                            />
-                                            <span className="text-md">
-                                                {item.title}
-                                            </span>
+                                        <a href={item.url} className="flex items-center gap-2">
+                                            <item.icon className={isCollapsed ? "pl-[5px]" : ""} />
+                                            <span className="text-md">{item.title}</span>
                                         </a>
                                     </SidebarMenuButton>
                                     {/* <SidebarMenuBadge>24</SidebarMenuBadge> */}

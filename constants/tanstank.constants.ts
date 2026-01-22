@@ -21,4 +21,12 @@ export const MUTATION = {
 
 export const QUERY = {
     AUTH: {},
+    COMPANY: {
+        getMyComanyDetails: 'get_my_company_details',
+
+    },
+    COMPANY_INDUSTRY: {
+        getCompanyIndustry: 'get_company_industry',
+        getIndustryList: 'get_inductry_list'
+    }
 };

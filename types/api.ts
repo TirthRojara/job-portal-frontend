@@ -9,10 +9,12 @@ export interface ApiError {
     message: string;
 }
 
-export interface ApiPageResponse extends ApiResponse<any> {
+export interface ApiPageResponse<T> {
+    message: string;
     pagination: {
         totalCount: number;
         currentPage: number;
         totalPages: number;
     };
+    data?: T;
 }
