@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
 import React from "react";
+import { useLogout } from "../api/mutation";
 
 const user = {
     name: "Tirth",
@@ -37,6 +38,13 @@ const user = {
 
 export default function CandidateSidebarFooter() {
     const { isMobile, state } = useSidebar();
+    const { mutate: logoutMutation, isPending } = useLogout();
+
+    function handleLogout() {
+        logoutMutation();
+    }
+
+
 
     return (
         <>
@@ -130,8 +138,10 @@ export default function CandidateSidebarFooter() {
                                                     </Button>
                                                 </DialogClose>
                                                 <Button
+                                                    disabled={isPending}
                                                     type="button"
                                                     variant={"destructive"}
+                                                    onClick={handleLogout}
                                                 >
                                                     Log out
                                                 </Button>

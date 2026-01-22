@@ -19,21 +19,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    SidebarFooter,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from "@/components/ui/sidebar";
-import {
-    BadgeCheck,
-    ChevronsUpDown,
-    CreditCard,
-    LogOut,
-    Sparkles,
-} from "lucide-react";
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 import React from "react";
+import { useLogout } from "../../candidate/api/mutation";
 
 const user = {
     name: "Tirth",
@@ -43,6 +32,12 @@ const user = {
 
 export default function RecruiterSidebarFooter() {
     const { isMobile, state } = useSidebar();
+
+    const { mutate: logoutMutation, isPending } = useLogout();
+
+    function handleLogout() {
+        logoutMutation();
+    }
 
     return (
         <>
@@ -57,17 +52,11 @@ export default function RecruiterSidebarFooter() {
                                     className=" cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
                                     <Avatar className="h-8 w-8 rounded-lg">
-                                        <AvatarFallback className="rounded-lg">
-                                            TR
-                                        </AvatarFallback>
+                                        <AvatarFallback className="rounded-lg">TR</AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-medium">
-                                            {user.name}
-                                        </span>
-                                        <span className="truncate text-xs">
-                                            {user.email}
-                                        </span>
+                                        <span className="truncate font-medium">{user.name}</span>
+                                        <span className="truncate text-xs">{user.email}</span>
                                     </div>
                                     <ChevronsUpDown className="ml-auto size-4" />
                                 </SidebarMenuButton>
@@ -81,17 +70,11 @@ export default function RecruiterSidebarFooter() {
                                 <DropdownMenuLabel className="p-0 font-normal">
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-8 w-8 rounded-lg">
-                                            <AvatarFallback className="rounded-lg">
-                                                TR
-                                            </AvatarFallback>
+                                            <AvatarFallback className="rounded-lg">TR</AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
-                                            <span className="truncate font-medium">
-                                                {user.name}
-                                            </span>
-                                            <span className="truncate text-xs">
-                                                {user.email}
-                                            </span>
+                                            <span className="truncate font-medium">{user.name}</span>
+                                            <span className="truncate text-xs">{user.email}</span>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
@@ -117,9 +100,7 @@ export default function RecruiterSidebarFooter() {
                                         <DialogTrigger asChild>
                                             <DropdownMenuItem
                                                 // prevent dropdown from closing and re‑triggering
-                                                onSelect={(e) =>
-                                                    e.preventDefault()
-                                                }
+                                                onSelect={(e) => e.preventDefault()}
                                                 className=" text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive data-[state=open]:bg-destructive/10 data-[state=open]:text-destructive focus:bg-destructive/10 focus:text-destructive "
                                             >
                                                 <LogOut />
@@ -129,27 +110,18 @@ export default function RecruiterSidebarFooter() {
                                         {/* <DialogContent className="sm:max-w-[425px]"> */}
                                         <DialogContent>
                                             <DialogHeader>
-                                                <DialogTitle>
-                                                    Logout
-                                                </DialogTitle>
+                                                <DialogTitle>Logout</DialogTitle>
                                                 <DialogDescription>
                                                     {/* Are you sure you want to */}
                                                     {/* logout? */}
-                                                    You’ll be signed out from
-                                                    your account on this device
-                                                    only.
+                                                    You’ll be signed out from your account on this device only.
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <DialogFooter className="mt-2">
                                                 <DialogClose asChild>
-                                                    <Button variant="outline">
-                                                        Cancel
-                                                    </Button>
+                                                    <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
-                                                <Button
-                                                    type="button"
-                                                    variant={"destructive"}
-                                                >
+                                                <Button disabled={isPending} onClick={handleLogout} type="button" variant={"destructive"}>
                                                     Log out
                                                 </Button>
                                             </DialogFooter>
