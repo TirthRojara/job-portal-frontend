@@ -38,9 +38,7 @@ export default function CardHeaderWrapper({
     // Function 1: Handle Skill Search
     const handleSkillSearch = (query: string) => {
         // In a real app, this would be an API call
-        const filtered = ALL_SKILLS.filter((s) =>
-            s.label.toLowerCase().includes(query.toLowerCase())
-        );
+        const filtered = ALL_SKILLS.filter((s) => s.label.toLowerCase().includes(query.toLowerCase()));
         setSkillResults(filtered);
     };
 
@@ -72,10 +70,7 @@ export default function CardHeaderWrapper({
                     />
                 ) : (
                     isButton && (
-                        <Button
-                            variant={"outline"}
-                            className={` ${hidden ? "hidden" : "block"}`}
-                        >
+                        <Button variant={"outline"} className={` ${hidden ? "hidden" : "block"}`}>
                             <div className="flex gap-2">
                                 <Icon className="" /> <p>{buttonLabel}</p>
                             </div>

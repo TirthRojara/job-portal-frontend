@@ -18,6 +18,7 @@ export const resendForgotOTP = async (type: string): Promise<ApiError> => {
     return res.data;
 };
 
+// Set New Password after verifying OTP
 export const setNewPassword = async (newPassword: string): Promise<ApiError> => {
     const res = await api.post("v1/auth/reset-forgot-password", { newPassword });
     return res.data;

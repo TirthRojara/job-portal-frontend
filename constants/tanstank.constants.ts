@@ -14,6 +14,8 @@ export const MUTATION = {
         resendForgotOTP: "auth_resend_forgot_otp",
         verifyForgotOTP: "auth_verify_forgot_otp",
         setNewPassword: "auth_set_new_password",
+        changePassword: "auth_change_password",
+        setPasswordForOauth: "auth_set_password_oauth",
     },
 };
 

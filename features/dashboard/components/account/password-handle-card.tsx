@@ -8,52 +8,50 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import CardHeaderWrapper from "../card-header-wrapper";
 import { useSetNewPassword } from "@/features/auth/forgotpassword/api/mutation";
+import {
+    ChangePasswordPayload,
+    ChangePasswordSchema,
+    ForgotPasswordPayload,
+    ForgotPasswordSchema,
+    SetPasswordPayload,
+    SetPasswordSchema,
+} from "./api/types";
+import { useChangePassword, useSetPasswordForOauth } from "./api/mutation";
+import { Spinner } from "@/components/ui/spinner";
+import { useIsPasswordSetForOauth } from "./api/query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 // const authType = "OAUTH";
-const isPasswordSet = true;
-const isForgotPassword = false;
+// const isPasswordSet = true;
+// const isForgotPassword = false;
 
 // isPasswordSet => we have to check it from backend
-
-const ChangePasswordSchema = z.object({
-    currentPassword: z.string().min(1, "Required"),
-    newPassword: z.string().min(1, "Required"),
-});
-
-const SetPasswordSchema = z.object({
-    password: z.string().min(1, "Required"),
-    confirmPassword: z.string().min(1, "Required"),
-});
-
-const ForgotPasswordSchema = z.object({
-    newPassword: z.string().min(1, "Required"),
-});
-
-// const schema = zodResolver(isForgotPassword ? ForgotPasswordSchema : isPasswordSet ? ChangePasswordSchema : SetPasswordSchema);
-
-type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
-type ChangePassword = z.infer<typeof ChangePasswordSchema>;
-type SetPassword = z.infer<typeof SetPasswordSchema>;
 
 interface PasswordHandleCardProps {
     isForgotPasswordProp?: boolean;
 }
 
 const ChangePassword = () => {
-    const form = useForm<ChangePassword>({
+    const { mutate, isPending } = useChangePassword();
+
+    const form = useForm<ChangePasswordPayload>({
         resolver: zodResolver(ChangePasswordSchema),
-        defaultValues: {},
+        defaultValues: {
+            currentPassword: "",
+            newPassword: "",
+        },
         mode: "onChange",
         reValidateMode: "onChange",
     });
 
-    function onSubmit(data: any) {
-        console.log({ data });
+    function onSubmit(data: ChangePasswordPayload) {
+        mutate(data);
     }
 
     return (
         <CardHeaderWrapper title="Change Password" isButton={false} width="max-w-md">
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-6 w-full">
                     <div className="flex flex-col gap-6">
                         <FormPassword
@@ -83,7 +81,10 @@ const ChangePassword = () => {
                         </Link>
                     </div>
 
-                    <Button>Update Password</Button>
+                    <Button disabled={isPending}>
+                        {isPending && <Spinner />}
+                        {isPending ? "Updating..." : "Update Password"}
+                    </Button>
                 </div>
             </form>
         </CardHeaderWrapper>
@@ -91,21 +92,26 @@ const ChangePassword = () => {
 };
 
 const SetPassword = () => {
-    const form = useForm<SetPassword>({
+    const { mutate, isPending } = useSetPasswordForOauth();
+
+    const form = useForm<SetPasswordPayload>({
         resolver: zodResolver(SetPasswordSchema),
-        defaultValues: {},
+        defaultValues: {
+            password: "",
+            confirmPassword: "",
+        },
         mode: "onChange",
         reValidateMode: "onChange",
     });
 
-    function onSubmit(data: any) {
-        console.log({ data });
+    function onSubmit(data: SetPasswordPayload) {
+        mutate(data);
     }
 
     return (
         <>
             <CardHeaderWrapper title="Set Password" isButton={false} width="max-w-md">
-                <form>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-6 w-full">
                         <FormPassword
                             control={form.control}
@@ -126,7 +132,10 @@ const SetPassword = () => {
                             errorReserve
                         />
 
-                        <Button>Set Password</Button>
+                        <Button disabled={isPending}>
+                            {isPending && <Spinner />}
+                            {isPending ? "Setting Password..." : "Set Password"}
+                        </Button>
                     </div>
                 </form>
             </CardHeaderWrapper>
@@ -135,24 +144,23 @@ const SetPassword = () => {
 };
 
 const ForgotPassword = () => {
-    const { mutate } = useSetNewPassword();
+    const { mutate, isPending } = useSetNewPassword();
 
-    const form = useForm<ForgotPassword>({
+    const form = useForm<ForgotPasswordPayload>({
         resolver: zodResolver(ForgotPasswordSchema),
         defaultValues: {
-            newPassword: ""
+            newPassword: "",
         },
         mode: "onChange",
         reValidateMode: "onChange",
     });
 
-    function onSubmit(data: ForgotPassword) {
-        console.log({ data });
+    function onSubmit(data: ForgotPasswordPayload) {
         mutate(data.newPassword);
     }
 
     return (
-        <CardHeaderWrapper title={isPasswordSet ? "Change Password" : "Set Password"} isButton={false} width="max-w-md">
+        <CardHeaderWrapper title="Set New Password" isButton={false} width="max-w-md">
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex flex-col gap-6 w-full">
                     <FormPassword
@@ -164,9 +172,47 @@ const ForgotPassword = () => {
                         required
                         errorReserve
                     />
-                    <Button>Set New Password</Button>
+                    <Button disabled={isPending}>
+                        {isPending && <Spinner />}
+                        {isPending ? "Setting New Password..." : "Set New Password"}
+                    </Button>
                 </div>
             </form>
+        </CardHeaderWrapper>
+    );
+};
+
+const SkeletonLoader = () => {
+    return (
+        <CardHeaderWrapper
+            // 1. Pass a Skeleton as the title so the header pulses too
+            title='Password Settings'
+            isButton={false}
+            width="max-w-md"
+        >
+            <div className="flex flex-col gap-6 w-full pt-2">
+                {/* Field 1 (Current Password / Password) */}
+                <div className="flex flex-col gap-3">
+                    {/* Label Skeleton */}
+                    <Skeleton className="h-4 w-32" />
+                    {/* Input Box Skeleton */}
+                    <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+
+                {/* Field 2 (New Password / Confirm Password) */}
+                <div className="flex flex-col gap-3">
+                    {/* Label Skeleton */}
+                    <Skeleton className="h-4 w-28" />
+                    {/* Input Box Skeleton */}
+                    <Skeleton className="h-10 w-full rounded-md" />
+                </div>
+
+                {/* Forgot Password Link Placeholder (Optional - remove if not needed for 'Set Password') */}
+                <Skeleton className="h-4 w-36" />
+
+                {/* Submit Button Skeleton */}
+                <Skeleton className="h-10 w-full rounded-md mt-1" />
+            </div>
         </CardHeaderWrapper>
     );
 };
@@ -175,9 +221,19 @@ export default function PasswordHandleCard({ isForgotPasswordProp = false }: Pas
     const isPasswordSet = true; // => we have to check it from backend and for that create a new endpoint
     // const isForgotPasswordProp = false; // => this is got from props
 
+    const { data, error, isLoading } = useIsPasswordSetForOauth();
+
     if (isForgotPasswordProp) {
         return <ForgotPassword />;
     }
 
-    return <>{isPasswordSet ? <ChangePassword /> : <SetPassword />}</>;
+    if (isLoading) {
+        return <SkeletonLoader />;
+    }
+
+    if (error) {
+        toast.error("Please reload the page.");
+    }
+
+    return <>{data?.data?.isPasswordSet ? <ChangePassword /> : <SetPassword />}</>;
 }
