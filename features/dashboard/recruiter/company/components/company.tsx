@@ -13,9 +13,12 @@ import Empty from "./empty";
 import { useAppDispatch } from "@/store/index.store";
 import { appActions } from "@/store/app.slice";
 import { QueryBoundary } from "@/components/query-boundary";
+import { useRouter } from "next/navigation";
+
 
 export default function Company() {
     const dispatch = useAppDispatch();
+    const router = useRouter();
 
     const {
         data: companyData,
@@ -30,8 +33,6 @@ export default function Company() {
         dispatch(appActions.setCompanyId(companyData?.data?.[0].id));
     }
 
-    const isCriticalError = companyError?.response?.status !== 404 && companyError?.response?.status !== 401 && isCompanyError;
-
     const LoadingState = (
         <div className="flex min-h-screen flex-col items-center gap-6 px-4 py-6">
             <div className="w-full max-w-5xl space-y-4">
@@ -42,7 +43,8 @@ export default function Company() {
             </div>
         </div>
     );
-
+    
+    const isCriticalError = companyError?.response?.status !== 404 && companyError?.response?.status !== 401 && isCompanyError;
     const ErrorState = (
         <div className="flex h-screen w-full flex-col items-center justify-center gap-4 text-center">
             <AlertCircle className="h-10 w-10 text-red-500" />
@@ -82,7 +84,7 @@ export default function Company() {
                                 <p className="text-muted-foreground">Manage your company information and branding</p>
                             </div>
                             <div>
-                                <Button>
+                                <Button onClick={() => router.push('/dashboard/recruiter/company/edit')}>
                                     <PencilLine /> Edit
                                 </Button>
                             </div>

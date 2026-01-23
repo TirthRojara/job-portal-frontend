@@ -17,7 +17,7 @@ export const useGetMyComanyDetails = (options?: UseQueryOptions<ApiPageResponse<
     return useQuery({
         queryKey: [QUERY.COMPANY.getMyComanyDetails],
         queryFn: ({ signal }) => getMyComanyDetails({ signal }),
-        gcTime: 0,
+        // gcTime: 0,
         ...options,
     });
 };

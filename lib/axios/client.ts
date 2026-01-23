@@ -12,6 +12,12 @@ const api: AxiosInstance = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+
+    // ## DON'T USE THIS
+    // config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    // config.headers['Pragma'] = 'no-cache';
+    // config.headers['Expires'] = '0';
+
     const accessToken = store.getState().app.accessToken;
 
     if (accessToken && !config.headers.Authorization) {

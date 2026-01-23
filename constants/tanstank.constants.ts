@@ -1,5 +1,8 @@
 // Auth
 
+import { getCompanyIndustry } from "@/features/dashboard/recruiter/company/api/api";
+import { updateCompany } from "@/features/dashboard/recruiter/company/edit/api/api";
+
 // export const _Auth = {
 //     login: 'auth_login',
 // }
@@ -17,16 +20,21 @@ export const MUTATION = {
         changePassword: "auth_change_password",
         setPasswordForOauth: "auth_set_password_oauth",
     },
+
+    COMPANY: {
+        createCompany: "create_company",
+        updateCompany: "update_company",
+    },
 };
 
 export const QUERY = {
     AUTH: {},
     COMPANY: {
-        getMyComanyDetails: 'get_my_company_details',
-
+        getMyComanyDetails: "get_my_company_details",
+       
     },
     COMPANY_INDUSTRY: {
-        getCompanyIndustry: 'get_company_industry',
-        getIndustryList: 'get_inductry_list'
-    }
+        getCompanyIndustry: 'get_company_industry',   // --> uses companyId as param
+        getIndustryList: "get_inductry_list",
+    },
 };

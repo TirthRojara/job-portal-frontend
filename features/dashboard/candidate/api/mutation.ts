@@ -1,5 +1,5 @@
 "use client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "./api";
 import { toast } from "sonner";
 import { ApiError } from "@/types/api";
@@ -11,12 +11,14 @@ import { useRouter } from "next/navigation";
 export const useLogout = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const queryClient = useQueryClient()
 
     return useMutation({
         mutationFn: () => logout(),
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "Logged out successfully!");
             dispatch(appActions.setAccessToken(''));
+            queryClient.clear();
             router.push("/login");
         },
         onError: (error: AxiosError<ApiError>) => {

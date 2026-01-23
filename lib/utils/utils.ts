@@ -9,3 +9,11 @@ export function formatText(text: string | null | undefined): string {
         // Remove multiple consecutive newlines if you want to clean up messy data (Optional)
         // .replace(/\n\s*\n/g, '\n\n'); 
 }
+
+export const YYYYMMDD = (isoString: string): string => {
+  try {
+    return new Date(isoString).toISOString().split('T')[0];
+  } catch {
+    return '';
+  }
+};

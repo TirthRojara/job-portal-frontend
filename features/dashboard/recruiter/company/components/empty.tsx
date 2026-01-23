@@ -2,8 +2,11 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Empty() {
+  const router = useRouter();
+
   return (
     <Card className="w-full max-w-md mx-auto border shadow-sm">
       <CardContent className="flex flex-col items-center text-center pt-12 pb-12 px-6">
@@ -27,6 +30,7 @@ export default function Empty() {
         {/* Action Button */}
         <Button 
           className="bg-[#00897B] hover:bg-[#00796B] text-white font-medium px-6 py-2 h-auto text-base"
+          onClick={() => router.push("/dashboard/recruiter/company/create")}
         >
           <Plus className="mr-2 h-5 w-5" />
           Create Company Profile
