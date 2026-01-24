@@ -25,14 +25,22 @@ export const MUTATION = {
         createCompany: "create_company",
         updateCompany: "update_company",
     },
+
+    COMPANY_INDUSTRY: {
+        addIndustry: "add_industry",
+        remove: "remove_industry"
+    }
+
 };
 
 export const QUERY = {
     AUTH: {},
+
     COMPANY: {
         getMyComanyDetails: "get_my_company_details",
        
     },
+
     COMPANY_INDUSTRY: {
         getCompanyIndustry: 'get_company_industry',   // --> uses companyId as param
         getIndustryList: "get_inductry_list",

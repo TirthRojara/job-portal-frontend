@@ -33,7 +33,7 @@ interface SearchAddDialogProps {
   // Data & Events
   // dataObject: Object
   trigger: React.ReactNode // The button that opens the modal
-  searchResults: SearchItem[] // The list of filtered items to show
+  searchResults: any[] // The list of filtered items to show
   onSearchChange: (value: string) => void // Function triggered on typing
   onItemSelect: (item: SearchItem) => void // Function triggered on click
   
@@ -102,8 +102,8 @@ export function SearchAddDialog({
                 <CommandGroup>
                   {searchResults.map((item) => (
                     <CommandItem
-                      key={item.value}
-                      value={item.value}
+                      key={item.id}
+                      value={item.label}
                       onSelect={() => handleSelect(item)}
                       className="cursor-pointer"
                     >

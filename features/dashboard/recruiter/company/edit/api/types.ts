@@ -1,5 +1,7 @@
 import z from "zod";
 
+// COMPANY TYPE
+
 export enum TeamSizeRange {
     ZERO_TO_ONE = "ZERO_TO_ONE",
     TWO_TO_TEN = "TWO_TO_TEN",
@@ -26,8 +28,6 @@ export type Company = {
     userId: number;
 };
 
-const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-
 export const CompanyCreateSchema = z.object({
     name: z.string().min(1, "Required"),
     description: z.string().min(1, "Required"),
@@ -37,11 +37,6 @@ export const CompanyCreateSchema = z.object({
     websiteUrl: z.string().optional(),
     totalEmployees: z.string().min(1, "Required"),
     establishedDate: z.date({ error: "Please select dates" }),
-    // establishedDate: z
-    //     .string()
-    //     .min(1, "Please select a date") // valid if required
-    //     .regex(dateRegex, "Date must be in YYYY-MM-DD format")
-    //     .refine((date) => !isNaN(Date.parse(date)), "Invalid Date"),
 });
 
 export const CompanyUpdateSchema = z.object({
@@ -53,7 +48,6 @@ export const CompanyUpdateSchema = z.object({
     websiteUrl: z.string().optional(),
     totalEmployees: z.string().min(1, "Required").optional(),
     establishedDate: z.date({ error: "Please select dates" }).optional(),
-    // establishedDate: z.string().regex(dateRegex, "Date must be in YYYY-MM-DD format").optional(),
 });
 
 export type ICompanyCreate = z.infer<typeof CompanyCreateSchema>;
@@ -70,13 +64,29 @@ export type ICompanyCreatePayload = {
     establishedDate: string;
 };
 
-// export type ICompanyUpdatePayload = {
-//     name?: string;
-//     description?: string;
-//     location?: string;
-//     address?: string | null;
-//     mapLink?: string | null;
-//     websiteUrl?: string | null;
-//     totalEmployees?: number;
-//     establishedDate?: string;
-// };
+// INDUSTRY TYPE
+
+export type IIndustryList = {
+    id: number;
+    name: string;
+};
+
+export type IMyCompanyIndustriesResponse = {
+    id: number;
+    industry: {
+        name: string;
+    };
+};
+
+export type IAddIndustryResponse = {
+    id: number;
+    industry: {
+        name: string;
+    };
+};
+
+export interface AddIndustryVariables {
+    companyId: number;
+    industryId: number;
+    industryName: string;
+}

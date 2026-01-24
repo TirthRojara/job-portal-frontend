@@ -23,12 +23,12 @@ export const useGetMyComanyDetails = (options?: UseQueryOptions<ApiPageResponse<
 };
 
 export const useGetCompanyIndustry = (
-    companyId: string,
+    companyId: undefined | number,
     options?: UseQueryOptions<ApiResponse<CompanyIndustry[]>, AxiosError<ApiError>>,
 ) => {
     return useQuery({
         queryKey: [QUERY.COMPANY_INDUSTRY.getCompanyIndustry, companyId],
-        queryFn: ({ signal }) => getCompanyIndustry({ signal, companyId }),
+        queryFn: ({ signal }) => getCompanyIndustry({ signal, companyId: String(companyId) }),
         enabled: !!companyId,
         ...options,
     });
