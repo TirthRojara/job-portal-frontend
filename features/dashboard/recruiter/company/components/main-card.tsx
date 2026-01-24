@@ -1,9 +1,11 @@
-import React from "react";
+import React, { use } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Users, Calendar, Eye, ExternalLink, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { CompanyApiResponse } from "../api/types";
+import { useAppSelector } from "@/store/index.store";
+import { useGetCompanyView } from "../api/query";
 
 // export type ICompany = {
 //     name?: string;
@@ -20,8 +22,11 @@ interface MainCardProps {
 }
 
 const MainCard = ({ companyDetails }: MainCardProps) => {
+    const role = useAppSelector((state) => state.app.role);
 
-    const dateString = companyDetails.establishedDate
+    const { data: companyViewData } = useGetCompanyView(companyDetails.id);
+
+    const dateString = companyDetails.establishedDate;
     const year = new Date(dateString!).getFullYear();
 
     return (
@@ -77,10 +82,12 @@ const MainCard = ({ companyDetails }: MainCardProps) => {
                                 <span>Est. {year}</span>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <Eye className="w-4 h-4 text-teal-600/80" />
-                                <span>{companyDetails.views} views</span>
-                            </div>
+                            {(role === "RECRUITER" || companyViewData?.data?.totalViews !== undefined) && (
+                                <div className="flex items-center gap-2">
+                                    <Eye className="w-4 h-4 text-teal-600/80" />
+                                    <span>{companyViewData?.data?.totalViews} views</span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Action Link */}

@@ -2,6 +2,7 @@
 
 import { getCompanyIndustry } from "@/features/dashboard/recruiter/company/api/api";
 import { updateCompany } from "@/features/dashboard/recruiter/company/edit/api/api";
+import { get } from "http";
 
 // export const _Auth = {
 //     login: 'auth_login',
@@ -38,6 +39,8 @@ export const QUERY = {
 
     COMPANY: {
         getMyComanyDetails: "get_my_company_details",
+        getCompanyById: "get_company_by_id",  // --> uses companyId as param
+        getCompanyViewById: "get_company_view_by_id",  // --> uses companyId as param
        
     },
 

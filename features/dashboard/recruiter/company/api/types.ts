@@ -20,7 +20,7 @@ export interface CompanyApiResponse {
     totalEmployees: number;
     establishedDate: string;
     isApproved: boolean;
-    views: number;
+    // views: number;
     userId: number;
 }
 
@@ -29,4 +29,9 @@ export interface CompanyIndustry {
     industry: {
         name: string;
     };
+}
+
+export interface CompanyViewResponse {
+    companyId: number;
+    totalViews: number;
 }
