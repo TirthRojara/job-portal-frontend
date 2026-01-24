@@ -1,7 +1,14 @@
 "use client";
 import { MutationFunctionContext, useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { AddIndustryVariables, Company, IAddIndustryResponse, ICompanyCreate, ICompanyUpdate } from "./types";
+import {
+    AddIndustryVariables,
+    Company,
+    IAddIndustryResponse,
+    ICompanyCreate,
+    ICompanyUpdate,
+    RemoveIndustryVariables,
+} from "./types";
 import { ApiError, ApiResponse } from "@/types/api";
 import { AxiosError } from "axios";
 import { create } from "domain";
@@ -115,19 +122,37 @@ export const useAddIndustry = (
 };
 
 export const useRemoveIndustry = (
-    options?: UseMutationOptions<ApiResponse<IAddIndustryResponse>, ApiError, AddIndustryVariables>,
+    options?: UseMutationOptions<ApiResponse<IAddIndustryResponse>, ApiError, RemoveIndustryVariables>,
 ) => {
     const queryClient = useQueryClient();
     const router = useRouter();
 
     return useMutation({
-        mutationKey: [MUTATION.COMPANY_INDUSTRY.addIndustry],
+        mutationKey: [MUTATION.COMPANY_INDUSTRY.remove],
         mutationFn: ({ companyId, industryId }) => removeIndustry(companyId, industryId),
-        onSuccess: (data: ApiResponse<IAddIndustryResponse>) => {
-            console.log("Remove industry success", data);
+        onMutate: async ({ companyId, industryId }) => {
+            const queryKey = [QUERY.COMPANY_INDUSTRY.getCompanyIndustry, companyId];
+
+            await queryClient.cancelQueries({ queryKey: queryKey });
+
+            const previousIndustries = queryClient.getQueryData<ApiResponse<IAddIndustryResponse[]>>(queryKey);
+
+            queryClient.setQueryData<ApiResponse<IAddIndustryResponse[]>>(queryKey, (oldData) => {
+                if (!oldData || !oldData.data) return oldData;
+
+                return {
+                    ...oldData,
+                    data: oldData.data.filter((item) => item.id !== industryId),
+                };
+            });
+
+            return previousIndustries;
         },
         onError: (error: AxiosError<ApiError>) => {
             console.log("Remove Industry Error", error);
+        },
+        onSuccess: (data: ApiResponse<IAddIndustryResponse>) => {
+            console.log("Remove industry success", data);
         },
         ...options,
     });

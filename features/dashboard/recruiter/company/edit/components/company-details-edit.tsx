@@ -13,15 +13,6 @@ import { useCreateCompany, useUpdateCompany } from "../api/mutation";
 import { useGetMyComanyDetails } from "../../api/query";
 import { YYYYMMDD } from "@/lib/utils/utils";
 
-// .${isFirst ? 'strict()' : 'partial()'}(); // partial() makes ALL optional // Method-2 use this
-
-// const isFirst = useSelector((state: any) => state.someSlice.isFirst);
-
-// const schema = isFirst
-//     ? zodResolver(PersonalDetailSchemaRequired)
-//     : zodResolver(PersonalDetailSchemaOptional);
-
-// type PersonalDetails = z.infer<typeof PersonalDetailSchema>;
 
 export default function CompanyDetailsEdit() {
     const router = useRouter();

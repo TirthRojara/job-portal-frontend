@@ -90,3 +90,8 @@ export interface AddIndustryVariables {
     industryId: number;
     industryName: string;
 }
+
+export interface RemoveIndustryVariables {
+    companyId: number;
+    industryId: number;
+}
