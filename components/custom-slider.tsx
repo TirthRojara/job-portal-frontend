@@ -49,8 +49,6 @@ export function CustomSlider({
           step={step}
           onValueChange={handleValueChange}
           className="flex-1 cursor-pointer"
-          // Customizing colors to match your blue screenshot
-          // The track is customized via standard tailwind classes or the Slider primitive itself
         />
         
         {/* Value Display Section */}

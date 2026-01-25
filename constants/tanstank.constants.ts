@@ -48,4 +48,8 @@ export const QUERY = {
         getCompanyIndustry: 'get_company_industry',   // --> uses companyId as param
         getIndustryList: "get_inductry_list",
     },
+
+    JOB: {
+        getAllJobs: "get_all_jobs",  // --> user search params
+    }
 };

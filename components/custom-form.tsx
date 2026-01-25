@@ -290,7 +290,7 @@ export const FormInputGroup: FormControlFunc<{
         <FormBase {...props} errorReserve={errorReserve}>
             {(field) => (
                 <InputGroup className={props.className}>
-                    <InputGroupInput placeholder={placeholder} />
+                    <InputGroupInput  {...field}  value={field.value ?? ""} placeholder={placeholder} />
                     <InputGroupAddon>
                         {/* <SearchIcon /> */}
                         {Icon ? <Icon className="size-4" /> : <SearchIcon />}

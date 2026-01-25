@@ -4,51 +4,65 @@ import { CustomSlider } from "@/components/custom-slider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SelectItem } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
+import { WorkPlace } from "@/features/dashboard/recruiter/jobpost/api/types";
+import { useAppSelector } from "@/store/index.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin, SearchIcon } from "lucide-react";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
-const role = 'CANDIDATE'
-// const role = 'RECRUITER'
+// const role = "CANDIDATE";
 
-const PersonalDetailSchema = z.object({
-    filter: z.string({ error: "Required" }).min(1, "Required"),
-    location: z.string({ error: "Required" }).min(1, "Required").optional(),
-    workplace: z
-        .enum(["ONSITE", "REMOTE", "HYBRID"], {
-            error: "Please select workplace",
-        })
-        .optional(),
-    salaryMin: z.number({ error: "Required" }).min(1, "Required").optional(),
+const FilterSchema = z.object({
+    filter: z.string().optional(),
+    location: z.string().optional(),
+    workplace: z.enum(WorkPlace).optional(),
+    salaryMin: z.number().optional(),
 });
 
-type PersonalDetails = z.infer<typeof PersonalDetailSchema>;
+export type FilterValues = z.infer<typeof FilterSchema>;
 
-export default function JobFillter() {
-    const form = useForm<PersonalDetails>({
-        resolver: zodResolver(PersonalDetailSchema),
-        defaultValues: {},
+interface JobFilterProps {
+    onSearch?: (filters: FilterValues) => void;
+    defaultValues?: FilterValues;
+}
+
+export default function JobFillter({ onSearch, defaultValues }: JobFilterProps) {
+    const role = useAppSelector((state) => state.app.role);
+
+    const form = useForm<FilterValues>({
+        resolver: zodResolver(FilterSchema),
+        // defaultValues: {
+        //     filter: "",
+        //     location: "",
+        //     workplace: undefined,
+        //     salaryMin: undefined,
+        // },
+        defaultValues: defaultValues || {},
         mode: "onChange",
         reValidateMode: "onChange",
     });
 
-    function onSubmit(data: any) {
+    function handleSearch(data: FilterValues) {
         console.log({ data });
+        console.log("Search clicked");
+
+        if (onSearch) {
+            onSearch(data);
+        }
     }
 
     return (
         <Card className=" md:w-sm p-4">
-            <form>
+            <form onSubmit={form.handleSubmit(handleSearch)}>
                 <FormInputGroup
                     control={form.control}
                     name="filter"
                     label=""
                     form={form}
                     icon={SearchIcon}
-                    placeholder={role === 'CANDIDATE' ? "Search Jobs..." : "Fillter your jobs"}
+                    placeholder={role === "CANDIDATE" ? "Search Jobs..." : "Fillter your jobs"}
                     required
                     errorReserve
                     className="mt-[-9px]"
@@ -65,13 +79,7 @@ export default function JobFillter() {
                     errorReserve
                 />
 
-                <FormSelect
-                    control={form.control}
-                    name="workplace"
-                    label=""
-                    placeholder="Select workplace"
-                    errorReserve
-                >
+                <FormSelect control={form.control} name="workplace" label="" placeholder="Select workplace" errorReserve>
                     <SelectItem key="ONSITE" value="ONSITE">
                         ONSITE
                     </SelectItem>
@@ -83,15 +91,27 @@ export default function JobFillter() {
                     </SelectItem>
                 </FormSelect>
 
-                <CustomSlider
-                    defaultValue={[200]}
-                    max={1000}
-                    // className="salary-slider" // Use this class if applying the CSS override above
-                    className="mt-3"
-                    label="Salary"
+                <Controller
+                    control={form.control}
+                    name="salaryMin"
+                    render={({ field }) => (
+                        <CustomSlider
+                            step={10}
+                            defaultValue={[defaultValues?.salaryMin || 0]}
+                            max={1000}
+                            // className="salary-slider" // Use this class if applying the CSS override above
+                            className="mt-3"
+                            label="Salary"
+                            onValueChange={(value) => {
+                                field.onChange(value[0]); // ✅ number[] → number
+                            }}
+                        />
+                    )}
                 />
 
-                <Button className="w-full mt-5">Search</Button>
+                <Button className="w-full mt-5" type="submit">
+                    Search
+                </Button>
             </form>
         </Card>
     );

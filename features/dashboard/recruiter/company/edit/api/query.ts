@@ -12,11 +12,3 @@ export const useGetCompanyIndustryList = (options?: UseQueryOptions<ApiResponse<
         ...options,
     });
 };
-
-// export const useGetMyCompanyIndustry = (options?: UseQueryOptions<ApiResponse<IIndustryList[]>, AxiosError<ApiError>>) => {
-//     return useQuery({
-//         queryKey: [QUERY.COMPANY_INDUSTRY.getMyCompanyIndustry],
-//         queryFn: ({ signal, companyId }) => getMyComanyIndustries({ signal, companyId }),
-//         ...options,
-//     });
-// };
