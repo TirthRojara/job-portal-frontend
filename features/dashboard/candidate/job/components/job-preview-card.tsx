@@ -26,7 +26,13 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponse }) {
     const role = useAppSelector((state) => state.app.role);
 
     const handleCardClick = () => {
-        window.open(`/dashboard/recruiter/jobpost/${jobData.id}`, "_blank", "noopener,noreferrer");
+
+        if (role === "CANDIDATE"){
+            window.open(`/dashboard/candidate/job/${jobData.id}`, "_blank", "noopener,noreferrer");
+        }else {
+            window.open(`/dashboard/recruiter/jobpost/${jobData.id}`, "_blank", "noopener,noreferrer");
+        }
+
     };
 
     return (

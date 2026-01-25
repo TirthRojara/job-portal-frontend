@@ -1,10 +1,11 @@
-import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
-import { JobResponse, SearchParams } from "./types";
-import { AxiosError } from "axios";
+import { JobResponse, SearchParams } from "@/features/dashboard/recruiter/jobpost/api/types";
 import { ApiError, ApiPageResponse } from "@/types/api";
-import { getAllJobsRecruiter } from "./api";
+import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { getAllJobsCandidate } from "./api";
 
-export const useGetAllJobsRecruiter = (
+
+export const useGetAllJobsCandidate = (
     // { page, limit, filter, location, salaryMin, workplace }: SearchParams,
     searchParams: SearchParams,
     options?: UseInfiniteQueryOptions<
@@ -17,7 +18,7 @@ export const useGetAllJobsRecruiter = (
 ) => {
     return useInfiniteQuery({
         queryKey: ["getAllJobs", searchParams],
-        queryFn: ({ signal, pageParam }) => getAllJobsRecruiter({ signal, searchParams: { ...searchParams, page: pageParam } }),
+        queryFn: ({ signal, pageParam }) => getAllJobsCandidate({ signal, searchParams: { ...searchParams, page: pageParam } }),
         initialPageParam: 1,
         getNextPageParam: (lastPage, allPages) => {
             const currentPage = Number(lastPage.pagination.currentPage);

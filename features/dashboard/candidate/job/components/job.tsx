@@ -1,15 +1,14 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { useGetAllJobsRecruiter } from "../api/query";
-import JobFillter, { FilterValues } from "@/features/dashboard/candidate/job/components/job-fillter";
-import { JobPreviewCard } from "@/features/dashboard/candidate/job/components/job-preview-card";
-import { JobPreviewCardSkeleton } from "@/features/dashboard/candidate/job/components/job-preview-card-skeleton";
+import JobFillter, { FilterValues } from "./job-fillter";
+import { useGetAllJobsCandidate } from "../api/query";
+import { JobPreviewCardSkeleton } from "./job-preview-card-skeleton";
+import { JobPreviewCard } from "./job-preview-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchX } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-export default function JobPost() {
+export default function Job() {
     const { ref, inView } = useInView({
         delay: 100,
         rootMargin: "0px 0px 150px 0px", // Pre-fetch 150px before bottom
@@ -21,12 +20,11 @@ export default function JobPost() {
         console.log("Filters updated:", filters);
     }, [filters]);
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsRecruiter({
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsCandidate({
         limit: 10,
         page: 1,
         filter: filters.filter,
         location: filters.location,
-        // salaryMin: filters.salaryMin,
         salaryMin: filters.salaryMin ? filters.salaryMin * 1000 : undefined,
         workplace: filters.workplace,
     });
@@ -74,9 +72,6 @@ export default function JobPost() {
                     ))}
 
                     {/* Sentinel Element */}
-                    {/* <div ref={ref} style={{ height: "20px", visibility: "hidden" }} /> */}
-                    {/* <div ref={ref} className="h-4 w-full bg-transparent" /> */}
-
                     {!isFetchingNextPage && hasNextPage && <div ref={ref} className="h-4 w-full bg-transparent" />}
 
                     {isFetchingNextPage && <JobPreviewCardSkeleton />}
@@ -104,8 +99,7 @@ export function NoJobsFound() {
                     <div className="space-y-1">
                         <h2 className="text-lg font-semibold sm:text-xl">No jobs found</h2>
                         <p className="text-sm text-muted-foreground">
-                            We couldn’t find any jobs matching your filters. Try adjusting your search criteria. Or You have not
-                            posted any jobs yet.
+                            We couldn’t find any jobs matching your filters. Try adjusting your search criteria.
                         </p>
                     </div>
 

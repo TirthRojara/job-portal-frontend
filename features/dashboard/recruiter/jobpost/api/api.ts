@@ -1,7 +1,7 @@
 import api from "@/lib/axios/client";
 import { SearchParams } from "./types";
 
-export const getAllJobs = async ({
+export const getAllJobsRecruiter = async ({
     signal,
     searchParams,
 }: {
