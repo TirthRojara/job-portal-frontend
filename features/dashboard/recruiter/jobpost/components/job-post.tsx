@@ -8,6 +8,7 @@ import { JobPreviewCardSkeleton } from "@/features/dashboard/candidate/job/compo
 import { Card, CardContent } from "@/components/ui/card";
 import { SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function JobPost() {
     const { ref, inView } = useInView({
@@ -15,11 +16,50 @@ export default function JobPost() {
         rootMargin: "0px 0px 150px 0px", // Pre-fetch 150px before bottom
     });
 
-    const [filters, setFilters] = useState<FilterValues>({});
+   
+     // [2] Initialize hooks
+        const searchParams = useSearchParams();
+        const pathname = usePathname();
+        const { replace } = useRouter();
+    
+        // [3] Helper to parse URL params into FilterValues
+        const getFiltersFromUrl = (): FilterValues => {
+            return {
+                filter: searchParams.get("filter") || undefined,
+                location: searchParams.get("location") || undefined,
+                workplace: (searchParams.get("workplace") as FilterValues["workplace"]) || undefined,
+                salaryMin: searchParams.get("salaryMin") ? Number(searchParams.get("salaryMin")) : undefined,
+            };
+        };
+    
+        // [4] Initialize state from URL (so refresh works)
+        const [filters, setFilters] = useState<FilterValues>(getFiltersFromUrl());
+    
+        // [5] Listen for URL changes (handles Browser Back/Forward buttons)
+        useEffect(() => {
+            setFilters(getFiltersFromUrl());
+        }, [searchParams]);
+    
+        // [6] Function to update URL when user searches
+        const handleUrlUpdate = (values: FilterValues) => {
+            const params = new URLSearchParams(searchParams);
+    
+            if (values.filter) params.set("filter", values.filter);
+            else params.delete("filter");
+    
+            if (values.location) params.set("location", values.location);
+            else params.delete("location");
+    
+            if (values.workplace) params.set("workplace", values.workplace);
+            else params.delete("workplace");
+    
+            if (values.salaryMin) params.set("salaryMin", values.salaryMin.toString());
+            else params.delete("salaryMin");
+    
+            replace(`${pathname}?${params.toString()}`);
+        };
 
-    // useEffect(() => {
-    //     console.log("Filters updated:", filters);
-    // }, [filters]);
+   
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsRecruiter({
         limit: 10,
@@ -55,7 +95,7 @@ export default function JobPost() {
                     <NoJobsFound />
                 </div>
                 <div className="flex flex-col sm:sticky sm:top-25 sm:self-start  ">
-                    <JobFillter onSearch={(values) => setFilters(values)} />
+                    <JobFillter defaultValues={filters} onSearch={handleUrlUpdate} />
                 </div>
             </div>
         );
@@ -85,7 +125,7 @@ export default function JobPost() {
                     {/* <JobPreviewCardSkeleton /> */}
                 </div>
                 <div className="flex flex-col sm:sticky sm:top-25 sm:self-start  ">
-                    <JobFillter defaultValues={filters} onSearch={(values) => setFilters(values)} />
+                   <JobFillter defaultValues={filters} onSearch={handleUrlUpdate} />
                 </div>
             </div>
         </>

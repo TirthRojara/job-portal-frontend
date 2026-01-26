@@ -8,7 +8,7 @@ import { WorkPlace } from "@/features/dashboard/recruiter/jobpost/api/types";
 import { useAppSelector } from "@/store/index.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MapPin, SearchIcon } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 
@@ -43,6 +43,12 @@ export default function JobFillter({ onSearch, defaultValues }: JobFilterProps) 
         mode: "onChange",
         reValidateMode: "onChange",
     });
+
+    useEffect(() => {
+        if (defaultValues) {
+            form.reset(defaultValues);
+        }
+    }, [defaultValues, form]);
 
     function handleSearch(data: FilterValues) {
         // console.log({ data });
