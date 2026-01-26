@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import JobFillter, { FilterValues } from "./job-fillter";
@@ -16,9 +16,9 @@ export default function Job() {
 
     const [filters, setFilters] = useState<FilterValues>({});
 
-    useEffect(() => {
-        console.log("Filters updated:", filters);
-    }, [filters]);
+    // useEffect(() => {
+    //     // console.log("Filters updated:", filters);
+    // }, [filters]);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsCandidate({
         limit: 10,
@@ -47,6 +47,19 @@ export default function Job() {
         );
 
     if (isError && error.status === 404) {
+        return (
+            <div className="flex flex-col-reverse sm:flex-row gap-6 px-6 py-6 justify-center">
+                <div className="flex flex-col gap-4">
+                    <NoJobsFound />
+                </div>
+                <div className="flex flex-col sm:sticky sm:top-25 sm:self-start  ">
+                    <JobFillter onSearch={(values) => setFilters(values)} />
+                </div>
+            </div>
+        );
+    }
+
+    if (data?.pages?.[0]?.data?.length === 0) {
         return (
             <div className="flex flex-col-reverse sm:flex-row gap-6 px-6 py-6 justify-center">
                 <div className="flex flex-col gap-4">

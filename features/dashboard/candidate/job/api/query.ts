@@ -1,17 +1,17 @@
-import { JobResponse, SearchParams } from "@/features/dashboard/recruiter/jobpost/api/types";
+import { SearchParams } from "@/features/dashboard/recruiter/jobpost/api/types";
 import { ApiError, ApiPageResponse } from "@/types/api";
 import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { getAllJobsCandidate } from "./api";
-
+import { JobResponseCandidate } from "./types";
 
 export const useGetAllJobsCandidate = (
     // { page, limit, filter, location, salaryMin, workplace }: SearchParams,
     searchParams: SearchParams,
     options?: UseInfiniteQueryOptions<
-        ApiPageResponse<JobResponse[]>, // 1. TQueryFnData
+        ApiPageResponse<JobResponseCandidate[]>, // 1. TQueryFnData
         AxiosError<ApiError>, // 2. TError
-        InfiniteData<ApiPageResponse<JobResponse[]>>, // 3. TData
+        InfiniteData<ApiPageResponse<JobResponseCandidate[]>>, // 3. TData
         [string, SearchParams], // 4. TQueryKey
         number // 5. TPageParam
     >,

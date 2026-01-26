@@ -17,9 +17,9 @@ export default function JobPost() {
 
     const [filters, setFilters] = useState<FilterValues>({});
 
-    useEffect(() => {
-        console.log("Filters updated:", filters);
-    }, [filters]);
+    // useEffect(() => {
+    //     console.log("Filters updated:", filters);
+    // }, [filters]);
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsRecruiter({
         limit: 10,

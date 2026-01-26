@@ -45,8 +45,8 @@ export default function JobFillter({ onSearch, defaultValues }: JobFilterProps) 
     });
 
     function handleSearch(data: FilterValues) {
-        console.log({ data });
-        console.log("Search clicked");
+        // console.log({ data });
+        // console.log("Search clicked");
 
         if (onSearch) {
             onSearch(data);

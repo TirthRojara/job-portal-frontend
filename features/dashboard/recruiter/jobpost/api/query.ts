@@ -1,5 +1,5 @@
 import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
-import { JobResponse, SearchParams } from "./types";
+import { JobResponseRecruiter, SearchParams } from "./types";
 import { AxiosError } from "axios";
 import { ApiError, ApiPageResponse } from "@/types/api";
 import { getAllJobsRecruiter } from "./api";
@@ -8,9 +8,9 @@ export const useGetAllJobsRecruiter = (
     // { page, limit, filter, location, salaryMin, workplace }: SearchParams,
     searchParams: SearchParams,
     options?: UseInfiniteQueryOptions<
-        ApiPageResponse<JobResponse[]>, // 1. TQueryFnData
+        ApiPageResponse<JobResponseRecruiter[]>, // 1. TQueryFnData
         AxiosError<ApiError>, // 2. TError
-        InfiniteData<ApiPageResponse<JobResponse[]>>, // 3. TData
+        InfiniteData<ApiPageResponse<JobResponseRecruiter[]>>, // 3. TData
         [string, SearchParams], // 4. TQueryKey
         number // 5. TPageParam
     >,

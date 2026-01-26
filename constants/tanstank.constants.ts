@@ -30,7 +30,19 @@ export const MUTATION = {
     COMPANY_INDUSTRY: {
         addIndustry: "add_industry",
         remove: "remove_industry"
+    },
+
+    APPLY: {
+        applyJob: "apply_job",
+    },
+
+    JOB: {
+        toggleSaveJob: "toggle_save_job",  
     }
+
+
+
+
 
 };
 

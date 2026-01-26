@@ -4,7 +4,7 @@ export enum WorkPlace {
     HYBRID = "HYBRID",
 }
 
-enum Status {
+export enum Status {
     PENDING = "PENDING",
     ACTIVE = "ACTIVE",
     EXPIRED = "EXPIRED",
@@ -20,7 +20,9 @@ export type SearchParams = {
     workplace?: WorkPlace;
 };
 
-export type JobResponse = {
+
+
+export type JobResponseRecruiter = {
     id: number;
     title: string;
     description: string;
@@ -43,10 +45,12 @@ export type JobResponse = {
     jobRole: {
         id: number;
         name: string;
-    };
+    }
 
     company: {
         id: number;
         name: string;
-    };
+    }
+
+    isAppliedByUser: boolean;
 };
