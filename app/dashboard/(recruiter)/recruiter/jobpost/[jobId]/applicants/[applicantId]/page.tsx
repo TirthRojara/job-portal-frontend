@@ -6,7 +6,7 @@ import Resume from "@/features/dashboard/candidate/profile/components/resume";
 import SkillsDetails from "@/features/dashboard/candidate/profile/components/skills-details";
 import Summary from "@/features/dashboard/candidate/profile/components/summary";
 import WorkExperience from "@/features/dashboard/candidate/profile/components/work-experience";
-import ApplicationStatusCard from "@/features/dashboard/recruiter/jobpost/[jobId}/applicants/components/application-status-card";
+import ApplicationStatusCard from "@/features/dashboard/recruiter/jobpost/[jobId]/applicants/components/application-status-card";
 import { ArrowDownToLine, MessageSquareMore } from "lucide-react";
 
 const languages = [

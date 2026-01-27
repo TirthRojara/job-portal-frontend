@@ -18,7 +18,9 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export default store;
 
+// =====================================
 // ###  How to use in a component  ###
+// =====================================
 
 // => selector
 // const token = useAppSelector((state) => state.app.accessToken);
@@ -30,7 +32,10 @@ export default store;
 //         dispatch(appActions.setAccessToken(newToken));
 //     };
 
+
+// =========================================================================
 // ###  How to use in non-component files (e.g., lib/axios/client.ts)  ###
+// =========================================================================
 
 // => selector
 // const accessToken = store.getState().app.accessToken;

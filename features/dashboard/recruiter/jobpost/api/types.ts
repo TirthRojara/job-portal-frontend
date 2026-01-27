@@ -53,4 +53,6 @@ export type JobResponseRecruiter = {
     }
 
     isAppliedByUser: boolean;
+
+    isDeleted: boolean;
 };

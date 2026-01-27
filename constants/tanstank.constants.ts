@@ -29,7 +29,7 @@ export const MUTATION = {
 
     COMPANY_INDUSTRY: {
         addIndustry: "add_industry",
-        remove: "remove_industry"
+        remove: "remove_industry",
     },
 
     APPLY: {
@@ -37,13 +37,8 @@ export const MUTATION = {
     },
 
     JOB: {
-        toggleSaveJob: "toggle_save_job",  
-    }
-
-
-
-
-
+        toggleSaveJob: "toggle_save_job",
+    },
 };
 
 export const QUERY = {
@@ -51,17 +46,26 @@ export const QUERY = {
 
     COMPANY: {
         getMyComanyDetails: "get_my_company_details",
-        getCompanyById: "get_company_by_id",  // --> uses companyId as param
-        getCompanyViewById: "get_company_view_by_id",  // --> uses companyId as param
-       
+        getCompanyById: "get_company_by_id", // --> uses companyId as param
+        getCompanyViewById: "get_company_view_by_id", // --> uses companyId as param
     },
 
     COMPANY_INDUSTRY: {
-        getCompanyIndustry: 'get_company_industry',   // --> uses companyId as param
+        getCompanyIndustry: "get_company_industry", // --> uses companyId as param
         getIndustryList: "get_inductry_list",
     },
 
     JOB: {
-        getAllJobs: "get_all_jobs",  // --> user search params
-    }
+        getAllJobs: "get_all_jobs", // --> uses search params
+        getJobById: "get_job_by_id", // --> uses jobId params
+    },
+
+    JOBSKILL: {
+        getJobIdSkill: "get_job_id_skill", // --> uses jobId params
+    },
+
+    JOBBENEFIT: {
+        getBenefitList: "get_benefit_list",
+        getJobIdBenefit: "get_job_id_benefit", // --> uses jobId params
+    },
 };

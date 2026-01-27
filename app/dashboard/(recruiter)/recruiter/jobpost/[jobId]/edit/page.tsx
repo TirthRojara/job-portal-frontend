@@ -1,4 +1,4 @@
-import ButtonHeader from "@/features/dashboard/recruiter/jobpost/[jobId}/edit/components/button-header";
+import ButtonHeader from "@/features/dashboard/recruiter/jobpost/[jobId]/edit/components/button-header";
 import JobDetails from "@/features/dashboard/recruiter/jobpost/create/components/job-details";
 import React from "react";
 

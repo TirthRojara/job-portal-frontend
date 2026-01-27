@@ -1,6 +1,4 @@
-
-import JobDescription from "@/features/dashboard/recruiter/jobpost/[jobId}/components/job-description";
-import JobDetailsTop from "@/features/dashboard/recruiter/jobpost/[jobId}/components/job-details-top";
+import JobIdPage from "@/features/dashboard/candidate/job/[jobId]/components/job-id-page";
 
 export default async function Page({
     params,
@@ -12,10 +10,11 @@ export default async function Page({
 
     return (
         <>
-             <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
+            <JobIdPage jobId={jobId} />
+             {/* <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
                 <JobDetailsTop />
                 <JobDescription />
-             </div>
+             </div> */}
         </>
     );
 }

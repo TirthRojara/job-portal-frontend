@@ -15,14 +15,10 @@ export default function Job() {
         rootMargin: "0px 0px 150px 0px", // Pre-fetch 150px before bottom
     });
 
-    // const [filters, setFilters] = useState<FilterValues>({});
-
-    // [2] Initialize hooks
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
 
-    // [3] Helper to parse URL params into FilterValues
     const getFiltersFromUrl = (): FilterValues => {
         return {
             filter: searchParams.get("filter") || undefined,
@@ -32,15 +28,12 @@ export default function Job() {
         };
     };
 
-    // [4] Initialize state from URL (so refresh works)
     const [filters, setFilters] = useState<FilterValues>(getFiltersFromUrl());
 
-    // [5] Listen for URL changes (handles Browser Back/Forward buttons)
     useEffect(() => {
         setFilters(getFiltersFromUrl());
     }, [searchParams]);
 
-    // [6] Function to update URL when user searches
     const handleUrlUpdate = (values: FilterValues) => {
         const params = new URLSearchParams(searchParams);
 

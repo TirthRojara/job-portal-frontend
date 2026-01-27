@@ -12,22 +12,15 @@ import { useApplyJob, useToggleSaveJob } from "../api/mutate";
 import { JobResponseCandidate } from "../api/types";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { never } from "zod";
 
-interface JobCardProps {
-    logo?: string; // URL for image, fallback handled in component
-    title: string;
-    company?: string;
-    location?: string;
-    workPlace?: string; // e.g. "Hybrid"
-    salary?: string;
-    description?: string;
-    postedAt?: string;
-}
 
 const isBtnHide = true;
 
 export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | JobResponseRecruiter }) {
     const role = useAppSelector((state) => state.app.role);
+
+    const isDeleted = "isDeleted" in jobData ? jobData.isDeleted : undefined;
 
     const companyName =
         "company" in jobData
@@ -48,17 +41,17 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | Jo
     const { mutate: applyJobMutate, isPending: isApplyJobLoading } = useApplyJob();
     const { mutate: toggleSaveJobMutate, isPending: isToggleSaveJobLoading } = useToggleSaveJob();
 
-    // useEffect(() => {
-    //     if ("isAppliedByUser" in jobData) {
-    //         setIsAppliedByUser(jobData.isAppliedByUser);
-    //     }
-    // }, [jobData]);
+    useEffect(() => {
+        if ("isAppliedByUser" in jobData) {
+            setIsAppliedByUser(jobData.isAppliedByUser);
+        }
+    }, [jobData]);
 
-    // useEffect(() => {
-    //     if ("isSaved" in jobData) {
-    //         setIsSaved(jobData.isSaved);
-    //     }
-    // }, [jobData]);
+    useEffect(() => {
+        if ("isSaved" in jobData) {
+            setIsSaved(jobData.isSaved);
+        }
+    }, [jobData]);
 
     const handleCardClick = () => {
         if (role === "CANDIDATE") {
@@ -108,9 +101,9 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | Jo
                     <Eye className="h-4 w-4 " />
                     <p>{jobData.totalview}</p> {/* ================================= */}
                 </div>
-                {role !== "CANDIDATE" && <p>{jobData.status}</p>}
-                {/* {role === "CANDIDATE" && jobData.isAppliedByUser && <p>Applied</p>} ================================= */}
-                {role === "CANDIDATE" && isAppliedByUser && <p>Applied</p>} {/* ================================= */}
+                {role !== "CANDIDATE" && !isDeleted && <p>{jobData.status}</p>}
+                {role === "CANDIDATE" && isAppliedByUser && <p>Applied</p>}
+                {role === "RECRUITER" && isDeleted && <p className=" text-destructive">DELETED</p>}
             </span>
             {/* 1. Logo Section */}
             <div className="shrink-0">
@@ -170,9 +163,9 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | Jo
                             <Eye className="h-4 w-4" />
                             <p>{jobData.totalview}</p> {/* ================================= */}
                         </div>
-                        {role !== "CANDIDATE" && <p>{jobData.status}</p>}
-                        {/* {role === "CANDIDATE" && jobData.isAppliedByUser && <p>Applied</p>}{" "} */}
+                        {role !== "CANDIDATE" && !isDeleted && <p>{jobData.status}</p>}
                         {role === "CANDIDATE" && isAppliedByUser && <p>Applied</p>}
+                        {role === "RECRUITER" && isDeleted && <p className=" text-destructive">DELETED</p>}
                     </div>
                 </span>
 
