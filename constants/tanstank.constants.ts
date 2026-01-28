@@ -58,6 +58,7 @@ export const QUERY = {
     JOB: {
         getAllJobs: "get_all_jobs", // --> uses search params
         getJobById: "get_job_by_id", // --> uses jobId params
+        getAllSavedJob: 'get_all_saved_jobs' // --> user page params
     },
 
     JOBSKILL: {

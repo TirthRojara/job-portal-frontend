@@ -13,7 +13,7 @@ import { JobResponseCandidate } from "../api/types";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { never } from "zod";
-
+import ViewCount from "@/features/dashboard/recruiter/jobpost/[jobId]/components/view-count";
 
 const isBtnHide = true;
 
@@ -98,8 +98,7 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | Jo
                 {/* {postedAt} */}
                 <p>{timeAgo(jobData.postedAt)}</p>
                 <div className="flex justify-end items-center gap-1.5 my-1.5">
-                    <Eye className="h-4 w-4 " />
-                    <p>{jobData.totalview}</p> {/* ================================= */}
+                    <ViewCount jobId={jobData.id} />
                 </div>
                 {role !== "CANDIDATE" && !isDeleted && <p>{jobData.status}</p>}
                 {role === "CANDIDATE" && isAppliedByUser && <p>Applied</p>}
@@ -160,8 +159,7 @@ export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | Jo
                     <p>{timeAgo(jobData.postedAt)}</p>
                     <div className="flex flex-col items-end gap-1.5 justify-end mt-1.5">
                         <div className="flex flex-row gap-1.5">
-                            <Eye className="h-4 w-4" />
-                            <p>{jobData.totalview}</p> {/* ================================= */}
+                            <ViewCount jobId={jobData.id} />
                         </div>
                         {role !== "CANDIDATE" && !isDeleted && <p>{jobData.status}</p>}
                         {role === "CANDIDATE" && isAppliedByUser && <p>Applied</p>}
