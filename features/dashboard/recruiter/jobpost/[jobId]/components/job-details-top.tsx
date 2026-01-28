@@ -13,16 +13,26 @@ import ViewCount from "./view-count";
 import { JobByIdResponse } from "../api/types";
 import JobSkill from "./job-skill";
 import { useRouter } from "next/navigation";
+import { useApplyJob } from "@/features/dashboard/candidate/job/api/mutate";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function JobDetailsTop({ jobData }: { jobData: JobByIdResponse }) {
     const role = useAppSelector((state) => state.app.role);
 
+    const { mutate, isPending, isSuccess } = useApplyJob();
+
     const handleCompanyClick = (companyId: number) => {
         if (role === "CANDIDATE") {
             window.open(`/dashboard/candidate/company/${companyId}`, "_blank", "noopener,noreferrer");
-        // }
+            // }
         } else {
             window.open(`/dashboard/recruiter/company`, "_blank", "noopener,noreferrer");
+        }
+    };
+
+    const handleApply = () => {
+        if (role === "CANDIDATE") {
+            mutate({ jobId: jobData.id });
         }
     };
 
@@ -98,31 +108,19 @@ export default function JobDetailsTop({ jobData }: { jobData: JobByIdResponse })
             </div>
 
             {/* skills  */}
-            {/* <div className="flex flex-col gap-4">
-                <h2 className=" md:text-lg font-semibold">Required skills</h2>
-                <div className="flex gap-2 flex-wrap">
-                    {ALL_SKILLS.map((skill) => (
-                        <Badge
-                            key={skill.value}
-                            className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer"
-                        >
-                            {skill.label}
-                        </Badge>
-                    ))}
-                </div>
-            </div> */}
-
             <JobSkill jobId={jobData.id} />
 
             {role === "CANDIDATE" && (
                 <div className="flex gap-3 mt-7 sm:mt-3">
-                    <Button className=" sm:w-50 w-35 ">
-                        <Send className=" h-4 w-4" />
-                        Apply
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-emerald-600 sm:mt-auto">
+                    {!isSuccess && (
+                        <Button onClick={handleApply} className=" sm:w-50 w-35 ">
+                            <Send className=" h-4 w-4" />
+                            {isPending ? <Spinner /> : "Apply"}
+                        </Button>
+                    )}
+                    {/* <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-emerald-600 sm:mt-auto">
                         <Bookmark className="h-5 w-5" />
-                    </Button>
+                    </Button> */}
                 </div>
             )}
         </Card>

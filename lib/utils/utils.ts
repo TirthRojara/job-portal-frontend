@@ -10,6 +10,7 @@ export function formatText(text: string | null | undefined): string {
         // .replace(/\n\s*\n/g, '\n\n'); 
 }
 
+// For mutation
 export const YYYYMMDD = (isoString: string): string => {
   try {
     return new Date(isoString).toISOString().split('T')[0];
@@ -17,6 +18,18 @@ export const YYYYMMDD = (isoString: string): string => {
     return '';
   }
 };
+
+export function formatShortDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (isNaN(date.getTime())) return "";
+
+  const day = date.getDate();
+  const month = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear().toString().slice(-2);
+
+  return `${day} ${month}' ${year}`;
+}
 
 export function timeAgo(dateString: string): string {
   const now = new Date();

@@ -13,11 +13,11 @@ export const useApplyJob = (
         mutationKey: [MUTATION.APPLY.applyJob],
         mutationFn: ({ jobId }: { jobId: number }) => applyJob({ jobId }),
         onError: (error) => {
-            console.error("Apply job error details:", error);
+            // console.error("Apply job error details:", error);
             toast.error(`${error.response?.data.message}` || "Failed to apply for job. Please try again.");
         },
         onSuccess: (data) => {
-            console.log("Apply job success details:", data);
+            // console.log("Apply job success details:", data);
             toast.success(data.message || "Job applied successfully!");
         },
         ...options,

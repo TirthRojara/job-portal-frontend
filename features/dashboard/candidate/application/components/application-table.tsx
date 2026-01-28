@@ -1,14 +1,10 @@
 import React from "react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
+import { ApplicationResponse } from "../api/types";
+import { formatShortDate } from "@/lib/utils/utils";
+import { useAppSelector } from "@/store/index.store";
 
 type ApplicationData = {
     company: string;
@@ -27,10 +23,8 @@ const applications: ApplicationData[] = [
         status: "Not selected",
     },
     {
-        company:
-            "Piesoft Technologies Private Limited sdfjdskflsd sldfjsdllsdjf",
-        profile:
-            "Front End Development Internship sdfdsfsfldsj   slfjlsdjflsd fsdjflllfjdlsfjdlfjlfjsdlfs",
+        company: "Piesoft Technologies Private Limited sdfjdskflsd sldfjsdllsdjf",
+        profile: "Front End Development Internship sdfdsfsfldsj   slfjlsdjflsd fsdjflllfjdlsfjdlfjlfjsdlfs",
         appliedOn: "1 Sep' 25",
         applicants: 4869,
         status: "Not selected",
@@ -79,7 +73,23 @@ const applications: ApplicationData[] = [
     },
 ];
 
-export default function ApplicationTable() {
+export default function ApplicationTable({ tableData }: { tableData: ApplicationResponse[] }) {
+    const role = useAppSelector((state) => state.app.role);
+
+    const handleCompanyClick = (companyID: number) => {
+        if (role === "CANDIDATE") {
+            window.open(`/dashboard/candidate/company/${companyID}`, "_blank", "noopener,noreferrer");
+        }
+    };
+
+    const handleJobLinkClick = (jobID: number) => {
+        if (role === "CANDIDATE") {
+            window.open(`/dashboard/candidate/job/${jobID}`, "_blank", "noopener,noreferrer");
+        }
+    };
+
+
+
     return (
         <div className="w-full border rounded-lg bg-white shadow-sm  max-w-7xl ">
             <Table>
@@ -95,25 +105,25 @@ export default function ApplicationTable() {
                         <TableHead className="w-[150px] py-5  font-semibold tracking-wider text-gray-500 uppercase">
                             Applied On
                         </TableHead>
-                        <TableHead className="w-[150px] py-5  font-semibold tracking-wider text-gray-500 uppercase">
+                        {/* <TableHead className="w-[150px] py-5  font-semibold tracking-wider text-gray-500 uppercase">
                             <p>Number of</p>
                             <p>Applicants</p>
-                        </TableHead>
+                        </TableHead> */}
                         <TableHead className="w-[200px] text-right py-5  font-semibold tracking-wider text-gray-500 uppercase pr-6">
                             Application Status
                         </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {applications.map((app, index) => (
-                        <TableRow
-                            key={index}
-                            className="border-b border-gray-100 hover:bg-gray-50/50"
-                        >
+                    {tableData.map((data, index) => (
+                        <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50/50">
                             {/* Company Name: Dark text, extra vertical padding */}
                             <TableCell className="py-6 font-medium text-gray-700 align-top pl-6">
-                                <div className="whitespace-normal truncate line-clamp-2 max-w-[220px]">
-                                    {app.company}
+                                <div
+                                    onClick={() => handleCompanyClick(data.company.id)}
+                                    className="whitespace-normal truncate line-clamp-2 max-w-[220px] hover:text-blue-600 hover:underline cursor-pointer"
+                                >
+                                    {data.company.name}
                                 </div>
                             </TableCell>
 
@@ -121,21 +131,19 @@ export default function ApplicationTable() {
                             <TableCell className="py-6 align-top">
                                 <div className="flex justify-between gap-2 pr-6">
                                     <span className=" w-[240px] text-gray-700 leading-snug  whitespace-normal truncate line-clamp-2">
-                                        {app.profile}
+                                        {data.job.title}
                                     </span>
-                                    <ExternalLink className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0 cursor-pointer hover:text-blue-600" />
+                                    <ExternalLink onClick={()=> handleJobLinkClick(data.job.id)} className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0 cursor-pointer hover:text-blue-600" />
                                 </div>
                             </TableCell>
 
                             {/* Date */}
-                            <TableCell className="py-6 text-gray-600 align-top">
-                                {app.appliedOn}
-                            </TableCell>
+                            <TableCell className="py-6 text-gray-600 align-top">{formatShortDate(data.applyDate)}</TableCell>
 
                             {/* Applicants Count */}
-                            <TableCell className="py-6 text-gray-600 align-top">
+                            {/* <TableCell className="py-6 text-gray-600 align-top">
                                 {app.applicants}
-                            </TableCell>
+                            </TableCell> */}
 
                             {/* Status Badge: Custom gray background to match design */}
                             <TableCell className="py-6 text-right align-top pr-6">
@@ -143,7 +151,7 @@ export default function ApplicationTable() {
                                     variant="secondary"
                                     className="bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-full px-4 py-1 font-normal text-sm"
                                 >
-                                    {app.status}
+                                    {data.status}
                                 </Badge>
                             </TableCell>
                         </TableRow>

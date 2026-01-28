@@ -58,7 +58,7 @@ export const QUERY = {
     JOB: {
         getAllJobs: "get_all_jobs", // --> uses search params
         getJobById: "get_job_by_id", // --> uses jobId params
-        getAllSavedJob: 'get_all_saved_jobs' // --> user page params
+        getAllSavedJob: 'get_all_saved_jobs' // --> uses page params
     },
 
     JOBSKILL: {
@@ -69,4 +69,8 @@ export const QUERY = {
         getBenefitList: "get_benefit_list",
         getJobIdBenefit: "get_job_id_benefit", // --> uses jobId params
     },
+
+    APPLY: {
+        getAllApplication: "get_all_application"  // --> uses page params
+    }
 };
