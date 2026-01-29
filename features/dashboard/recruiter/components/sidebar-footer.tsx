@@ -23,16 +23,15 @@ import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSide
 import { BadgeCheck, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 import React from "react";
 import { useLogout } from "../../candidate/api/mutation";
+import { useGetUserData } from "../../api/query";
+import { getInitials } from "@/lib/utils/utils";
 
-const user = {
-    name: "Tirth",
-    email: "work.tirthrojara@gmail.com",
-    avatar: "TR",
-};
+
 
 export default function RecruiterSidebarFooter() {
     const { isMobile, state } = useSidebar();
 
+     const { data, isError, error, isLoading } = useGetUserData();
     const { mutate: logoutMutation, isPending } = useLogout();
 
     function handleLogout() {
@@ -52,11 +51,11 @@ export default function RecruiterSidebarFooter() {
                                     className=" cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
                                     <Avatar className="h-8 w-8 rounded-lg">
-                                        <AvatarFallback className="rounded-lg">TR</AvatarFallback>
+                                        <AvatarFallback className="rounded-lg">{getInitials(data?.data?.name!)}</AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-medium">{user.name}</span>
-                                        <span className="truncate text-xs">{user.email}</span>
+                                        <span className="truncate font-medium">{data?.data?.name}</span>
+                                        <span className="truncate text-xs">{data?.data?.email}</span>
                                     </div>
                                     <ChevronsUpDown className="ml-auto size-4" />
                                 </SidebarMenuButton>
@@ -70,11 +69,11 @@ export default function RecruiterSidebarFooter() {
                                 <DropdownMenuLabel className="p-0 font-normal">
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-8 w-8 rounded-lg">
-                                            <AvatarFallback className="rounded-lg">TR</AvatarFallback>
+                                            <AvatarFallback className="rounded-lg">{getInitials(data?.data?.name!)}</AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
-                                            <span className="truncate font-medium">{user.name}</span>
-                                            <span className="truncate text-xs">{user.email}</span>
+                                            <span className="truncate font-medium">{data?.data?.name}</span>
+                                            <span className="truncate text-xs">{data?.data?.email}</span>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>

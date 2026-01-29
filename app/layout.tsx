@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppProvider from "@/provider/index.provider";
 
+
 export const inter = Inter({
     subsets: ["latin"],
     variable: "--font-inter",

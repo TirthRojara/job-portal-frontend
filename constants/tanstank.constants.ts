@@ -3,6 +3,7 @@
 import { getCompanyIndustry } from "@/features/dashboard/recruiter/company/api/api";
 import { updateCompany } from "@/features/dashboard/recruiter/company/edit/api/api";
 import { get } from "http";
+import { User } from "lucide-react";
 
 // export const _Auth = {
 //     login: 'auth_login',
@@ -42,7 +43,9 @@ export const MUTATION = {
 };
 
 export const QUERY = {
-    AUTH: {},
+    USER: {
+        getUserData: "get_user_data"
+    },
 
     COMPANY: {
         getMyComanyDetails: "get_my_company_details",

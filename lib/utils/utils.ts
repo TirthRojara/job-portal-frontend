@@ -75,3 +75,22 @@ export function formatSalary(value: number): string {
   const formatted = value / 1_000_000;
   return `${Number.isInteger(formatted) ? formatted : formatted.toFixed(1)}M`;
 }
+
+export function getInitials(name: string): string {
+  if (!name) return "";
+
+  const words = name
+    .trim()
+    .split(/\s+/)          // handle multiple spaces
+    .filter(Boolean);
+
+  if (words.length === 0) return "";
+
+  // Take first letter of first two words
+  const initials = words
+    .slice(0, 2)
+    .map(word => word[0].toUpperCase())
+    .join("");
+
+  return initials;
+}

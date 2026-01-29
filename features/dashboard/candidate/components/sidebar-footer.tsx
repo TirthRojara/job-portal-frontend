@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,32 +20,35 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    SidebarFooter,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from "@/components/ui/sidebar";
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
 import React from "react";
 import { useLogout } from "../api/mutation";
+import { useGetUserData } from "../../api/query";
+import { getInitials } from "@/lib/utils/utils";
 
-const user = {
-    name: "Tirth",
-    email: "work.tirthrojara@gmail.com",
-    avatar: "TR",
-};
+// const user = {
+//     name: "Tirth",
+//     email: "work.tirthrojara@gmail.com",
+//     avatar: "TR",
+// };
 
 export default function CandidateSidebarFooter() {
     const { isMobile, state } = useSidebar();
+
+    const { data, isError, error, isLoading } = useGetUserData();
     const { mutate: logoutMutation, isPending } = useLogout();
+
+    // console.log("Loading:", isLoading); // Is this true?
+    // console.log("Data:", data); // This will be undefined initially
+    // console.log("Error:", error); // Is there an auth error?
+
+    // if (isLoading) return <div>Loading user...</div>;
+    // if (isError) return <div>Error loading user</div>;
 
     function handleLogout() {
         logoutMutation();
     }
-
-
 
     return (
         <>
@@ -59,17 +63,11 @@ export default function CandidateSidebarFooter() {
                                     className=" cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                                 >
                                     <Avatar className="h-8 w-8 rounded-lg">
-                                        <AvatarFallback className="rounded-lg">
-                                            TR
-                                        </AvatarFallback>
+                                        <AvatarFallback className="rounded-lg">{getInitials(data?.data?.name!)}</AvatarFallback>
                                     </Avatar>
                                     <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-medium">
-                                            {user.name}
-                                        </span>
-                                        <span className="truncate text-xs">
-                                            {user.email}
-                                        </span>
+                                        <span className="truncate font-medium">{data?.data?.name}</span>
+                                        <span className="truncate text-xs">{data?.data?.email}</span>
                                     </div>
                                     <ChevronsUpDown className="ml-auto size-4" />
                                 </SidebarMenuButton>
@@ -84,16 +82,12 @@ export default function CandidateSidebarFooter() {
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-8 w-8 rounded-lg">
                                             <AvatarFallback className="rounded-lg">
-                                                TR
+                                                {getInitials(data?.data?.name!)}
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
-                                            <span className="truncate font-medium">
-                                                {user.name}
-                                            </span>
-                                            <span className="truncate text-xs">
-                                                {user.email}
-                                            </span>
+                                            <span className="truncate font-medium">{data?.data?.name}</span>
+                                            <span className="truncate text-xs">{data?.data?.email}</span>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
@@ -108,9 +102,7 @@ export default function CandidateSidebarFooter() {
                                         <DialogTrigger asChild>
                                             <DropdownMenuItem
                                                 // prevent dropdown from closing and re‑triggering
-                                                onSelect={(e) =>
-                                                    e.preventDefault()
-                                                }
+                                                onSelect={(e) => e.preventDefault()}
                                                 className=" text-destructive data-[highlighted]:bg-destructive/10 data-[highlighted]:text-destructive data-[state=open]:bg-destructive/10 data-[state=open]:text-destructive focus:bg-destructive/10 focus:text-destructive "
                                             >
                                                 <LogOut />
@@ -120,22 +112,16 @@ export default function CandidateSidebarFooter() {
                                         {/* <DialogContent className="sm:max-w-[425px]"> */}
                                         <DialogContent>
                                             <DialogHeader>
-                                                <DialogTitle>
-                                                    Logout
-                                                </DialogTitle>
+                                                <DialogTitle>Logout</DialogTitle>
                                                 <DialogDescription>
                                                     {/* Are you sure you want to */}
                                                     {/* logout? */}
-                                                    You’ll be signed out from
-                                                    your account on this device
-                                                    only.
+                                                    You’ll be signed out from your account on this device only.
                                                 </DialogDescription>
                                             </DialogHeader>
                                             <DialogFooter className="mt-2">
                                                 <DialogClose asChild>
-                                                    <Button variant="outline">
-                                                        Cancel
-                                                    </Button>
+                                                    <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
                                                 <Button
                                                     disabled={isPending}

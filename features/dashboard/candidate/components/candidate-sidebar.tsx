@@ -1,9 +1,5 @@
 "use client";
-import {
-    Sidebar,
-    SidebarRail,
-    SidebarSeparator,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarRail, SidebarSeparator } from "@/components/ui/sidebar";
 import CandidateSidebarHeader from "./sidebar-header";
 import CandidateSidebarMenu from "./sidebar-menu";
 import CandidateSidebarFooter from "./sidebar-footer";
@@ -19,4 +15,4 @@ export function CandidateSidebar() {
             <SidebarRail />
         </Sidebar>
     );
-};
+}

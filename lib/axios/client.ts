@@ -1,8 +1,7 @@
 import { appActions } from "@/store/app.slice";
 import store from "@/store/index.store";
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
-import { useSelector } from "react-redux";
-import { toast } from "sonner";
+
 
 const SERVER_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 

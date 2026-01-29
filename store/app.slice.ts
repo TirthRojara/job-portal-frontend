@@ -7,6 +7,7 @@ const appSlice = createSlice({
         resetToken: "",
         role: "",
         companyId: '',
+        isDarkTheme: false,
     },
     reducers: {
         setAccessToken(state, action) {
@@ -20,6 +21,9 @@ const appSlice = createSlice({
         },
         setCompanyId(state, action) {
             state.companyId = action.payload
+        },
+        setIsDardTheme(state, action){
+            state.isDarkTheme = action.payload
         }
 
         // toggleMenu(state) {

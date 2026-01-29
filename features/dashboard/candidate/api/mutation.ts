@@ -11,14 +11,14 @@ import { useRouter } from "next/navigation";
 export const useLogout = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: () => logout(),
         onSuccess: (data: ApiError) => {
-            toast.success(data.message || "Logged out successfully!");
-            dispatch(appActions.setAccessToken(''));
+            dispatch(appActions.setAccessToken(""));
             queryClient.clear();
+            toast.success(data.message || "Logged out successfully!");
             router.push("/login");
         },
         onError: (error: AxiosError<ApiError>) => {
