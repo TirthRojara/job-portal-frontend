@@ -1,13 +1,4 @@
-// Auth
 
-import { getCompanyIndustry } from "@/features/dashboard/recruiter/company/api/api";
-import { updateCompany } from "@/features/dashboard/recruiter/company/edit/api/api";
-import { get } from "http";
-import { User } from "lucide-react";
-
-// export const _Auth = {
-//     login: 'auth_login',
-// }
 
 export const MUTATION = {
     AUTH: {

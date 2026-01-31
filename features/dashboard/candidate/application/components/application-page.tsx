@@ -7,9 +7,17 @@ import { useGetAllApplication } from "../api/query";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/empty-state";
 import { ApplicationResponse } from "../api/types";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function ApplicationPage() {
-    const [currentPage, setCurrentPage] = useState(1);
+    // const [currentPage, setCurrentPage] = useState(1);
+
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const pageParam = searchParams.get("page");
+    const currentPage = pageParam ? Number(pageParam) : 1;
     const limit = 8;
 
     const { data, isLoading, isError, error } = useGetAllApplication(currentPage, limit);
@@ -20,6 +28,13 @@ export default function ApplicationPage() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     }, [currentPage]);
+
+    const handlePageChange = (page: number) => {
+        const params = new URLSearchParams(searchParams);
+        params.set("page", page.toString());
+
+        router.push(`${pathname}?${params.toString()}`);
+    };
 
     if (isLoading) return <div>Loading .....</div>;
     if (error?.status === 404)
@@ -64,7 +79,8 @@ export default function ApplicationPage() {
                 totalPages={totalPages}
                 totalItems={totalItems}
                 pageSize={limit}
-                onPageChange={setCurrentPage}
+                // onPageChange={setCurrentPage}
+                onPageChange={handlePageChange}
             />
         </div>
     );

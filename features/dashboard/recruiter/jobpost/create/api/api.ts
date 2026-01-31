@@ -9,8 +9,7 @@ import {
     EditJobResponse,
     updateStatusPayload,
 } from "./types";
-import { EXPORT_DETAIL } from "next/dist/shared/lib/constants";
-import { Exo } from "next/font/google";
+
 
 // JOB
 
