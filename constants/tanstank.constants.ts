@@ -38,13 +38,27 @@ export const MUTATION = {
     },
 
     JOB: {
+        createJob: "create_job",
+        editJob: "edit_job",
+        updateJobStatus: "updateJobStatus",
+        deleteJob: "deleteJob",
         toggleSaveJob: "toggle_save_job",
     },
+
+    JOBSKILL: {
+        addSkill: "add_skill",
+        removeSkill: "remove_skill"
+    },
+
+    JOB_BENEFIT: {
+        addBenefit: "add_benefit",
+        removeBenefit: "remove_benefit"
+    }
 };
 
 export const QUERY = {
     USER: {
-        getUserData: "get_user_data"
+        getUserData: "get_user_data",
     },
 
     COMPANY: {
@@ -61,7 +75,7 @@ export const QUERY = {
     JOB: {
         getAllJobs: "get_all_jobs", // --> uses search params
         getJobById: "get_job_by_id", // --> uses jobId params
-        getAllSavedJob: 'get_all_saved_jobs' // --> uses page params
+        getAllSavedJob: "get_all_saved_jobs", // --> uses page params
     },
 
     JOBSKILL: {
@@ -74,6 +88,6 @@ export const QUERY = {
     },
 
     APPLY: {
-        getAllApplication: "get_all_application"  // --> uses page params
-    }
+        getAllApplication: "get_all_application", // --> uses page params
+    },
 };

@@ -10,6 +10,7 @@ type UserData = {
     name: string;
     role: string;
     authType: string;
+    companyId: number | undefined;
 };
 
 export const useGetUserData = (options?: UseQueryOptions<ApiResponse<UserData>, AxiosError<ApiError>>) => {

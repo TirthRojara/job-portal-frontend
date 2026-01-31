@@ -7,12 +7,14 @@ import { RecruiterSidebar } from "@/features/dashboard/recruiter/components/recr
 import { appActions } from "@/store/app.slice";
 import { useAppDispatch, useAppSelector } from "@/store/index.store";
 import { Bell, Moon, Plus, SearchIcon, Sun } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     // const [isDarkTheme, setTheme] = useState(false);
     const isDarkTheme = useAppSelector((state) => state.app.isDarkTheme);
     const dispatch = useAppDispatch();
+    const router = useRouter()
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
@@ -43,7 +45,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                     </InputGroupAddon>
                                 </InputGroup>
                             </div> */}
-                                <Button>
+                                <Button onClick={() => router.push('/dashboard/recruiter/jobpost/create')}>
                                     <Plus /> New Job
                                 </Button>
                             </div>

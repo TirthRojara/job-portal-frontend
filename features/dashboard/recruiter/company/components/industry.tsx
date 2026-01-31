@@ -7,7 +7,7 @@ import { useGetCompanyIndustry } from "../api/query";
 import { string } from "zod";
 import { CompanyIndustry } from "../api/types";
 
-const role = "CANDIDATEz";
+// const role = "CANDIDATE";
 
 export default function Industry({ companyId }: { companyId: number }) {
     const { data, isLoading, error } = useGetCompanyIndustry(companyId);

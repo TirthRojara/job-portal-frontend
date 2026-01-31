@@ -40,7 +40,7 @@ export default function JobpostIdPage({ jobId }: { jobId: string }) {
             >
                 {(safeData) => (
                     <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
-                        <Header />
+                        <Header jobId={jobId} />
                         <JobDetailsTop jobData={jobData?.data!} />
                         <JobDescription jobData={jobData?.data!} />
                     </div>

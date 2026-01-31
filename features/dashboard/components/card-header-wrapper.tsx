@@ -11,6 +11,7 @@ interface CardHeaderWrapperProps {
     lucidIcon?: LucideIcon;
     children?: ReactNode;
     searchDialog?: Boolean;
+    searchDialogAction?: ReactNode;
     width?: string;
 }
 
@@ -31,6 +32,7 @@ export default function CardHeaderWrapper({
     lucidIcon: Icon = Plus,
     children,
     searchDialog = false,
+    searchDialogAction,
     width,
 }: CardHeaderWrapperProps) {
     const [skillResults, setSkillResults] = useState<SearchItem[]>(ALL_SKILLS);
@@ -77,6 +79,9 @@ export default function CardHeaderWrapper({
                         </Button>
                     )
                 )}
+
+                {searchDialogAction}
+                
             </CardHeader>
             <CardContent className=" px-4">{children}</CardContent>
         </Card>
