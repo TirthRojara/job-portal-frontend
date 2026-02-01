@@ -46,7 +46,13 @@ export const MUTATION = {
 
     CANDIDATE_PROFILE: {
         createCandidateProfile: "create_candidate_profile",
-        updateCandidateProfile: "update_candidate_profile"
+        updateCandidateProfile: "update_candidate_profile",
+    },
+
+    CANDIDATE_LANGUAGE: {
+        createLanguage: "create_language",
+        updateLanguageLevel: "update_language_level",
+        deleteLanguage: "delete_language",
     },
 };
 
@@ -87,5 +93,9 @@ export const QUERY = {
 
     CANDIDATE_PROFILE: {
         getCandidateProfile: "get_candidate_profile",
+    },
+
+    CANDIDATE_LANGUAGE: {
+        getCandidateLanguage: "get_candidate_language",
     },
 };

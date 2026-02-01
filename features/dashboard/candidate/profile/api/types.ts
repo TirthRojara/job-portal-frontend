@@ -74,3 +74,20 @@ export type UpdateProfilePayload = {
     address?: string;
     openToWork?: boolean;
 };
+
+// LANGUAGE
+
+export enum Level {
+    NATIVE = "NATIVE",
+    FLUENT = "FLUENT",
+    BASIC = "BASIC",
+}
+
+export type createLanguagePayload = {
+    languageName: string;
+    level: Level;
+};
+
+export type updateLanguageLevelPayload = {
+    level: Level;
+};

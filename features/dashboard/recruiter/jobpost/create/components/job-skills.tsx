@@ -169,7 +169,6 @@ export function JobSkillsEdit() {
         },
     });
 
-    
     const { mutate: removeSkillInEdit } = useRemoveSkillInJob({
         onMutate: async (variables, context) => {
             const queryKey = [QUERY.JOBSKILL.getJobIdSkill, variables.jobId];
