@@ -1,5 +1,3 @@
-
-
 export const MUTATION = {
     AUTH: {
         login: "auth_login",
@@ -38,13 +36,18 @@ export const MUTATION = {
 
     JOBSKILL: {
         addSkill: "add_skill",
-        removeSkill: "remove_skill"
+        removeSkill: "remove_skill",
     },
 
     JOB_BENEFIT: {
         addBenefit: "add_benefit",
-        removeBenefit: "remove_benefit"
-    }
+        removeBenefit: "remove_benefit",
+    },
+
+    CANDIDATE_PROFILE: {
+        createCandidateProfile: "create_candidate_profile",
+        updateCandidateProfile: "update_candidate_profile"
+    },
 };
 
 export const QUERY = {
@@ -80,5 +83,9 @@ export const QUERY = {
 
     APPLY: {
         getAllApplication: "get_all_application", // --> uses page params
+    },
+
+    CANDIDATE_PROFILE: {
+        getCandidateProfile: "get_candidate_profile",
     },
 };

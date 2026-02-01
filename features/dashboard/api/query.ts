@@ -11,6 +11,7 @@ type UserData = {
     role: string;
     authType: string;
     companyId: number | undefined;
+    candidateProfileId: number | undefined | null;
 };
 
 export const useGetUserData = (options?: UseQueryOptions<ApiResponse<UserData>, AxiosError<ApiError>>) => {
