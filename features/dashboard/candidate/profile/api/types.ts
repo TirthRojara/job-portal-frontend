@@ -91,3 +91,16 @@ export type createLanguagePayload = {
 export type updateLanguageLevelPayload = {
     level: Level;
 };
+
+// SKILL
+
+export type CandidateSkillResponse = {
+    skill: {
+        id: number;
+        name: string;
+    };
+};
+
+export type CandidateSkillPayload = {
+    skillId: number;
+};

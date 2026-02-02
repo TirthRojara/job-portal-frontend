@@ -43,8 +43,6 @@ export function EditLanguageDialog({ languageName, level }: { languageName: stri
 
     const { mutate, isPending } = useUpdateLanguageLevel();
 
-    console.log("lang edit \n level", level);
-
     const form = useForm<LanguageLevelFormData>({
         resolver: zodResolver(LanguageLevelSchema),
         defaultValues: {
@@ -61,14 +59,12 @@ export function EditLanguageDialog({ languageName, level }: { languageName: stri
     }, [open, level, form]);
 
     function onSubmit(data: LanguageLevelFormData) {
-        console.log("update level data", data);
-
         mutate({
             languageName,
             payload: { level: data.level },
         });
 
-        setOpen(false)
+        setOpen(false);
     }
 
     return (

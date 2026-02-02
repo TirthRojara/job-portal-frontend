@@ -2,6 +2,8 @@
 
 import api from "@/lib/axios/client";
 import {
+    CandidateSkillPayload,
+    CandidateSkillResponse,
     createLanguagePayload,
     CreateProfilePayload,
     CreateProfileResponse,
@@ -50,12 +52,31 @@ export const getCandidateLanguage = async ({
 export const updateLanguageLevel = async (
     languageName: string,
     payload: updateLanguageLevelPayload,
-): Promise<ApiResponse<CreateProfileResponse>> => {
+): Promise<ApiResponse<createLanguagePayload>> => {
     const res = await api.patch(`v1/candidate-language/me/${languageName}`, payload);
     return res.data;
 };
 
 export const deleteLanguage = async (languageName: string): Promise<ApiError> => {
     const res = await api.delete(`v1/candidate-language/me/${languageName}`);
+    return res.data;
+};
+
+// SKILL
+
+export const createSkill = async (payload: CandidateSkillPayload): Promise<ApiResponse<CandidateSkillResponse>> => {
+    const res = await api.post(`v1/candidate-skill/me`, payload);
+    return res.data;
+};
+
+export const getCandidateSkill = async ({ signal }: { signal: AbortSignal }): Promise<ApiResponse<CandidateSkillResponse[]>> => {
+    const res = await api.get(`v1/candidate-skill/me`);
+    return res.data;
+};
+
+export const deleteSkill = async (payload: CandidateSkillPayload): Promise<ApiResponse<CandidateSkillResponse>> => {
+    const res = await api.delete(`v1/candidate-skill/me`, {
+        data: payload,
+    });
     return res.data;
 };

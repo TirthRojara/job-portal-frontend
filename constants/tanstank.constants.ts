@@ -54,6 +54,11 @@ export const MUTATION = {
         updateLanguageLevel: "update_language_level",
         deleteLanguage: "delete_language",
     },
+
+    CANDIDATE_SKILL: {
+        createSkill: "create_skill",
+        deleteSkill: "delete_skill",
+    },
 };
 
 export const QUERY = {
@@ -97,5 +102,9 @@ export const QUERY = {
 
     CANDIDATE_LANGUAGE: {
         getCandidateLanguage: "get_candidate_language",
+    },
+
+    CANDIDATE_SKILL: {
+        getCandidateSkill: "get_candidate_skill",
     },
 };

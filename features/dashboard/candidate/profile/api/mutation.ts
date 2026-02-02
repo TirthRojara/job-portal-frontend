@@ -3,6 +3,8 @@ import { ApiError, ApiResponse } from "@/types/api";
 import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
+    CandidateSkillPayload,
+    CandidateSkillResponse,
     createLanguagePayload,
     CreateProfilePayload,
     CreateProfileResponse,
@@ -13,12 +15,15 @@ import { toast } from "sonner";
 import {
     createCandidateProfile,
     createLanguage,
+    createSkill,
     deleteLanguage,
+    deleteSkill,
     getCandidateProfile,
     updateCandidateProfile,
     updateLanguageLevel,
 } from "./api";
 import { useRouter } from "next/navigation";
+import { sk } from "date-fns/locale";
 
 //  PROFILE
 
@@ -240,5 +245,113 @@ export const useDeleteLanguage = (
             // toast.success("Crete Profile Successfully.");
             // window.location.reload();
         },
+    });
+};
+
+// SKILL
+
+type SkillContext = {
+    previousSkill: ApiResponse<CandidateSkillResponse[]> | undefined;
+};
+
+export const useCreateSkill = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateSkillResponse>,
+        AxiosError<ApiError>,
+        { payload: CandidateSkillPayload; skillName: string },
+        SkillContext
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_PROFILE.updateCandidateProfile],
+        mutationFn: ({ payload }: { payload: CandidateSkillPayload }) => createSkill(payload),
+        onMutate: async (variables) => {
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+
+            await queryClient.cancelQueries({ queryKey });
+
+            const previousSkill = queryClient.getQueryData<ApiResponse<CandidateSkillResponse[]>>(queryKey);
+
+            queryClient.setQueryData<ApiResponse<CandidateSkillResponse[]>>(queryKey, (oldData) => {
+                if (!oldData) return oldData;
+
+                const optimisticNewSkill: CandidateSkillResponse = {
+                    skill: {
+                        id: variables.payload.skillId,
+                        name: variables.skillName,
+                    },
+                };
+
+                return {
+                    ...oldData,
+                    data: [...(oldData.data || []), optimisticNewSkill],
+                };
+            });
+
+            return { previousSkill };
+        },
+        onError(error, variables, context) {
+            toast.error("Something went wrong.");
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+            if (context?.previousSkill) {
+                queryClient.setQueryData(queryKey, context.previousSkill);
+            }
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+
+        ...options,
+    });
+};
+
+export const useDeleteSkill = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateSkillResponse>,
+        AxiosError<ApiError>,
+        { payload: CandidateSkillPayload },
+        SkillContext
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_PROFILE.updateCandidateProfile],
+        mutationFn: ({ payload }: { payload: CandidateSkillPayload }) => deleteSkill(payload),
+        onMutate: async (variables) => {
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+
+            await queryClient.cancelQueries({ queryKey });
+
+            const previousSkill = queryClient.getQueryData<ApiResponse<CandidateSkillResponse[]>>(queryKey);
+
+            queryClient.setQueryData<ApiResponse<CandidateSkillResponse[]>>(queryKey, (oldData) => {
+                if (!oldData || !oldData.data) return oldData;
+
+                return {
+                    ...oldData,
+                    // ✅ Filter OUT the skill that matches the ID
+                    data: oldData.data.filter((item) => item.skill.id !== variables.payload.skillId),
+                };
+            });
+
+            return { previousSkill };
+        },
+        onError(error, variables, context) {
+            toast.error("Something went wrong.");
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+            if (context?.previousSkill) {
+                queryClient.setQueryData(queryKey, context.previousSkill);
+            }
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_SKILL.getCandidateSkill];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+
+        ...options,
     });
 };

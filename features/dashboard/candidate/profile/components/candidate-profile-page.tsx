@@ -28,7 +28,7 @@ const languages = [
 
 export default function CandidateProfilePage() {
     const { data: userData, isError, isLoading } = useGetUserData();
-    const { data: candidateData, isLoading: isLoadingCandidateData } = useGetCandidateProfile()
+    const { data: candidateData, isLoading: isLoadingCandidateData } = useGetCandidateProfile();
 
     console.log("candidate data", userData);
 
@@ -40,11 +40,11 @@ export default function CandidateProfilePage() {
             {/* <h1>profile page</h1> */}
             <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
                 {!userData?.data?.candidateProfileId && <CreateProfile />}
-                {userData?.data?.candidateProfileId  && (
+                {userData?.data?.candidateProfileId && (
                     <>
                         <ProfileSummaryCard profile={profile} />
-                        <Summary summary={candidateData?.data?.summary!}/>
-                        <ProfileDetails profileData={candidateData?.data!}/>
+                        <Summary summary={candidateData?.data?.summary!} />
+                        <ProfileDetails profileData={candidateData?.data!} />
                         <LanguageDetails languages={languages} />
                         <SkillsDetails />
                         <EducationDetails />

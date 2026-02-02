@@ -12,8 +12,9 @@ import { SearchAddDialog, SearchItem } from "@/features/dashboard/components/sea
 import { useGetCandidateLanguage } from "../api/query";
 import { useCreateLanguage, useDeleteLanguage } from "../api/mutation";
 import { Level } from "../api/types";
+import { useAppSelector } from "@/store/index.store";
 
-const role = "CANDIDATE";
+// const role = "CANDIDATE";
 
 const ALL_LANGUAGES = [
     { value: "Italian", label: "Italian" },
@@ -26,11 +27,6 @@ const ALL_LANGUAGES = [
     { value: "Hindi", label: "Hindi" },
 ];
 
-// const lang = {
-//     name: "Englist",
-//     level: "Basic",
-// };
-
 type LanguageLevel = "Native" | "Intermediate" | "Beginner";
 
 export type Language = {
@@ -40,9 +36,6 @@ export type Language = {
 
 type LanguagesTableProps = {
     languages: Language[];
-    // onEdit: (language: Language) => void;
-    // onDelete: (id: string) => void;
-    // onAdd: () => void;
 };
 
 export default function LanguageDetails({ languages }: LanguagesTableProps) {
@@ -53,7 +46,7 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
     const { mutate: createMutate } = useCreateLanguage();
     const { mutate: deleteMutate, isPending: isDeletePending } = useDeleteLanguage();
 
-    console.log(candidateLanguage);
+    const role = useAppSelector((state) => state.app.role);
 
     // Function 3: Handle Language Search (Different logic!)
     const handleLangSearch = (query: string) => {
@@ -63,16 +56,12 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
 
     // Function 4: Handle Language Selection
     const handleAddLanguage = (item: SearchItem) => {
-        console.log("Saving Language to DB:", item);
-
         createMutate({
             payload: { languageName: item.label, level: Level.FLUENT },
         });
     };
 
     const handleLanguageDelete = (languageName: string) => {
-        console.log({ languageName });
-
         deleteMutate({
             languageName: languageName,
         });

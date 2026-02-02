@@ -2,9 +2,9 @@ import { ApiResponse } from "@/types/api";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ApiError } from "next/dist/server/api-utils";
-import { getCandidateLanguage, getCandidateProfile } from "./api";
+import { getCandidateLanguage, getCandidateProfile, getCandidateSkill } from "./api";
 import { QUERY } from "@/constants/tanstank.constants";
-import { createLanguagePayload, CreateProfileResponse } from "./types";
+import { CandidateSkillResponse, createLanguagePayload, CreateProfileResponse } from "./types";
 
 //  PROFILE
 
@@ -25,6 +25,17 @@ export const useGetCandidateLanguage = (
     return useQuery({
         queryKey: [QUERY.CANDIDATE_LANGUAGE.getCandidateLanguage],
         queryFn: ({ signal }) => getCandidateLanguage({ signal }),
+        enabled: true,
+        ...options,
+    });
+};
+
+// SKILL
+
+export const useGetCandidateSkill = (options?: UseQueryOptions<ApiResponse<CandidateSkillResponse[]>, AxiosError<ApiError>>) => {
+    return useQuery({
+        queryKey: [QUERY.CANDIDATE_SKILL.getCandidateSkill],
+        queryFn: ({ signal }) => getCandidateSkill({ signal }),
         enabled: true,
         ...options,
     });
