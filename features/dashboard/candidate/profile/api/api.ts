@@ -4,6 +4,8 @@ import api from "@/lib/axios/client";
 import {
     CandidateEducationPayload,
     CandidateEducationResponse,
+    CandidateExperiencePayload,
+    CandidateExperienceResponse,
     CandidateSkillPayload,
     CandidateSkillResponse,
     createLanguagePayload,
@@ -109,5 +111,36 @@ export const editEducation = async (
 
 export const deleteEducation = async (candidateEducationId: number): Promise<ApiError> => {
     const res = await api.delete(`v1/candidate-education/me/${candidateEducationId}`);
+    return res.data;
+};
+
+//  EXPERIENCE
+
+export const getCandidateExperience = async ({
+    signal,
+}: {
+    signal: AbortSignal;
+}): Promise<ApiResponse<CandidateExperienceResponse[]>> => {
+    const res = await api.get(`v1/candidate-experience/me`, { signal });
+    return res.data;
+};
+
+export const createExperience = async (
+    payload: CandidateExperiencePayload,
+): Promise<ApiResponse<CandidateExperienceResponse>> => {
+    const res = await api.post(`v1/candidate-experience/me`, payload);
+    return res.data;
+};
+
+export const editExperience = async (
+    candidateExperienceId: number,
+    payload: Partial<CandidateExperiencePayload>,
+): Promise<ApiResponse<CandidateExperienceResponse>> => {
+    const res = await api.patch(`v1/candidate-experience/me/${candidateExperienceId}`, payload);
+    return res.data;
+};
+
+export const deleteExperience = async (candidateExperienceId: number): Promise<ApiError> => {
+    const res = await api.delete(`v1/candidate-experience/me/${candidateExperienceId}`);
     return res.data;
 };

@@ -137,9 +137,15 @@ export default function EducationDetailsAdd({ trigger, isEdit, initialData }: Ed
         }
     }, [isEdit, initialData, form]);
 
+    // useEffect(() => {
+    //     if (isEditSuccess) if (isEditSuccess) setOpen(false);
+    //     if (isCreateSuccess) if (isCreateSuccess) setOpen(false);
+    // }, [isEditSuccess, isCreateSuccess]);
+
     useEffect(() => {
-        if (isEditSuccess) if (isEditSuccess) setOpen(false);
-        if (isCreateSuccess) if (isCreateSuccess) setOpen(false);
+        if (isEditSuccess || isCreateSuccess) {
+            setOpen(false);
+        }
     }, [isEditSuccess, isCreateSuccess]);
 
     function onSubmit(data: CreateEducationForm | EditEducationForm) {

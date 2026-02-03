@@ -65,6 +65,12 @@ export const MUTATION = {
         editEducation: "edit_education",
         deleteEducation: "delete_education",
     },
+
+    CANDIDATE_EXPERIENCE: {
+        createExperience: "create_experience",
+        editExperience: "edit_experience",
+        deleteExperience: "delete_experience",
+    },
 };
 
 export const QUERY = {
@@ -116,5 +122,9 @@ export const QUERY = {
 
     CANDIDATE_EDUCATION: {
         getCandidateEducation: "get_candidate_education",
+    },
+
+    CANDIDATE_EXPERIENCE: {
+        getCandidateExperience: "get_candidate_experience",
     },
 };

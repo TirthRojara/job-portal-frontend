@@ -5,6 +5,8 @@ import { AxiosError } from "axios";
 import {
     CandidateEducationPayload,
     CandidateEducationResponse,
+    CandidateExperiencePayload,
+    CandidateExperienceResponse,
     CandidateSkillPayload,
     CandidateSkillResponse,
     createLanguagePayload,
@@ -17,12 +19,15 @@ import { toast } from "sonner";
 import {
     createCandidateProfile,
     createEducation,
+    createExperience,
     createLanguage,
     createSkill,
     deleteEducation,
+    deleteExperience,
     deleteLanguage,
     deleteSkill,
     editEducation,
+    editExperience,
     getCandidateProfile,
     updateCandidateProfile,
     updateLanguageLevel,
@@ -475,6 +480,80 @@ export const useDeleteEducation = (
         },
         onSettled: () => {
             const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+        ...options,
+    });
+};
+
+//  EXPERIENCT
+
+export const useCreateExperience = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateExperienceResponse>,
+        AxiosError<ApiError>,
+        { payload: CandidateExperiencePayload }
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EXPERIENCE.createExperience],
+        mutationFn: ({ payload }: { payload: CandidateExperiencePayload }) => createExperience(payload),
+        onError() {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EXPERIENCE.getCandidateExperience];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+        ...options,
+    });
+};
+
+export const useEditExperience = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateExperienceResponse>,
+        AxiosError<ApiError>,
+        { candidateExperienceId: number; payload: Partial<CandidateExperiencePayload> }
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EXPERIENCE.editExperience],
+        mutationFn: ({
+            candidateExperienceId,
+            payload,
+        }: {
+            candidateExperienceId: number;
+            payload: Partial<CandidateExperiencePayload>;
+        }) => editExperience(candidateExperienceId, payload),
+        onError() {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EXPERIENCE.getCandidateExperience];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+
+        ...options,
+    });
+};
+
+export const useDeleteExperience = (
+    options?: UseMutationOptions<ApiError, AxiosError<ApiError>, { candidateExperienceId: number }>,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EXPERIENCE.editExperience],
+        mutationFn: ({ candidateExperienceId }: { candidateExperienceId: number }) => deleteExperience(candidateExperienceId),
+        onError() {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EXPERIENCE.getCandidateExperience];
             queryClient.invalidateQueries({ queryKey: queryKey });
         },
         ...options,
