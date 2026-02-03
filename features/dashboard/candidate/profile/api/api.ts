@@ -2,6 +2,8 @@
 
 import api from "@/lib/axios/client";
 import {
+    CandidateEducationPayload,
+    CandidateEducationResponse,
     CandidateSkillPayload,
     CandidateSkillResponse,
     createLanguagePayload,
@@ -78,5 +80,34 @@ export const deleteSkill = async (payload: CandidateSkillPayload): Promise<ApiRe
     const res = await api.delete(`v1/candidate-skill/me`, {
         data: payload,
     });
+    return res.data;
+};
+
+// EDUCATION
+
+export const getCandidateEducation = async ({
+    signal,
+}: {
+    signal: AbortSignal;
+}): Promise<ApiResponse<CandidateEducationResponse[]>> => {
+    const res = await api.get(`v1/candidate-education/me`, { signal });
+    return res.data;
+};
+
+export const createEducation = async (payload: CandidateEducationPayload): Promise<ApiResponse<CandidateEducationResponse>> => {
+    const res = await api.post(`v1/candidate-education/me`, payload);
+    return res.data;
+};
+
+export const editEducation = async (
+    candidateEducationId: number,
+    payload: Partial<CandidateEducationPayload>,
+): Promise<ApiResponse<CandidateEducationResponse>> => {
+    const res = await api.patch(`v1/candidate-education/me/${candidateEducationId}`, payload);
+    return res.data;
+};
+
+export const deleteEducation = async (candidateEducationId: number): Promise<ApiError> => {
+    const res = await api.delete(`v1/candidate-education/me/${candidateEducationId}`);
     return res.data;
 };

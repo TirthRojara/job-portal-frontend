@@ -104,3 +104,61 @@ export type CandidateSkillResponse = {
 export type CandidateSkillPayload = {
     skillId: number;
 };
+
+// EDUCATION
+
+export enum Degree {
+    BACHELOR = "BACHELOR",
+    MASTER = "MASTER",
+    PHD = "PHD",
+}
+
+export type CandidateEducationResponse = {
+    id: number;
+    major: string;
+    degree: string;
+    yearStart: number;
+    yearEnd: number;
+    candidateProfileId: number;
+    educationId: number;
+    education: {
+        id: number;
+        name: string;
+        map: string;
+    };
+};
+
+export const CreateEducationSchema = z.object({
+    major: z.string({ error: "Required" }).min(1, "Required"),
+    degree: z.enum(Degree, {
+        error: "Please select degree",
+    }),
+    yearStart: z.date({ error: "Please select date" }),
+    yearEnd: z.date({ error: "Please select date" }),
+    educationId: z.string({ error: "Please select University" }),
+});
+
+export type CreateEducationForm = z.infer<typeof CreateEducationSchema>;
+
+export const EditEducationSchema = z
+    .object({
+        major: z.string().optional(),
+        degree: z.enum(Degree).optional(),
+        yearStart: z.date().optional(),
+        yearEnd: z.date().optional(),
+        educationId: z.string().optional(),
+    })
+    .refine((data) => Object.values(data).some((value) => value !== undefined && value !== "" && value !== null), {
+        message: "At least one field is required",
+        path: ["_form"], // form-level error
+    });
+
+export type EditEducationForm = z.infer<typeof EditEducationSchema>;
+
+export type CandidateEducationPayload = {
+    educationId: number;
+    major: string;
+    degree: Degree;
+    yearStart: number;
+    yearEnd: number;
+};

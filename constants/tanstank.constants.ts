@@ -59,6 +59,12 @@ export const MUTATION = {
         createSkill: "create_skill",
         deleteSkill: "delete_skill",
     },
+
+    CANDIDATE_EDUCATION: {
+        createEducation: "create_eduction",
+        editEducation: "edit_education",
+        deleteEducation: "delete_education",
+    },
 };
 
 export const QUERY = {
@@ -106,5 +112,9 @@ export const QUERY = {
 
     CANDIDATE_SKILL: {
         getCandidateSkill: "get_candidate_skill",
+    },
+
+    CANDIDATE_EDUCATION: {
+        getCandidateEducation: "get_candidate_education",
     },
 };

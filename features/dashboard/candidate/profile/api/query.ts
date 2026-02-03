@@ -2,9 +2,9 @@ import { ApiResponse } from "@/types/api";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ApiError } from "next/dist/server/api-utils";
-import { getCandidateLanguage, getCandidateProfile, getCandidateSkill } from "./api";
+import { getCandidateEducation, getCandidateLanguage, getCandidateProfile, getCandidateSkill } from "./api";
 import { QUERY } from "@/constants/tanstank.constants";
-import { CandidateSkillResponse, createLanguagePayload, CreateProfileResponse } from "./types";
+import { CandidateEducationResponse, CandidateSkillResponse, createLanguagePayload, CreateProfileResponse } from "./types";
 
 //  PROFILE
 
@@ -36,6 +36,17 @@ export const useGetCandidateSkill = (options?: UseQueryOptions<ApiResponse<Candi
     return useQuery({
         queryKey: [QUERY.CANDIDATE_SKILL.getCandidateSkill],
         queryFn: ({ signal }) => getCandidateSkill({ signal }),
+        enabled: true,
+        ...options,
+    });
+};
+
+// EDUCATION
+
+export const useGetCandidateEducation = (options?: UseQueryOptions<ApiResponse<CandidateEducationResponse[]>, AxiosError<ApiError>>) => {
+    return useQuery({
+        queryKey: [QUERY.CANDIDATE_EDUCATION.getCandidateEducation],
+        queryFn: ({ signal }) => getCandidateEducation({ signal }),
         enabled: true,
         ...options,
     });

@@ -3,6 +3,8 @@ import { ApiError, ApiResponse } from "@/types/api";
 import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
+    CandidateEducationPayload,
+    CandidateEducationResponse,
     CandidateSkillPayload,
     CandidateSkillResponse,
     createLanguagePayload,
@@ -14,16 +16,20 @@ import {
 import { toast } from "sonner";
 import {
     createCandidateProfile,
+    createEducation,
     createLanguage,
     createSkill,
+    deleteEducation,
     deleteLanguage,
     deleteSkill,
+    editEducation,
     getCandidateProfile,
     updateCandidateProfile,
     updateLanguageLevel,
 } from "./api";
 import { useRouter } from "next/navigation";
 import { sk } from "date-fns/locale";
+import { string } from "zod";
 
 //  PROFILE
 
@@ -352,6 +358,125 @@ export const useDeleteSkill = (
             queryClient.invalidateQueries({ queryKey: queryKey });
         },
 
+        ...options,
+    });
+};
+
+// EDUCATION
+
+type EducationContext = {
+    previousEducation: ApiResponse<CandidateEducationResponse[]> | undefined;
+};
+
+export const useCreateEducation = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateEducationResponse>,
+        AxiosError<ApiError>,
+        // { payload: CandidateEducationPayload; educationName: string },
+        { payload: CandidateEducationPayload },
+        EducationContext
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EDUCATION.createEducation],
+        mutationFn: ({ payload }: { payload: CandidateEducationPayload }) => createEducation(payload),
+        // onMutate: async (variables) => {
+        //     const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+
+        //     await queryClient.cancelQueries({ queryKey });
+
+        //     const previousEducation = queryClient.getQueryData<ApiResponse<CandidateEducationResponse[]>>(queryKey);
+
+        //     queryClient.setQueryData<ApiResponse<CandidateEducationResponse[]>>(queryKey, (oldData) => {
+        //         if (!oldData) return oldData;
+
+        //         const optimisticNewEducation: CandidateEducationResponse = {
+        //             id: Number(-Date.now()),
+        //             degree: variables.payload.degree,
+        //             candidateProfileId: Number(-Date.now()),
+        //             major: variables.payload.major,
+        //             yearEnd: variables.payload.yearEnd,
+        //             yearStart: variables.payload.yearStart,
+        //             educationId: variables.payload.educationId,
+        //             education: {
+        //                 id: variables.payload.educationId,
+        //                 map: '',
+        //                 name: variables.educationName
+        //             }
+        //         };
+
+        //         return {
+        //             ...oldData,
+        //             data: [...(oldData.data || []), optimisticNewEducation],
+        //         };
+        //     });
+
+        //     return { previousEducation };
+        // },
+        onError(error, variables, context) {
+            toast.error("Something went wrong.");
+            // const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+            // if (context?.previousEducation) {
+            //     queryClient.setQueryData(queryKey, context.previousEducation);
+            // }
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+
+        ...options,
+    });
+};
+
+export const useEditEducation = (
+    options?: UseMutationOptions<
+        ApiResponse<CandidateEducationResponse>,
+        AxiosError<ApiError>,
+        { candidateEducationId: number; payload: Partial<CandidateEducationPayload> }
+        // EducationContext
+    >,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EDUCATION.createEducation],
+        mutationFn: ({
+            candidateEducationId,
+            payload,
+        }: {
+            candidateEducationId: number;
+            payload: Partial<CandidateEducationPayload>;
+        }) => editEducation(candidateEducationId, payload),
+        onError(error, variables, context) {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+
+        ...options,
+    });
+};
+
+export const useDeleteEducation = (
+    options?: UseMutationOptions<ApiError, AxiosError<ApiError>, { candidateEducationId: number }, EducationContext>,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EDUCATION.createEducation],
+        mutationFn: ({ candidateEducationId }: { candidateEducationId: number }) => deleteEducation(candidateEducationId),
+        onError(error, variables, context) {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_EDUCATION.getCandidateEducation];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
         ...options,
     });
 };
