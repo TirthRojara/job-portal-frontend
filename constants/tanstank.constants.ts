@@ -127,4 +127,8 @@ export const QUERY = {
     CANDIDATE_EXPERIENCE: {
         getCandidateExperience: "get_candidate_experience",
     },
+
+    CANDIDATE_RESUME: {
+        getCandidateResume: "get_candidate_resume",
+    },
 };

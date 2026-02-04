@@ -7,6 +7,7 @@ import {
     getCandidateExperience,
     getCandidateLanguage,
     getCandidateProfile,
+    getCandidateResume,
     getCandidateSkill,
 } from "./api";
 import { QUERY } from "@/constants/tanstank.constants";
@@ -74,6 +75,17 @@ export const useGetCandidateExperience = (
     return useQuery({
         queryKey: [QUERY.CANDIDATE_EXPERIENCE.getCandidateExperience],
         queryFn: ({ signal }) => getCandidateExperience({ signal }),
+        enabled: true,
+        ...options,
+    });
+};
+
+// RESUME
+
+export const useGetCandidateResume = (options?: UseQueryOptions<Blob, AxiosError<ApiError>>) => {
+    return useQuery({
+        queryKey: [QUERY.CANDIDATE_RESUME.getCandidateResume],
+        queryFn: ({ signal }) => getCandidateResume({ signal }),
         enabled: true,
         ...options,
     });

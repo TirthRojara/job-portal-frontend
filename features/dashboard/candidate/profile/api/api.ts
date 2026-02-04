@@ -144,3 +144,10 @@ export const deleteExperience = async (candidateExperienceId: number): Promise<A
     const res = await api.delete(`v1/candidate-experience/me/${candidateExperienceId}`);
     return res.data;
 };
+
+// RESUME
+
+export const getCandidateResume = async ({ signal }: { signal: AbortSignal }): Promise<Blob> => {
+    const res = await api.get(`v1/candidate-profiles/resume/candidate`, { responseType: "blob", signal });
+    return res.data;
+};
