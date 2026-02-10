@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/api";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { ApiError } from "next/dist/server/api-utils";
 import {
     getCandidateEducation,
@@ -82,7 +82,7 @@ export const useGetCandidateExperience = (
 
 // RESUME
 
-export const useGetCandidateResume = (options?: UseQueryOptions<Blob, AxiosError<ApiError>>) => {
+export const useGetCandidateResume = (options?: UseQueryOptions<AxiosResponse<Blob>, AxiosError<ApiError>>) => {
     return useQuery({
         queryKey: [QUERY.CANDIDATE_RESUME.getCandidateResume],
         queryFn: ({ signal }) => getCandidateResume({ signal }),

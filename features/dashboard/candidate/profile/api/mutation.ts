@@ -12,6 +12,7 @@ import {
     createLanguagePayload,
     CreateProfilePayload,
     CreateProfileResponse,
+    ResumePayload,
     updateLanguageLevelPayload,
     UpdateProfilePayload,
 } from "./types";
@@ -31,6 +32,7 @@ import {
     getCandidateProfile,
     updateCandidateProfile,
     updateLanguageLevel,
+    uploadResume,
 } from "./api";
 import { useRouter } from "next/navigation";
 import { sk } from "date-fns/locale";
@@ -555,6 +557,30 @@ export const useDeleteExperience = (
         onSettled: () => {
             const queryKey = [QUERY.CANDIDATE_EXPERIENCE.getCandidateExperience];
             queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+        ...options,
+    });
+};
+
+// RESUME
+
+export const useUploadResume = (
+    options?: UseMutationOptions<ApiResponse<CreateProfileResponse>, AxiosError<ApiError>, { payload: ResumePayload }>,
+) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationKey: [MUTATION.CANDIDATE_EXPERIENCE.editExperience],
+        mutationFn: ({ payload }: { payload: ResumePayload }) => uploadResume(payload),
+        onError() {
+            toast.error("Something went wrong.");
+        },
+        onSettled: () => {
+            const queryKey = [QUERY.CANDIDATE_PROFILE.getCandidateProfile];
+            queryClient.invalidateQueries({ queryKey: queryKey });
+        },
+        onSuccess: () => {
+            toast.success("Resume upload successfully.");
         },
         ...options,
     });

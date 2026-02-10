@@ -375,3 +375,26 @@ export const EditExperienceSchema = z
 
 export type CreateExperienceForm = z.infer<typeof CreateExperienceSchema>;
 export type EditExperienceForm = z.infer<typeof EditExperienceSchema>;
+
+// RESUME
+
+export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const ACCEPTED_FILE_TYPES = ["application/pdf"];
+
+export const formSchema = z.object({
+    resume: z
+        .instanceof(File, { message: "Please upload a resume." })
+        .refine((file) => file.size <= MAX_FILE_SIZE, {
+            message: "File size should be less than 10MB.",
+        })
+        .refine((file) => ACCEPTED_FILE_TYPES.includes(file.type), {
+            message: "Only PDF files are accepted.",
+        }),
+});
+
+export type FormValues = z.infer<typeof formSchema>;
+
+export type ResumePayload = {
+    // cv: FormValues;
+    cv: File;
+};

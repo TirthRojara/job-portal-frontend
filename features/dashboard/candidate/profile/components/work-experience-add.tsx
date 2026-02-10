@@ -62,23 +62,6 @@ export default function WorkExperienceAdd({ isEdit, trigger, initialData }: Educ
 
     const { isDirty, dirtyFields } = form.formState;
 
-    // useEffect(() => {
-    //     if (isEdit && initialData) {
-    //         form.reset({
-    //             companyName: initialData.companyName || "",
-    //             department: initialData.department || "",
-    //             position: initialData.position || "",
-    //             description: initialData.department || "",
-    //             workPlace: initialData.workPlace || undefined,
-    //             startDate: initialData.startDate ? new Date(initialData.startDate) : undefined,
-    //             endDate: initialData.endDate ? new Date(initialData.endDate) : undefined,
-    //             currentlyWorking: initialData.currentlyWorking ?? false,
-    //             location: initialData.location || "",
-    //         });
-    //     } else if (!isEdit) {
-    //         form.reset(baseDefaults);
-    //     }
-    // }, [isEdit, initialData, form]);
 
     useEffect(() => {
         if (isEdit && initialData) {

@@ -11,10 +11,12 @@ import {
     createLanguagePayload,
     CreateProfilePayload,
     CreateProfileResponse,
+    ResumePayload,
     updateLanguageLevelPayload,
     UpdateProfilePayload,
 } from "./types";
 import { ApiError, ApiResponse } from "@/types/api";
+import { AxiosResponse } from "axios";
 
 //   PROFILE
 
@@ -147,7 +149,16 @@ export const deleteExperience = async (candidateExperienceId: number): Promise<A
 
 // RESUME
 
-export const getCandidateResume = async ({ signal }: { signal: AbortSignal }): Promise<Blob> => {
+export const getCandidateResume = async ({ signal }: { signal: AbortSignal }): Promise<AxiosResponse<Blob>> => {
     const res = await api.get(`v1/candidate-profiles/resume/candidate`, { responseType: "blob", signal });
+    return res;
+};
+
+export const uploadResume = async (payload: ResumePayload): Promise<ApiResponse<CreateProfileResponse>> => {
+    const res = await api.patch("v1/candidate-profiles/update", payload, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
     return res.data;
 };
