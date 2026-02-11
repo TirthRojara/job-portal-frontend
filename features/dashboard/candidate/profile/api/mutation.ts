@@ -34,9 +34,8 @@ import {
     updateLanguageLevel,
     uploadResume,
 } from "./api";
-import { useRouter } from "next/navigation";
-import { sk } from "date-fns/locale";
-import { string } from "zod";
+
+
 
 //  PROFILE
 

@@ -14,7 +14,9 @@ export default function Header({jobId}: {jobId: string}) {
         role === "RECRUITER" && (
             <div className="flex justify-between w-full max-w-4xl">
                 <div>
-                    <Button variant={"outline"}>
+                    <Button
+                    onClick={()=> router.push(`/dashboard/recruiter/jobpost/${jobId}/applicants`)}
+                    variant={"outline"}>
                         <FileUser />
                         View Applicants
                     </Button>

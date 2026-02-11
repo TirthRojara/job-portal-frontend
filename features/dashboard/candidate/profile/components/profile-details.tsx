@@ -1,9 +1,8 @@
+"use client";
 import { FormDisplay } from "@/components/custom-form";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { PenLine } from "lucide-react";
 import React from "react";
 import PersonalDetailsEdit from "../edit/components/personal-details-edit";
 import { useAppSelector } from "@/store/index.store";

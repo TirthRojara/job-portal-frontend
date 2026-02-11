@@ -38,7 +38,8 @@ type LanguagesTableProps = {
     languages: Language[];
 };
 
-export default function LanguageDetails({ languages }: LanguagesTableProps) {
+// export default function LanguageDetails({ languages }: LanguagesTableProps) {
+export default function LanguageDetails() {
     const [langResults, setLangResults] = useState<SearchItem[]>(ALL_LANGUAGES);
 
     const { data: candidateLanguage, isError, isLoading, error } = useGetCandidateLanguage();
@@ -124,7 +125,7 @@ export default function LanguageDetails({ languages }: LanguagesTableProps) {
                 </div>
             </CardHeader>
             <CardContent className=" px-4">
-                <div className="overflow-hidden rounded-md bg-background ">
+                <div className="overflow-hidden rounded-md  ">
                     <Table>
                         <TableHeader>
                             <TableRow className="hover:bg-transparent border-b-2 border-border">

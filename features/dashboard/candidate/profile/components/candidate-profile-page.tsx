@@ -12,19 +12,20 @@ import { useGetUserData } from "@/features/dashboard/api/query";
 import CreateProfile from "./create-profile";
 import { useGetCandidateProfile } from "../api/query";
 
-const profile = {
-    name: "John Smith",
-    role: "Senior Frontend Developer",
-    location: "San Francisco, CA",
-    email: "john.smith@email.com",
-    completion: 85,
-};
 
-const languages = [
-    { id: "1", name: "English", level: "Native" },
-    { id: "2", name: "Spanish", level: "Beginner" },
-    { id: "3", name: "Gujarati", level: "Intermediate" },
-];
+// const profile = {
+//     name: "John Smith",
+//     role: "Senior Frontend Developer",
+//     location: "San Francisco, CA",
+//     email: "john.smith@email.com",
+//     completion: 85,
+// };
+
+// const languages = [
+//     { id: "1", name: "English", level: "Native" },
+//     { id: "2", name: "Spanish", level: "Beginner" },
+//     { id: "3", name: "Gujarati", level: "Intermediate" },
+// ];
 
 export default function CandidateProfilePage() {
     const { data: userData, isError, isLoading } = useGetUserData();
@@ -37,15 +38,15 @@ export default function CandidateProfilePage() {
 
     return (
         <>
-            {/* <h1>profile page</h1> */}
             <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
                 {!userData?.data?.candidateProfileId && <CreateProfile />}
                 {userData?.data?.candidateProfileId && (
                     <>
-                        <ProfileSummaryCard profile={profile} />
+                        {/* <ProfileSummaryCard profile={profile} /> */}
                         <Summary summary={candidateData?.data?.summary!} />
                         <ProfileDetails profileData={candidateData?.data!} />
-                        <LanguageDetails languages={languages} />
+                        {/* <LanguageDetails languages={languages} /> */}
+                        <LanguageDetails />
                         <SkillsDetails />
                         <EducationDetails />
                         <WorkExperience />
@@ -56,5 +57,3 @@ export default function CandidateProfilePage() {
         </>
     );
 }
-
-//  <LanguageDetails languages={[]} />

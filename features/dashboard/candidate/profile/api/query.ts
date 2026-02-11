@@ -1,3 +1,4 @@
+'use client';
 import { ApiResponse } from "@/types/api";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError, AxiosResponse } from "axios";
