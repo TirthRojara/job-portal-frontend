@@ -2,17 +2,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React, { useState } from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import { EditLanguageDialog } from "../edit/components/language-details-edit";
 import { SearchAddDialog, SearchItem } from "@/features/dashboard/components/search-dialog";
-import { useGetCandidateLanguage } from "../api/query";
+import { useGetCandidateLanguage, useGetCandidateLanguageForRecruiter } from "../api/query";
 import { useCreateLanguage, useDeleteLanguage } from "../api/mutation";
 import { Level } from "../api/types";
 import { useAppSelector } from "@/store/index.store";
+import { EmptyState } from "@/components/empty-state";
 
 // const role = "CANDIDATE";
 
@@ -39,15 +39,29 @@ type LanguagesTableProps = {
 };
 
 // export default function LanguageDetails({ languages }: LanguagesTableProps) {
-export default function LanguageDetails() {
+export default function LanguageDetails({ jobId, applicantId }: { jobId?: string; applicantId?: string }) {
     const [langResults, setLangResults] = useState<SearchItem[]>(ALL_LANGUAGES);
 
-    const { data: candidateLanguage, isError, isLoading, error } = useGetCandidateLanguage();
+    const role = useAppSelector((state) => state.app.role);
+
+    const { data: candidateLanguage, isError, isPending, error } = useGetCandidateLanguage(role);
+    const {
+        data: LanguageForRecruiter,
+        isPending: isPendingForRecruiter,
+        error: recruiterError,
+    } = useGetCandidateLanguageForRecruiter(role, jobId!, applicantId!);
+
+    const isCandidate = role === "CANDIDATE";
+    const isRecruiter = role === "RECRUITER";
+
+    const activeData = isCandidate ? candidateLanguage : isRecruiter ? LanguageForRecruiter : undefined;
+
+    const activeError = isCandidate ? error : isRecruiter ? recruiterError : undefined;
+
+    const activeLoading = isCandidate ? isPending : isRecruiter ? isPendingForRecruiter : true;
 
     const { mutate: createMutate } = useCreateLanguage();
     const { mutate: deleteMutate, isPending: isDeletePending } = useDeleteLanguage();
-
-    const role = useAppSelector((state) => state.app.role);
 
     // Function 3: Handle Language Search (Different logic!)
     const handleLangSearch = (query: string) => {
@@ -68,7 +82,9 @@ export default function LanguageDetails() {
         });
     };
 
-    if (error?.status === 404) {
+    if (!role || activeLoading) return null;
+
+    if (activeError?.status === 404) {
         return (
             <Card className="max-w-4xl w-full py-4">
                 <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
@@ -94,11 +110,16 @@ export default function LanguageDetails() {
                 </CardHeader>
                 <CardContent className=" px-4">
                     <div className="text-center py-12 text-muted-foreground rounded-md border-2 border-dashed border-border">
-                        No languages added yet. Click "Add" to get started.
+                        {role === "CANDIDATE" && ` No languages added yet. Click "Add" to get started.`}
+                        {role === "RECRUITER" && ` No languages added.`}
                     </div>
                 </CardContent>
             </Card>
         );
+    }
+
+    if (activeError && activeError.status !== 404) {
+        return <EmptyState title="Something went wrong!" />;
     }
 
     return (
@@ -136,7 +157,7 @@ export default function LanguageDetails() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {candidateLanguage?.data!.map((language, index) => (
+                            {activeData?.data!.map((language, index) => (
                                 <TableRow
                                     key={language.languageName}
                                     className="border-b border-border/50 last:border-b-0 hover:bg-accent/50"

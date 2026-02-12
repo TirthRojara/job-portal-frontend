@@ -62,7 +62,6 @@ export default function Resume() {
     };
 
     const handleResumeDownload = () => {
-        console.log("download click");
 
         // If user just dropped a file → download local file
         if (resumeFile) {

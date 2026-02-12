@@ -10,7 +10,8 @@ import WorkExperience from "./work-experience";
 import Resume from "./resume";
 import { useGetUserData } from "@/features/dashboard/api/query";
 import CreateProfile from "./create-profile";
-import { useGetCandidateProfile } from "../api/query";
+import { useGetCandidateProfilById, useGetCandidateProfile } from "../api/query";
+import { useAppSelector } from "@/store/index.store";
 
 
 // const profile = {
@@ -28,8 +29,10 @@ import { useGetCandidateProfile } from "../api/query";
 // ];
 
 export default function CandidateProfilePage() {
+    const role = useAppSelector((state)=> state.app.role)
+
     const { data: userData, isError, isLoading } = useGetUserData();
-    const { data: candidateData, isLoading: isLoadingCandidateData } = useGetCandidateProfile();
+    const { data: candidateData, isLoading: isLoadingCandidateData } = useGetCandidateProfile(role);
 
     console.log("candidate data", userData);
 

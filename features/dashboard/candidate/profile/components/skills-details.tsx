@@ -6,11 +6,9 @@ import { SearchAddDialog, SearchItem } from "@/features/dashboard/components/sea
 import { useAppSelector } from "@/store/index.store";
 import { Cross, Plus, X } from "lucide-react";
 import React, { useState } from "react";
-import { useGetCandidateSkill } from "../api/query";
+import { useGetCandidateSkill, useGetCandidateSkillById } from "../api/query";
 import { useCreateSkill, useDeleteSkill } from "../api/mutation";
-import { sk } from "date-fns/locale";
-
-// const role = "CANDIDATE";
+import { EmptyState } from "@/components/empty-state";
 
 const ALL_SKILLS = [
     { value: 1, label: "JavaScript" },
@@ -28,15 +26,16 @@ const ALL_SKILLS = [
     { value: 13, label: "NextJs" },
 ];
 
-export default function SkillsDetails() {
+export default function SkillsDetails({ jobId, applicantId }: { jobId?: string; applicantId?: string }) {
     const [skillResults, setSkillResults] = useState(ALL_SKILLS);
 
-    const { data: candidateSkill, error } = useGetCandidateSkill();
+    const role = useAppSelector((state) => state.app.role);
+
+    const { data: candidateSkill, error } = useGetCandidateSkill(role);
+    const { data: candidateskillForRecruiter, error: recruiterError } = useGetCandidateSkillById(role, jobId!, applicantId!);
 
     const { mutate: addSkillMutate } = useCreateSkill();
     const { mutate: deleteMutate } = useDeleteSkill();
-
-    const role = useAppSelector((state) => state.app.role);
 
     const handleSkillSearch = (query: string) => {
         // In a real app, this would be an API call
@@ -57,7 +56,7 @@ export default function SkillsDetails() {
         });
     };
 
-    if (error?.status === 404) {
+    if (error?.status === 404 || recruiterError?.status === 404) {
         return (
             <Card className="max-w-4xl w-full py-4">
                 <CardHeader className=" flex flex-row items-center justify-between px-4 min-h-9">
@@ -83,11 +82,16 @@ export default function SkillsDetails() {
                 </CardHeader>
                 <CardContent className=" px-4">
                     <div className="text-center py-12 text-muted-foreground rounded-md border-2 border-dashed border-border">
-                        No skill added yet. Click "Add Skills" to get started.
+                       {role === 'CANDIDATE' && ` No skill added yet. Click "Add Skills" to get started.`}
+                       {role === 'RECRUITER' && ` No skill added.`}
                     </div>
                 </CardContent>
             </Card>
         );
+    }
+
+    if (recruiterError && recruiterError.status !== 404) {
+        return <EmptyState title="Something went wrong!" />;
     }
 
     return (
@@ -116,6 +120,16 @@ export default function SkillsDetails() {
             <CardContent className=" px-4">
                 <div className="flex gap-2 flex-wrap">
                     {candidateSkill?.data!.map((skill) => (
+                        <Badge
+                            onClick={() => handleRemoveSkill(skill.skill.id)}
+                            key={skill.skill.id}
+                            className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer"
+                        >
+                            {skill.skill.name}
+                            <X className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Badge>
+                    ))}
+                    {candidateskillForRecruiter?.data!.map((skill) => (
                         <Badge
                             onClick={() => handleRemoveSkill(skill.skill.id)}
                             key={skill.skill.id}
