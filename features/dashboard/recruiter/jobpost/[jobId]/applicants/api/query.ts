@@ -1,18 +1,17 @@
-import { ApiPageResponse } from "@/types/api";
-import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
+import { ApiPageResponse, ApiResponse } from "@/types/api";
+import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ApiError } from "next/dist/server/api-utils";
-import { ApplicantsResponse } from "./types";
-import { getApplicants } from "./api";
+import { ApplicantsResponse, ApplicationByIdResponse } from "./types";
+import { getApplicantById, getApplicants } from "./api";
+import { QUERY } from "@/constants/tanstank.constants";
 
 export const useGetApplicants = (
     {
-        // page,
         limit,
         jobId,
         companyId,
     }: {
-        // page: number;
         limit: number;
         jobId: number;
         companyId: number;
@@ -24,7 +23,6 @@ export const useGetApplicants = (
         [
             string,
             {
-                // page: number;
                 limit: number;
                 jobId: number;
                 companyId: number;
@@ -48,11 +46,15 @@ export const useGetApplicants = (
     });
 };
 
-// const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error } = useGetAllJobsCandidate({
-//         limit: 10,
-//         page: 1,
-//         filter: filters.filter,
-//         location: filters.location,
-//         salaryMin: filters.salaryMin ? filters.salaryMin * 1000 : undefined,
-//         workplace: filters.workplace,
-//     });
+export const useGetApplicantById = (
+    jobId: string,
+    candidateProfileId: string,
+    options?: UseQueryOptions<ApiResponse<ApplicationByIdResponse>, AxiosError<ApiError>>,
+) => {
+    return useQuery({
+        queryKey: [QUERY.APPLY.getApplicationById, jobId, candidateProfileId],
+        queryFn: ({ signal }) => getApplicantById({ signal, jobId, candidateProfileId }),
+        enabled: true,
+        ...options,
+    });
+};

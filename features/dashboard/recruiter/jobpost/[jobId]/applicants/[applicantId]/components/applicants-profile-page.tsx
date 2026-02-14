@@ -73,7 +73,7 @@ export default function ApplicantsProfilePage({ applicantId, jobId }: { applican
                     </Button>
                 </div>
                 <div className="w-full max-w-xl">
-                    <ApplicationStatusCard />
+                    <ApplicationStatusCard applicantId={applicantId} jobId={jobId} />
                 </div>
             </div>
         </div>

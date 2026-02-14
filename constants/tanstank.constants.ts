@@ -24,6 +24,7 @@ export const MUTATION = {
 
     APPLY: {
         applyJob: "apply_job",
+        updateApplicationStatus: "update_application_status",
     },
 
     JOB: {
@@ -106,6 +107,7 @@ export const QUERY = {
 
     APPLY: {
         getAllApplication: "get_all_application", // --> uses page params
+        getApplicationById: "get_application_by_id", // --> uses jobId and candidateProfileId params
     },
 
     CANDIDATE_PROFILE: {

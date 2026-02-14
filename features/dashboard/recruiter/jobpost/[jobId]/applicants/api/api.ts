@@ -1,7 +1,7 @@
 import api from "@/lib/axios/client";
-import { ApiPageResponse } from "@/types/api";
+import { ApiError, ApiPageResponse, ApiResponse } from "@/types/api";
 import { AxiosResponse } from "axios";
-import { ApplicantsResponse } from "./types";
+import { ApplicantsResponse, ApplicationByIdResponse, UpdateJobStatusPayload } from "./types";
 
 export const getApplicants = async ({
     signal,
@@ -20,5 +20,29 @@ export const getApplicants = async ({
         signal,
         params: { page, limit },
     });
+    return res.data;
+};
+
+export const getApplicantById = async ({
+    signal,
+    jobId,
+    candidateProfileId,
+}: {
+    signal: AbortSignal;
+    jobId: string;
+    candidateProfileId: string;
+}): Promise<ApiResponse<ApplicationByIdResponse>> => {
+    const res = await api.get(`v1/apply/me/recruiter/application/${jobId}/${candidateProfileId}`, {
+        signal,
+    });
+    return res.data;
+};
+
+export const updateApplicationStatus = async (
+    jobId: string,
+    companyId: string,
+    payload: UpdateJobStatusPayload,
+): Promise<ApiError> => {
+    const res = await api.patch(`v1/apply/recruiter/status/${jobId}/${companyId}`, payload);
     return res.data;
 };

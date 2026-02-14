@@ -254,9 +254,7 @@ export const FormSelect: FormControlFunc<{ children: ReactNode }> = ({ children,
     return (
         <FormBase {...props} errorReserve={errorReserve}>
             {/* {({ onChange, onBlur, ...field }) => ( */}
-            {(
-                field, // ✅ ALL props including fieldState
-            ) => (
+            {(field) => (
                 <Select {...field} onValueChange={field.onChange}>
                     <SelectTrigger
                         aria-invalid={field["aria-invalid"]}
