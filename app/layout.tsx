@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Source_Serif_4, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppProvider from "@/provider/index.provider";
-
+import Script from "next/script";
 
 export const inter = Inter({
     subsets: ["latin"],
@@ -36,7 +36,7 @@ export default function RootLayout({
                 //   className={`${aclonica.variable} ${arbutus.variable} ${jetbrainsMono.variable} antialiased`}
             >
                 <AppProvider>{children}</AppProvider>
-                {/* <h1>hii</h1> */}
+                <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
             </body>
         </html>
     );

@@ -1,3 +1,4 @@
+"use client";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,13 +26,14 @@ import React from "react";
 import { useLogout } from "../../candidate/api/mutation";
 import { useGetUserData } from "../../api/query";
 import { getInitials } from "@/lib/utils/utils";
-
-
+import { useRouter } from "next/navigation";
 
 export default function RecruiterSidebarFooter() {
     const { isMobile, state } = useSidebar();
 
-     const { data, isError, error, isLoading } = useGetUserData();
+    const router = useRouter();
+
+    const { data, isError, error, isLoading } = useGetUserData();
     const { mutate: logoutMutation, isPending } = useLogout();
 
     function handleLogout() {
@@ -69,7 +71,9 @@ export default function RecruiterSidebarFooter() {
                                 <DropdownMenuLabel className="p-0 font-normal">
                                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                         <Avatar className="h-8 w-8 rounded-lg">
-                                            <AvatarFallback className="rounded-lg">{getInitials(data?.data?.name!)}</AvatarFallback>
+                                            <AvatarFallback className="rounded-lg">
+                                                {getInitials(data?.data?.name!)}
+                                            </AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
                                             <span className="truncate font-medium">{data?.data?.name}</span>
@@ -86,14 +90,14 @@ export default function RecruiterSidebarFooter() {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => router.push('/dashboard/recruiter/account')}>
                                         <BadgeCheck />
                                         Account
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem>
+                                    {/* <DropdownMenuItem>
                                         <CreditCard />
                                         Billing
-                                    </DropdownMenuItem>
+                                    </DropdownMenuItem> */}
                                     <DropdownMenuSeparator />
                                     <Dialog>
                                         <DialogTrigger asChild>
@@ -120,7 +124,12 @@ export default function RecruiterSidebarFooter() {
                                                 <DialogClose asChild>
                                                     <Button variant="outline">Cancel</Button>
                                                 </DialogClose>
-                                                <Button disabled={isPending} onClick={handleLogout} type="button" variant={"destructive"}>
+                                                <Button
+                                                    disabled={isPending}
+                                                    onClick={handleLogout}
+                                                    type="button"
+                                                    variant={"destructive"}
+                                                >
                                                     Log out
                                                 </Button>
                                             </DialogFooter>

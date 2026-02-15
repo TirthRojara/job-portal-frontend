@@ -72,6 +72,12 @@ export const MUTATION = {
         editExperience: "edit_experience",
         deleteExperience: "delete_experience",
     },
+
+    PAYMENT: {
+        RAZORPAY: {
+            buySubscription: "buy_subscription",
+        },
+    },
 };
 
 export const QUERY = {
@@ -132,5 +138,11 @@ export const QUERY = {
 
     CANDIDATE_RESUME: {
         getCandidateResume: "get_candidate_resume",
+    },
+
+    PAYMENT: {
+        DATA: {
+            getSubscription: "get_subscription",
+        },
     },
 };

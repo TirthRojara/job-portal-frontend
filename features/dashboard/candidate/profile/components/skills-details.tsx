@@ -82,8 +82,8 @@ export default function SkillsDetails({ jobId, applicantId }: { jobId?: string; 
                 </CardHeader>
                 <CardContent className=" px-4">
                     <div className="text-center py-12 text-muted-foreground rounded-md border-2 border-dashed border-border">
-                       {role === 'CANDIDATE' && ` No skill added yet. Click "Add Skills" to get started.`}
-                       {role === 'RECRUITER' && ` No skill added.`}
+                        {role === "CANDIDATE" && ` No skill added yet. Click "Add Skills" to get started.`}
+                        {role === "RECRUITER" && ` No skill added.`}
                     </div>
                 </CardContent>
             </Card>
@@ -131,12 +131,10 @@ export default function SkillsDetails({ jobId, applicantId }: { jobId?: string; 
                     ))}
                     {candidateskillForRecruiter?.data!.map((skill) => (
                         <Badge
-                            onClick={() => handleRemoveSkill(skill.skill.id)}
                             key={skill.skill.id}
                             className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm group cursor-pointer"
                         >
                             {skill.skill.name}
-                            <X className="ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Badge>
                     ))}
                 </div>

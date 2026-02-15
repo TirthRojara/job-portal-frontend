@@ -12,7 +12,6 @@ import React from "react";
 import ApplicationStatusCard from "../../components/application-status-card";
 import { useGetCandidateProfilById, useGetCandidateResumeForRecruiter } from "@/features/dashboard/candidate/profile/api/query";
 import { useAppSelector } from "@/store/index.store";
-import { GlobalError } from "next/dist/build/templates/app-page";
 import { EmptyState } from "@/components/empty-state";
 import { Spinner } from "@/components/ui/spinner";
 
