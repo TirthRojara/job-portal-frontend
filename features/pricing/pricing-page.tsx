@@ -126,25 +126,24 @@ export default function PricingPage() {
                 name: "Easy Apply TR limited",
                 description: "Subscription Payment method descripiton",
                 image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWdhbGxlcnktdmVydGljYWwtZW5kLWljb24gbHVjaWRlLWdhbGxlcnktdmVydGljYWwtZW5kIj48cGF0aCBkPSJNNyAyaDEwIi8+PHBhdGggZD0iTTUgNmgxNCIvPjxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxMiIgeD0iMyIgeT0iMTAiIHJ4PSIyIi8+PC9zdmc+",
-                // callback_url: "http://localhost:3000/dashboard/recruiter",
                 prefill: {
                     name: "user name",
                     email: "user@example.com",
-                    // contact: "5555555555",
                 },
                 notes: {
                     packageId: planId,
                     razorpaySubscriptionId: data.subscriptionData.data?.razorpaySubscriptionId,
                 },
                 theme: {
-                    // color: "#3399cc",
                     color: "#3e7ee7",
                 },
             };
 
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
-        } catch (error) {}
+        } catch (error) {
+            console.log('handleUpgrade', error)
+        }
     };
 
     if (isUserError || isUserPending || isSubscriptionPending || isSubscriptionError) return <></>;

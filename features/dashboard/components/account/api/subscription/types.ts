@@ -25,8 +25,8 @@ export type SubscriptionResponse = {
     sub: {
         id: number;
         startDate: string;
-        endDate: string;
-        razorpaySubscriptionId: string;
+        endDate: string | null;
+        razorpaySubscriptionId: string | null;
         status: string;
         billingCycleCount: number;
         userId: number;
@@ -40,6 +40,7 @@ export type SubscriptionResponse = {
         };
     };
     chargedAt: {
-        nextPayment: string;
+        nextPayment: string | null;
+        status: string | null;
     };
 };

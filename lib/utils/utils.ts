@@ -31,6 +31,19 @@ export function formatShortDate(dateString: string): string {
   return `${day} ${month}' ${year}`;
 }
 
+export const formatDateDMY = (isoString: string): string => {
+  if (!isoString) return "";
+
+  const date = new Date(isoString);
+
+  // Use UTC to avoid timezone shift issues
+  const day = date.getUTCDate();
+  const month = date.getUTCMonth() + 1; // Months are 0-based
+  const year = date.getUTCFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
 export function timeAgo(dateString: string): string {
   const now = new Date();
   const past = new Date(dateString);

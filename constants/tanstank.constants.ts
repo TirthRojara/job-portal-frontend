@@ -76,6 +76,9 @@ export const MUTATION = {
     PAYMENT: {
         RAZORPAY: {
             buySubscription: "buy_subscription",
+            pauseSubscription: "pause_subscription",
+            resumeSubscription: "resume_subscription",
+            cancelSubscription: "cancel_subscription",
         },
     },
 };

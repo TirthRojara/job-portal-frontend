@@ -1,16 +1,12 @@
 import React from "react";
 import { FileText } from "lucide-react";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useGetUserData } from "../../api/query";
+import { useGetSubscription } from "./api/subscription/query";
+import { useAppSelector } from "@/store/index.store";
 
 // Define the Status type
 type BillingStatus = "SUCCESSFUL" | "FAILED" | "REFUNDED";
@@ -69,7 +65,7 @@ export function BillingHistory() {
                 return (
                     <Badge
                         variant="outline"
-                        className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800"
+                        className="bg-emerald-50 text-emerald-700 dark:text-emerald-800 border-emerald-200 hover:bg-emerald-100 hover:text-emerald-800"
                     >
                         Paid
                     </Badge>
@@ -78,17 +74,14 @@ export function BillingHistory() {
                 return (
                     <Badge
                         variant="destructive"
-                        className="bg-red-50 text-red-700 border-red-200 hover:bg-red-100 hover:text-red-800 shadow-none border"
+                        className="bg-red-50 dark:bg-red-200 text-red-700 dark:text-red-700 border-red-200 dark:border-red-400 hover:bg-red-100 hover:text-red-800 dark:hover:bg-red-300 shadow-none border"
                     >
                         Failed
                     </Badge>
                 );
             case "REFUNDED":
                 return (
-                    <Badge
-                        variant="secondary"
-                        className="bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
-                    >
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200">
                         Refunded
                     </Badge>
                 );
@@ -97,12 +90,12 @@ export function BillingHistory() {
         }
     };
 
+   
+
     return (
         <Card className="w-full max-w-7xl shadow-sm border-none bg-background px-4">
             <CardHeader className="p-0 ">
-                <CardTitle className="text-xl font-bold text-foreground">
-                    Billing History
-                </CardTitle>
+                <CardTitle className="text-xl font-bold text-foreground">Billing History</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
                 {/* Mobile Responsive Wrapper: overflow-x-auto allows horizontal scroll */}
@@ -122,30 +115,19 @@ export function BillingHistory() {
                                 <TableHead className="font-semibold text-xs uppercase text-muted-foreground tracking-wider">
                                     Status
                                 </TableHead>
-                                <TableHead className="text-right font-semibold text-xs uppercase text-muted-foreground tracking-wider">
+                                {/* <TableHead className="text-right font-semibold text-xs uppercase text-muted-foreground tracking-wider">
                                     Invoice
-                                </TableHead>
+                                </TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {billingData.map((transaction) => (
-                                <TableRow
-                                    key={transaction.id}
-                                    className="hover:bg-muted/10"
-                                >
-                                    <TableCell className="font-medium text-sm text-foreground/90">
-                                        {transaction.date}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-foreground/90">
-                                        {transaction.plan}
-                                    </TableCell>
-                                    <TableCell className="font-bold text-sm text-foreground/90">
-                                        {transaction.amount}
-                                    </TableCell>
-                                    <TableCell>
-                                        {getStatusBadge(transaction.status)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
+                                <TableRow key={transaction.id} className="hover:bg-muted/10">
+                                    <TableCell className="font-medium text-sm text-foreground/90">{transaction.date}</TableCell>
+                                    <TableCell className="text-sm text-foreground/90">{transaction.plan}</TableCell>
+                                    <TableCell className="font-bold text-sm text-foreground/90">{transaction.amount}</TableCell>
+                                    <TableCell>{getStatusBadge(transaction.status)}</TableCell>
+                                    {/* <TableCell className="text-right">
                                         <a
                                             href="#"
                                             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 hover:underline transition-colors"
@@ -153,7 +135,7 @@ export function BillingHistory() {
                                             <FileText className="h-4 w-4" />
                                             {transaction.invoiceId}
                                         </a>
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -161,7 +143,7 @@ export function BillingHistory() {
                 </div>
 
                 <p className="pt-6 mx-auto w-fit cursor-pointer hover:underline  text-blue-600 hover:text-blue-800 transition-colors">
-                    View More{" "}
+                    View More
                 </p>
             </CardContent>
         </Card>
