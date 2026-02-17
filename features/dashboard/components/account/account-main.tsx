@@ -5,6 +5,8 @@ import { Ghost, MoveLeft } from "lucide-react";
 import AccountTab from "./account-tab";
 import ManageSubscriptionTab from "./manage-subscription-tab";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 const role = "RECRUITER";
 
@@ -15,6 +17,28 @@ export default function AccountMain() {
 
     // Read tab from URL
     const currentTab = searchParams.get("tab") || "account";
+
+    // useEffect(() => {
+    //     if (searchParams.get("success") === "true") {
+    //         toast.success("Purchased successfully.");
+    //         toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
+    //     }
+    // }, []);
+
+    useEffect(() => {
+        if (searchParams.get("success") === "true") {
+            toast.success("Purchased successfully.");
+            toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
+
+            // Remove success param
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete("success");
+
+            router.replace(`${pathname}?${params.toString()}`, {
+                scroll: false,
+            });
+        }
+    }, []);
 
     const handleTabChange = (value: string) => {
         const params = new URLSearchParams(searchParams.toString());

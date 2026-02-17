@@ -14,6 +14,7 @@ import { useGetSubscription } from "../dashboard/components/account/api/subscrip
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { ApiError } from "@/types/api";
+import { useRouter } from "next/navigation";
 
 // --- Types & Data ---
 
@@ -86,6 +87,8 @@ const pricingPlans: PricingPlan[] = [
 export default function PricingPage() {
     const [pendingPlanId, setPendingPlanId] = useState<number | null>(null);
 
+    const router = useRouter();
+
     const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();
     const {
         data: subscription,
@@ -117,6 +120,14 @@ export default function PricingPage() {
                     onSettled: () => {
                         setPendingPlanId(null);
                     },
+                    // onSuccess: () => {
+                    //     toast.success("Purchased successfully.");
+                    //     toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
+
+                    //     setTimeout(() => {
+                    //         router.push("/dashboard/recruiter/account?tab=subscription");
+                    //     }, 800);
+                    // },
                 },
             );
 
@@ -126,9 +137,10 @@ export default function PricingPage() {
                 name: "Easy Apply TR limited",
                 description: "Subscription Payment method descripiton",
                 image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWdhbGxlcnktdmVydGljYWwtZW5kLWljb24gbHVjaWRlLWdhbGxlcnktdmVydGljYWwtZW5kIj48cGF0aCBkPSJNNyAyaDEwIi8+PHBhdGggZD0iTTUgNmgxNCIvPjxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxMiIgeD0iMyIgeT0iMTAiIHJ4PSIyIi8+PC9zdmc+",
+                callback_url: "http://localhost:3000/dashboard/recruiter/account?tab=subscription&success=true",
                 prefill: {
-                    name: "user name",
-                    email: "user@example.com",
+                    name: `${user?.data?.name}`,
+                    email: `${user?.data?.email}`,
                 },
                 notes: {
                     packageId: planId,
@@ -142,7 +154,7 @@ export default function PricingPage() {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
-            console.log('handleUpgrade', error)
+            console.log("handleUpgrade", error);
         }
     };
 

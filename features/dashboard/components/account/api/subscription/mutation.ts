@@ -4,7 +4,7 @@ import { ApiError, ApiResponse } from "@/types/api";
 import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { number } from "zod";
-import { createSubscripiton, getRazorpayKeyId, pauseSubscription, resumeSubscription } from "./api";
+import { cancelSubscription, createSubscripiton, getRazorpayKeyId, pauseSubscription, resumeSubscription } from "./api";
 import { CreateSubscriptionResponse, RazorpayKeyIdResponse, SubscriptionResponse } from "./types";
 import { toast } from "sonner";
 import { useAppSelector } from "@/store/index.store";
@@ -51,10 +51,7 @@ export const usePauseSubscription = (
         },
 
         onSuccess: () => {
-            // window.location.reload();
             const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-            // queryClient.invalidateQueries({ queryKey: queryKey });
-            // console.log("pause Invalidating:", queryKey);
 
             queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (old) => {
                 if (!old || !old.data) return old;
@@ -65,20 +62,19 @@ export const usePauseSubscription = (
                         ...old.data,
                         chargedAt: {
                             ...old.data.chargedAt,
-                            status: "PAUSED",
+                            status: "CANCELLED",
                         },
                         sub: old.data.sub,
                     },
                 };
             });
 
-            // queryClient.invalidateQueries({ queryKey: queryKey });
             setTimeout(() => {
                 queryClient.invalidateQueries({ queryKey });
             }, 5000);
 
-            console.log("on success pause success");
-            toast.success("Subscription Paused.");
+            toast.success("Subscription canceled.");
+            toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
         },
         ...options,
     });
@@ -99,10 +95,7 @@ export const useResumeSubscription = (
         },
 
         onSuccess: () => {
-            // window.location.reload();
             const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-
-            // console.log("resume Invalidating:", queryKey);
 
             queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (old) => {
                 if (!old || !old.data) return old;
@@ -120,13 +113,57 @@ export const useResumeSubscription = (
                 };
             });
 
-            // queryClient.invalidateQueries({ queryKey: queryKey });
             setTimeout(() => {
                 queryClient.invalidateQueries({ queryKey });
             }, 5000);
 
             console.log("on success resume success");
             toast.success("Subscription Resumed.");
+        },
+        ...options,
+    });
+};
+
+export const useCancelSubscription = (
+    options?: UseMutationOptions<ApiError, AxiosError<ApiError>, { subscriptionId: string }, SubscriptionContext>,
+) => {
+    const role = useAppSelector((state) => state.app.role);
+    const queryClient = useQueryClient();
+
+    return useMutation<ApiError, AxiosError<ApiError>, { subscriptionId: string }, SubscriptionContext>({
+        mutationKey: [MUTATION.PAYMENT.RAZORPAY.resumeSubscription],
+        mutationFn: ({ subscriptionId }: { subscriptionId: string }) => cancelSubscription(subscriptionId),
+
+        onError(error, variables, context) {
+            toast.error("Something went wrong. Please try again.");
+        },
+
+        onSuccess: () => {
+            const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
+
+            queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (old) => {
+                if (!old || !old.data) return old;
+
+                return {
+                    ...old,
+                    data: {
+                        ...old.data,
+                        chargedAt: {
+                            ...old.data.chargedAt,
+                            nextPayment: null,
+                            status: "CANCELLED",
+                        },
+                        sub: old.data.sub,
+                    },
+                };
+            });
+
+            // setTimeout(() => {
+            // queryClient.invalidateQueries({ queryKey });
+            // }, 5000);
+            // window.location.reload();
+
+            toast.success("Subscription canceled.");
         },
         ...options,
     });

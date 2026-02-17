@@ -6,7 +6,7 @@ import { BillingHistory } from "./billing-history";
 import { useAppSelector } from "@/store/index.store";
 import { useGetSubscription } from "./api/subscription/query";
 import { useRouter } from "next/navigation";
-import { usePauseSubscription, useResumeSubscription } from "./api/subscription/mutation";
+import { useCancelSubscription, usePauseSubscription, useResumeSubscription } from "./api/subscription/mutation";
 
 export default function ManageSubscriptionTab() {
     const router = useRouter();
@@ -26,12 +26,16 @@ export default function ManageSubscriptionTab() {
 
     const { mutate: pauseMutate, isPending: isPausePending } = usePauseSubscription();
     const { mutate: resumeMutate, isPending: isResumePending } = useResumeSubscription();
+    const { mutate: cancelMutate, isPending: isCancelPending } = useCancelSubscription();
 
     const handlePause = () => {
         pauseMutate({ subscriptionId: subscription?.data?.sub.razorpaySubscriptionId! });
     };
     const handleResume = () => {
         resumeMutate({ subscriptionId: subscription?.data?.sub.razorpaySubscriptionId! });
+    };
+    const handleCancel = () => {
+        cancelMutate({ subscriptionId: subscription?.data?.sub.razorpaySubscriptionId! });
     };
 
     // useEffect(() => {
@@ -57,7 +61,7 @@ export default function ManageSubscriptionTab() {
                 {/* <SubscriptionActionCard variant="resume" isActive={true} /> */}
 
                 {subscription?.data?.sub.package.planId !== "Free" && subscription?.data?.chargedAt.status !== "CANCELLED" && (
-                    <SubscriptionActionCard variant="cancel" onAction={() => console.log("Cancelling...")} />
+                    <SubscriptionActionCard variant="cancel" isActive={isCancelPending} onAction={handleCancel} />
                 )}
             </div>
             <BillingHistory />
