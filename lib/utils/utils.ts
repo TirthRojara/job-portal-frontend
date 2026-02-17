@@ -42,6 +42,7 @@ export const formatDateDMY = (isoString: string): string => {
   const year = date.getUTCFullYear();
 
   return `${day}/${month}/${year}`;
+  	// 17/2/2026
 };
 
 export function timeAgo(dateString: string): string {
@@ -76,6 +77,20 @@ export function timeAgo(dateString: string): string {
 
   return `${diffMonths} month${diffMonths > 1 ? "s" : ""} ago`;
 }
+
+export const formatToLocalTime = (utcDateString: string): string => {
+  if (!utcDateString) return "";
+
+  const date = new Date(utcDateString);
+
+  return date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  // 04:24 PM
+};
 
 export function formatSalary(value: number): string {
   if (value < 1000) return value.toString();

@@ -120,14 +120,6 @@ export default function PricingPage() {
                     onSettled: () => {
                         setPendingPlanId(null);
                     },
-                    // onSuccess: () => {
-                    //     toast.success("Purchased successfully.");
-                    //     toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
-
-                    //     setTimeout(() => {
-                    //         router.push("/dashboard/recruiter/account?tab=subscription");
-                    //     }, 800);
-                    // },
                 },
             );
 

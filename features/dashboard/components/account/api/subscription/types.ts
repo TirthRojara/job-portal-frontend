@@ -44,3 +44,17 @@ export type SubscriptionResponse = {
         status: string | null;
     };
 };
+
+export type PaymentHistoryResponse = {
+    id: number;
+    razorpayPaymentId: string;
+    razorpaySubscriptionId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    paymentMethod: string;
+    failureReason: string | null;
+    createdAt: string;
+    updatedAt: string;
+    plan: string;
+};

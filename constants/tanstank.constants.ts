@@ -146,6 +146,7 @@ export const QUERY = {
     PAYMENT: {
         DATA: {
             getSubscription: "get_subscription",
+            getPaymentHistory: "get_payment_history",
         },
     },
 };

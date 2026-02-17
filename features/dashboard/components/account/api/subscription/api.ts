@@ -1,6 +1,6 @@
 import api from "@/lib/axios/client";
-import { ApiError, ApiResponse } from "@/types/api";
-import { CreateSubscriptionResponse, RazorpayKeyIdResponse, SubscriptionResponse } from "./types";
+import { ApiError, ApiPageResponse, ApiResponse } from "@/types/api";
+import { CreateSubscriptionResponse, PaymentHistoryResponse, RazorpayKeyIdResponse, SubscriptionResponse } from "./types";
 
 // export const getRazorpayKeyId = async ({ signal }: { signal?: AbortSignal }): Promise<ApiResponse<RazorpayKeyIdResponse>> => {
 //     const res = await api.get("v1/candidate-profiles/me", {
@@ -37,5 +37,11 @@ export const resumeSubscription = async (subscriptionId: string): Promise<ApiErr
 
 export const cancelSubscription = async (subscriptionId: string): Promise<ApiError> => {
     const res = await api.post(`v1/razorpay/subscription/cancel/${subscriptionId}`);
+    return res.data;
+};
+
+//  PAYMENT HISTORY
+export const getPaymentHistory = async ({ signal }: { signal: AbortSignal }): Promise<ApiPageResponse<PaymentHistoryResponse[]>> => {
+    const res = await api.get("v1/payment/payment-history", { signal });
     return res.data;
 };
