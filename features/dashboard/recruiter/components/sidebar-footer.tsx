@@ -90,7 +90,7 @@ export default function RecruiterSidebarFooter() {
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem onClick={() => router.push('/dashboard/recruiter/account')}>
+                                    <DropdownMenuItem onClick={() => router.push("/dashboard/recruiter/account?tab=account")}>
                                         <BadgeCheck />
                                         Account
                                     </DropdownMenuItem>

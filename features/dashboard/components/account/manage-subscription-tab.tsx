@@ -18,11 +18,14 @@ export default function ManageSubscriptionTab() {
         isPending: isSubscriptionPending,
         isError: isSubscriptionError,
         isFetching,
+        isEnabled,
     } = useGetSubscription(role);
     // console.log("sub tab: ", subscription);
 
+    console.log({ isFetching, isEnabled });
+
     const { mutate: pauseMutate, isPending: isPausePending } = usePauseSubscription();
-    const { mutate: resumeMutate, isPending: isResumeRending } = useResumeSubscription();
+    const { mutate: resumeMutate, isPending: isResumePending } = useResumeSubscription();
 
     const handlePause = () => {
         pauseMutate({ subscriptionId: subscription?.data?.sub.razorpaySubscriptionId! });
@@ -31,17 +34,9 @@ export default function ManageSubscriptionTab() {
         resumeMutate({ subscriptionId: subscription?.data?.sub.razorpaySubscriptionId! });
     };
 
-    useEffect(() => {
-        console.log({ isResumeRending });
-    }, [isResumeRending]);
-
-    // if (isFetching) {
-    //     return (
-    //         <div>
-    //             <p>is Fetching...</p>
-    //         </div>
-    //     );
-    // }
+    // useEffect(() => {
+    console.log({ isResumePending });
+    // }, [isResumePending]);
 
     return (
         <div className="flex flex-col gap-6">
@@ -55,9 +50,10 @@ export default function ManageSubscriptionTab() {
                     <SubscriptionActionCard variant="pause" isActive={isPausePending} onAction={handlePause} />
                 )}
 
-                {subscription?.data?.chargedAt.status === "PAUSED" && subscription.data.sub.package.planId !== "Free" && (
-                    <SubscriptionActionCard variant="resume" isActive={isResumeRending} onAction={handleResume} />
-                )}
+                {(subscription?.data?.chargedAt.status === "PAUSED" || isResumePending) &&
+                    subscription?.data?.sub.package.planId !== "Free" && (
+                        <SubscriptionActionCard variant="resume" isActive={isResumePending} onAction={handleResume} />
+                    )}
                 {/* <SubscriptionActionCard variant="resume" isActive={true} /> */}
 
                 {subscription?.data?.sub.package.planId !== "Free" && subscription?.data?.chargedAt.status !== "CANCELLED" && (

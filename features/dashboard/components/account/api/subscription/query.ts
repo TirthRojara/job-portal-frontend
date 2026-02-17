@@ -9,7 +9,7 @@ export const useGetSubscription = (
     role: string | undefined,
     options?: UseQueryOptions<ApiResponse<SubscriptionResponse>, AxiosError<ApiError>>,
 ) => {
-    console.log("query key :", [QUERY.PAYMENT.DATA.getSubscription, role]);
+    // console.log("query key :", [QUERY.PAYMENT.DATA.getSubscription, role]);
 
     return useQuery({
         queryKey: [QUERY.PAYMENT.DATA.getSubscription, role],

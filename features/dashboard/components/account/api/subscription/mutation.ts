@@ -53,8 +53,30 @@ export const usePauseSubscription = (
         onSuccess: () => {
             // window.location.reload();
             const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-            queryClient.invalidateQueries({ queryKey: queryKey });
-            console.log("pause Invalidating:", queryKey);
+            // queryClient.invalidateQueries({ queryKey: queryKey });
+            // console.log("pause Invalidating:", queryKey);
+
+            queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (old) => {
+                if (!old || !old.data) return old;
+
+                return {
+                    ...old,
+                    data: {
+                        ...old.data,
+                        chargedAt: {
+                            ...old.data.chargedAt,
+                            status: "PAUSED",
+                        },
+                        sub: old.data.sub,
+                    },
+                };
+            });
+
+            // queryClient.invalidateQueries({ queryKey: queryKey });
+            setTimeout(() => {
+                queryClient.invalidateQueries({ queryKey });
+            }, 5000);
+
             console.log("on success pause success");
             toast.success("Subscription Paused.");
         },
@@ -71,46 +93,38 @@ export const useResumeSubscription = (
     return useMutation<ApiError, AxiosError<ApiError>, { subscriptionId: string }, SubscriptionContext>({
         mutationKey: [MUTATION.PAYMENT.RAZORPAY.resumeSubscription],
         mutationFn: ({ subscriptionId }: { subscriptionId: string }) => resumeSubscription(subscriptionId),
-        // onMutate: async () => {
-        //     const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-        //     await queryClient.cancelQueries({ queryKey });
 
-        //     const previousData = queryClient.getQueryData<ApiResponse<SubscriptionResponse>>(queryKey);
-        //     console.log({ previousData });
-
-        //     queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (oldData) => {
-        //         if (!oldData || !oldData.data) return oldData;
-
-        //         return {
-        //             ...oldData,
-        //             data: {
-        //                 ...oldData.data,
-        //                 chargedAt: {
-        //                     ...oldData.data.chargedAt,
-        //                     status: "ACTIVE",
-        //                 },
-        //             },
-        //         };
-        //     });
-
-        //     return { previousData };
-        // },
         onError(error, variables, context) {
             toast.error("Something went wrong. Please try again.");
-            // const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-            // if (context?.previousData) {
-            //     queryClient.setQueryData(queryKey, context.previousData);
-            // }
         },
-        // onSettled: () => {
-        //     const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-        //     queryClient.invalidateQueries({ queryKey: queryKey });
-        // },
+
         onSuccess: () => {
             // window.location.reload();
             const queryKey = [QUERY.PAYMENT.DATA.getSubscription, role];
-            queryClient.invalidateQueries({ queryKey: queryKey });
-            console.log("resume Invalidating:", queryKey);
+
+            // console.log("resume Invalidating:", queryKey);
+
+            queryClient.setQueryData<ApiResponse<SubscriptionResponse>>(queryKey, (old) => {
+                if (!old || !old.data) return old;
+
+                return {
+                    ...old,
+                    data: {
+                        ...old.data,
+                        chargedAt: {
+                            ...old.data.chargedAt,
+                            status: "ACTIVE",
+                        },
+                        sub: old.data.sub,
+                    },
+                };
+            });
+
+            // queryClient.invalidateQueries({ queryKey: queryKey });
+            setTimeout(() => {
+                queryClient.invalidateQueries({ queryKey });
+            }, 5000);
+
             console.log("on success resume success");
             toast.success("Subscription Resumed.");
         },

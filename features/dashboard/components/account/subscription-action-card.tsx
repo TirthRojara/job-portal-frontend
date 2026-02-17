@@ -2,19 +2,10 @@ import React from "react";
 import { ArrowUp, Pause, Play, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 // Define the valid variants
-export type SubscriptionActionVariant =
-    | "upgrade"
-    | "pause"
-    | "resume"
-    | "cancel";
+export type SubscriptionActionVariant = "upgrade" | "pause" | "resume" | "cancel";
 
 interface SubscriptionActionCardProps {
     variant: SubscriptionActionVariant;
@@ -41,8 +32,7 @@ export function SubscriptionActionCard({
         upgrade: {
             icon: ArrowUp,
             defaultTitle: "Upgrade Plan",
-            defaultDesc:
-                "Get access to premium features and unlimited job posts",
+            defaultDesc: "Get access to premium features and unlimited job posts",
             defaultButtonText: "Upgrade Now",
             // Using Teal/Primary tones to match image
             colors: {
@@ -78,8 +68,7 @@ export function SubscriptionActionCard({
         cancel: {
             icon: XCircle,
             defaultTitle: "Cancel Subscription",
-            defaultDesc:
-                "Terminate your subscription at the end of the billing cycle",
+            defaultDesc: "Terminate your subscription at the end of the billing cycle",
             defaultButtonText: "Cancel Plan",
             // Using Red/Destructive tones
             colors: {
@@ -108,19 +97,15 @@ export function SubscriptionActionCard({
                 <div
                     className={cn(
                         "h-14 w-14 rounded-full grid place-items-center mx-auto transition-colors",
-                        currentConfig.colors.iconBg
+                        currentConfig.colors.iconBg,
                     )}
                 >
-                    <Icon
-                        className={cn("h-6 w-6", currentConfig.colors.iconText)}
-                    />
+                    <Icon className={cn("h-6 w-6", currentConfig.colors.iconText)} />
                 </div>
             </CardHeader>
 
             <CardContent className="flex flex-col items-center text-center gap-2 pb-0">
-                <h3 className="text-lg font-bold text-foreground">
-                    {title || currentConfig.defaultTitle}
-                </h3>
+                <h3 className="text-lg font-bold text-foreground">{title || currentConfig.defaultTitle}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-[250px]">
                     {description || currentConfig.defaultDesc}
                 </p>
@@ -129,11 +114,16 @@ export function SubscriptionActionCard({
             <CardFooter className="w-full pt-0 pb-0 px-6">
                 <Button
                     onClick={onAction}
-                    // disabled={isButtonDisabled}
+                    disabled={isActive}
                     className={cn(
                         "w-full font-semibold transition-all",
-                        finalButtonClass
+                        currentConfig.colors.button,
+                        isActive && "opacity-50 cursor-not-allowed",
                     )}
+                    // className={cn(
+                    //     "w-full font-semibold transition-all",
+                    //     finalButtonClass
+                    // )}
                 >
                     {/* {finalButtonText} */}
                     {currentConfig.defaultButtonText}

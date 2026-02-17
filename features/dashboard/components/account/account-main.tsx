@@ -1,13 +1,27 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Ghost, MoveLeft } from "lucide-react";
-import React from "react";
 import AccountTab from "./account-tab";
 import ManageSubscriptionTab from "./manage-subscription-tab";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const role = "RECRUITER";
 
 export default function AccountMain() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Read tab from URL
+    const currentTab = searchParams.get("tab") || "account";
+
+    const handleTabChange = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("tab", value);
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    };
+
     return (
         <div className="">
             <div className="flex gap-4 items-center p-3 sm:p-6">
@@ -20,7 +34,7 @@ export default function AccountMain() {
             <div>
                 {/* -------------- */}
                 <div className="w-full max-w-7xl mx-auto p-6">
-                    <Tabs defaultValue="account" className="w-full">
+                    <Tabs value={currentTab} onValueChange={handleTabChange} className="w-full">
                         <TabsList className="flex w-full justify-start rounded-none border-b bg-transparent p-0">
                             <TabsTrigger
                                 value="account"
