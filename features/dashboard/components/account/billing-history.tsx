@@ -11,6 +11,8 @@ import { useAppSelector } from "@/store/index.store";
 import { EmptyState } from "@/components/empty-state";
 import { PaymentHistoryResponse } from "./api/subscription/types";
 import { formatDateDMY, formatToLocalTime } from "@/lib/utils/utils";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 
 // Define the Status type
 // type BillingStatus = "SUCCESSFUL" | "FAILED" | "REFUNDED";
@@ -96,7 +98,15 @@ export function BillingHistory() {
 
     const role = useAppSelector((state) => state.app.role);
 
-    const { data: paymentHistory, isPending, isError, error } = useGetPaymentHistory(role);
+    const {
+        data: paymentHistoryAllPages,
+        isPending,
+        isError,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useGetPaymentHistory(5, role);
 
     if (isPending) return <></>;
 
@@ -125,6 +135,11 @@ export function BillingHistory() {
             </Card>
         );
     }
+
+    //  const paymentHistory = paymentHistoryAllPages?.pages.flatMap((page) => page.data) ?? [];
+    //  const paymentHistory = paymentHistoryAllPages?.pages.flatMap((page) => page.data) ?? [];
+    const paymentHistory = paymentHistoryAllPages?.pages.flatMap((page) => page.data as PaymentHistoryResponse[]) ?? [];
+
     return (
         <Card className="w-full max-w-7xl shadow-sm border-none bg-background px-4">
             <CardHeader className="p-0 ">
@@ -157,7 +172,7 @@ export function BillingHistory() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {paymentHistory?.data!.map((transaction: PaymentHistoryResponse) => (
+                            {paymentHistory.map((transaction: PaymentHistoryResponse) => (
                                 <TableRow key={transaction.id} className="hover:bg-muted/10">
                                     <TableCell className="text-sm text-foreground/90">{transaction.plan}</TableCell>
                                     <TableCell className="font-bold text-sm text-foreground/90">₹ {transaction.amount}</TableCell>
@@ -183,9 +198,25 @@ export function BillingHistory() {
                     </Table>
                 </div>
 
-                <p className="pt-6 mx-auto w-fit cursor-pointer hover:underline  text-blue-600 hover:text-blue-800 transition-colors">
+                {/* <p className="pt-6 mx-auto w-fit cursor-pointer hover:underline  text-blue-600 hover:text-blue-800 transition-colors">
                     View More
-                </p>
+                </p> */}
+
+                {hasNextPage && (
+                    // <p className="pt-6 mx-auto w-fit cursor-pointer hover:underline  text-blue-600 hover:text-blue-800 transition-colors">
+                    //     {isFetchingNextPage ? <Spinner /> : "View More"}
+                    // </p>
+                    <div className="pt-6 mx-auto w-fit">
+                        <Button
+                            variant={"ghost"}
+                            onClick={() => fetchNextPage()}
+                            disabled={isFetchingNextPage}
+                            className="text-blue-500"
+                        >
+                            {isFetchingNextPage ? <Spinner /> : "View More"}
+                        </Button>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

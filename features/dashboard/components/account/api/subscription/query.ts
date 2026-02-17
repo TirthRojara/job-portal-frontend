@@ -1,5 +1,5 @@
 import { ApiError, ApiPageResponse, ApiResponse } from "@/types/api";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { PaymentHistoryResponse, SubscriptionResponse } from "./types";
 import { AxiosError } from "axios";
 import { getPaymentHistory, getSubscription } from "./api";
@@ -20,12 +20,26 @@ export const useGetSubscription = (
 };
 
 export const useGetPaymentHistory = (
+    limit: number,
     role: string | undefined,
-    options?: UseQueryOptions<ApiPageResponse<PaymentHistoryResponse[]>, AxiosError<ApiError>>,
+    options?: UseInfiniteQueryOptions<
+        ApiPageResponse<PaymentHistoryResponse[]>,
+        AxiosError<ApiError>,
+        InfiniteData<ApiPageResponse<PaymentHistoryResponse[]>>,
+        [string],
+        number
+    >,
 ) => {
-    return useQuery({
-        queryKey: [QUERY.PAYMENT.DATA.getPaymentHistory, role],
-        queryFn: ({ signal }) => getPaymentHistory({ signal }),
+    return useInfiniteQuery({
+        queryKey: [QUERY.PAYMENT.DATA.getPaymentHistory],
+        queryFn: ({ signal, pageParam }) => getPaymentHistory({ signal, page: pageParam, limit }),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const currentPage = Number(lastPage.pagination.currentPage);
+            const totalPages = Number(lastPage.pagination.totalPages);
+
+            return currentPage < totalPages ? currentPage + 1 : undefined;
+        },
         enabled: role === "RECRUITER",
         ...options,
     });

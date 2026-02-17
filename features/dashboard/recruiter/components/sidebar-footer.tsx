@@ -81,23 +81,20 @@ export default function RecruiterSidebarFooter() {
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
+                                {/* <DropdownMenuSeparator /> */}
+                                {/* <DropdownMenuGroup>
                                     <DropdownMenuItem>
                                         <Sparkles />
                                         Upgrade to Pro
                                     </DropdownMenuItem>
-                                </DropdownMenuGroup>
+                                </DropdownMenuGroup> */}
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem onClick={() => router.push("/dashboard/recruiter/account?tab=account")}>
                                         <BadgeCheck />
                                         Account
                                     </DropdownMenuItem>
-                                    {/* <DropdownMenuItem>
-                                        <CreditCard />
-                                        Billing
-                                    </DropdownMenuItem> */}
+
                                     <DropdownMenuSeparator />
                                     <Dialog>
                                         <DialogTrigger asChild>
@@ -115,8 +112,6 @@ export default function RecruiterSidebarFooter() {
                                             <DialogHeader>
                                                 <DialogTitle>Logout</DialogTitle>
                                                 <DialogDescription>
-                                                    {/* Are you sure you want to */}
-                                                    {/* logout? */}
                                                     You’ll be signed out from your account on this device only.
                                                 </DialogDescription>
                                             </DialogHeader>

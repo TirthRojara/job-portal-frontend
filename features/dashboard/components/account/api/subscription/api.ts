@@ -41,7 +41,15 @@ export const cancelSubscription = async (subscriptionId: string): Promise<ApiErr
 };
 
 //  PAYMENT HISTORY
-export const getPaymentHistory = async ({ signal }: { signal: AbortSignal }): Promise<ApiPageResponse<PaymentHistoryResponse[]>> => {
-    const res = await api.get("v1/payment/payment-history", { signal });
+export const getPaymentHistory = async ({
+    signal,
+    page,
+    limit,
+}: {
+    signal: AbortSignal;
+    page: number;
+    limit: number;
+}): Promise<ApiPageResponse<PaymentHistoryResponse[]>> => {
+    const res = await api.get("v1/payment/payment-history", { signal, params: { page, limit } });
     return res.data;
 };
