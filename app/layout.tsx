@@ -3,6 +3,7 @@ import { Inter, Source_Serif_4, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppProvider from "@/provider/index.provider";
 import Script from "next/script";
+import ReduxProvider from "@/provider/redux.provider";
 
 export const inter = Inter({
     subsets: ["latin"],
@@ -35,7 +36,9 @@ export default function RootLayout({
                 className={`${inter.variable} ${sourceSerif.variable} ${jetbrainsMono.variable} antialiased`}
                 //   className={`${aclonica.variable} ${arbutus.variable} ${jetbrainsMono.variable} antialiased`}
             >
-                <AppProvider>{children}</AppProvider>
+                <ReduxProvider>
+                    <AppProvider>{children}</AppProvider>
+                </ReduxProvider>
                 <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
             </body>
         </html>

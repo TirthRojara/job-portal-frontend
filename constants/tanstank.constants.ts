@@ -149,4 +149,11 @@ export const QUERY = {
             getPaymentHistory: "get_payment_history",
         },
     },
+
+    CHAT: {
+        getChatListForCandidate: "get_chat_list_for_candidate",
+        getChatListForRecruiter: "get_chat_list_for_recruiter",
+        getChatForCandidate: "get_chat_for_candidate", // uses chatroomId params
+        getChatForRecruiter: "get_chat_for_recruiter", // uses chatroomId params
+    },
 };
