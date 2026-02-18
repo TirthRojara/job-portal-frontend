@@ -34,12 +34,9 @@ export default function ChatInput() {
 
     return (
         <div className="flex w-full items-center justify-center px-4  md:px-7 py-3">
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex w-full max-w-7xl items-end gap-2"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="flex w-full max-w-7xl items-end gap-2">
                 {/* Input Wrapper - Grows with text */}
-                <div className="flex gap-2 border-0 border-red-500 items-end relative flex-1 rounded-2xl bg-white shadow-sm pl-3 pr-2 py-1">
+                <div className="flex gap-2 border-0 border-red-500 items-end relative flex-1 rounded-2xl bg-white dark:bg-card shadow-sm pl-3 pr-2 py-1">
                     <TextareaAutosize
                         {...register("message")}
                         onKeyDown={handleKeyDown}
@@ -47,9 +44,9 @@ export default function ChatInput() {
                         maxRows={6} // Limits height before scrollbar appears
                         placeholder="Type a message"
                         className={cn(
-                            " border-red-500 flex w-full resize-none rounded-2xl border-0 bg-transparent px-3 py-3 text-base text-gray-900 placeholder:text-gray-500 focus:ring-0 focus:outline-none focus-visible:ring-0",
+                            " border-red-500 flex w-full resize-none rounded-2xl border-0 bg-transparent px-3 py-3 text-base text-gray-900 dark:text-white dark:placeholder:text-white/50 placeholder:text-gray-500 focus:ring-0 focus:outline-none focus-visible:ring-0",
                             // Custom Scrollbar Styling to match Shadcn/WhatsApp look
-                            "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400"
+                            "scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400",
                         )}
                         style={{
                             // Explicit inline styles to ensure scrollbar customization works in all environments

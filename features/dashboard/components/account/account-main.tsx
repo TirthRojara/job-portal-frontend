@@ -18,13 +18,6 @@ export default function AccountMain() {
     // Read tab from URL
     const currentTab = searchParams.get("tab") || "account";
 
-    // useEffect(() => {
-    //     if (searchParams.get("success") === "true") {
-    //         toast.success("Purchased successfully.");
-    //         toast.info("Your request is being processed. It may take up to 5 minutes to reflect.");
-    //     }
-    // }, []);
-
     useEffect(() => {
         if (searchParams.get("success") === "true") {
             toast.success("Purchased successfully.");

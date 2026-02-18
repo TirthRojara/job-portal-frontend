@@ -13,8 +13,7 @@ const demoMessages = [
         createdAt: "2026-01-14T16:30:00.000Z",
     },
     {
-        content:
-            "Hi! Thanks for reaching out. I'm excited about this opportunity. When would you like to schedule a call?",
+        content: "Hi! Thanks for reaching out. I'm excited about this opportunity. When would you like to schedule a call?",
         senderId: "candidate_456",
         createdAt: "2026-01-14T16:32:15.000Z",
     },
@@ -43,8 +42,7 @@ const demoMessages = [
         createdAt: "2026-01-16T16:38:02.000Z",
     },
     {
-        content:
-            "Excellent! Looking forward to our chat tomorrow. I'll review your full profile before then.",
+        content: "Excellent! Looking forward to our chat tomorrow. I'll review your full profile before then.",
         senderId: "company_123",
         createdAt: "2026-01-16T16:39:18.000Z",
     },
@@ -178,29 +176,18 @@ export default function Messages() {
                             })}
                         >
                             <div
-                                className={cn(
-                                    "group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col",
-                                    {
-                                        "bg-primary text-white ml-4 rounded-br-sm":
-                                            currentUserId === msg.senderId,
-                                        "bg-gray-100 border-gray-200 mr-4 rounded-bl-sm":
-                                            currentUserId !== msg.senderId,
-                                    }
-                                )}
+                                className={cn("group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col", {
+                                    "bg-primary text-white ml-4 rounded-br-sm": currentUserId === msg.senderId,
+                                    "bg-gray-100 dark:bg-card border-gray-200 dark:border-none mr-4 rounded-bl-sm":
+                                        currentUserId !== msg.senderId,
+                                })}
                             >
-                                <p className="text-sm leading-relaxed break-words">
-                                    {msg.content}
-                                </p>
+                                <p className="text-sm leading-relaxed break-words">{msg.content}</p>
                                 <p
-                                    className={cn(
-                                        "text-xs mt-1 flex items-center gap-1 opacity-75",
-                                        {
-                                            "text-white/90":
-                                                currentUserId === msg.senderId,
-                                            "text-gray-500":
-                                                currentUserId !== msg.senderId,
-                                        }
-                                    )}
+                                    className={cn("text-xs mt-1 flex items-center gap-1 opacity-75", {
+                                        "text-white/90": currentUserId === msg.senderId,
+                                        "text-gray-500 dark:text-white/50": currentUserId !== msg.senderId,
+                                    })}
                                 >
                                     {formatTime(msg.createdAt)}
                                 </p>

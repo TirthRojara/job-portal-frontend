@@ -4,7 +4,7 @@ import React from "react";
 
 export default function ChatListCard() {
     return (
-        <Card className="px-2 py-3 shadow-none border-none hover:bg-muted hover:border hover:shadow-sm ">
+        <Card className="px-2 py-3 shadow-none border-none hover:bg-muted hover:border hover:shadow-sm rounded-none ">
             <div className="flex items-center gap-3   ">
                 <Avatar>
                     <AvatarFallback>WJ</AvatarFallback>
