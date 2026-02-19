@@ -14,11 +14,17 @@ import { useGetCandidateProfilById, useGetCandidateResumeForRecruiter } from "@/
 import { useAppSelector } from "@/store/index.store";
 import { EmptyState } from "@/components/empty-state";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
+import { useGetUserData } from "@/features/dashboard/api/query";
 
 export default function ApplicantsProfilePage({ applicantId, jobId }: { applicantId: string; jobId: string }) {
-    console.log({ applicantId, jobId });
+    // console.log({ applicantId, jobId });
+
+    const router = useRouter();
 
     const role = useAppSelector((state) => state.app.role);
+
+    const { data: user } = useGetUserData();
 
     const { data: candidateDataforRecruiter, isError, error, isPending } = useGetCandidateProfilById(role, applicantId);
 
@@ -40,6 +46,10 @@ export default function ApplicantsProfilePage({ applicantId, jobId }: { applican
         }
     };
 
+    const handleSendMessage = () => {
+        router.push(`/dashboard/recruiter/chat/chat_${user?.data?.companyId}_${applicantId}`);
+    };
+
     if (isPending) return <></>;
 
     if (isError) {
@@ -58,7 +68,7 @@ export default function ApplicantsProfilePage({ applicantId, jobId }: { applican
             </div>
             <div className="flex flex-col gap-4 sm:sticky sm:top-25 sm:h-fit">
                 <div className="flex gap-3 sm:flex-row flex-col">
-                    <Button variant={"outline"}>
+                    <Button onClick={handleSendMessage} variant={"outline"}>
                         <MessageSquareMore /> Send Message
                     </Button>
                     <Button onClick={handleDownload} variant={"outline"}>

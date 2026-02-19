@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { ActiveChat } from "@/features/dashboard/components/chat/chat-page-recruiter";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const appSlice = createSlice({
     name: "app",
@@ -6,8 +7,9 @@ const appSlice = createSlice({
         accessToken: "",
         resetToken: "",
         role: "",
-        companyId: '',
+        companyId: "",
         isDarkTheme: false,
+        activeChat: null as ActiveChat | null,
     },
     reducers: {
         setAccessToken(state, action) {
@@ -20,11 +22,20 @@ const appSlice = createSlice({
             state.role = action.payload;
         },
         setCompanyId(state, action) {
-            state.companyId = action.payload
+            state.companyId = action.payload;
         },
-        setIsDardTheme(state, action){
-            state.isDarkTheme = action.payload
-        }
+        setIsDardTheme(state, action) {
+            state.isDarkTheme = action.payload;
+        },
+
+        // CHAT
+
+        setActiveChat: (state, action: PayloadAction<ActiveChat>) => {
+            state.activeChat = action.payload;
+        },
+        clearActiveChat: (state) => {
+            state.activeChat = null;
+        },
 
         // toggleMenu(state) {
         //     state.menuIsVisible = !state.menuIsVisible
@@ -39,7 +50,6 @@ const appSlice = createSlice({
         //     // state.isProjectSeleted = false
         //     state.isAddProjectClick = false
         // },
-
     },
 });
 

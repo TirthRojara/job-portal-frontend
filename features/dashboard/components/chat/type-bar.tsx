@@ -7,6 +7,8 @@ import { Send, SendHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSocket } from "@/provider/socket.provider";
+import { useParams } from "next/navigation";
 
 // Define the form data structure
 type FormValues = {
@@ -14,11 +16,26 @@ type FormValues = {
 };
 
 export default function ChatInput() {
+    const params = useParams();
+    const chatRoomId = params.chatroomId as string;
+    const socket = useSocket();
     const { register, handleSubmit, reset, setFocus } = useForm<FormValues>();
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         if (data.message.trim().length === 0) return;
         console.log("Message sent:", data.message);
+
+        if (!socket) {
+            console.log("Connecting to chat...");
+            return;
+        }
+
+        socket.emit("sendMessage", { chatRoomId, message: { content: data.message } }, (response: any) => {
+            if (response?.error) {
+                alert("Message send failed: " + response.error);
+            }
+        });
+
         reset();
         // Optional: Focus back on input after sending
         setTimeout(() => setFocus("message"), 10);
