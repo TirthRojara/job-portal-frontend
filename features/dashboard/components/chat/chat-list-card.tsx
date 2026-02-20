@@ -29,7 +29,7 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
     return (
         <Card
             onClick={handleOnClick}
-            className="px-2 py-3 shadow-none border-none hover:bg-muted hover:border hover:shadow-sm rounded-none "
+            className=" px-2 py-3 shadow-none border-none hover:bg-muted hover:border hover:shadow-sm rounded-none "
         >
             <div className="flex items-center gap-3   ">
                 <Avatar>

@@ -1,6 +1,6 @@
 import { QUERY } from "@/constants/tanstank.constants";
 import { ApiError, ApiPageResponse } from "@/types/api";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
     chatListResponse,
@@ -12,11 +12,26 @@ import {
 
 export const useGetChatListForCandidate = (
     role: string,
-    options?: UseQueryOptions<ApiPageResponse<chatListResponse[]>, AxiosError<ApiError>>,
+    // page: number,
+    limit: number,
+    options?: UseInfiniteQueryOptions<
+        ApiPageResponse<chatListResponse[]>,
+        AxiosError<ApiError>,
+        InfiniteData<ApiPageResponse<chatListResponse[]>>,
+        [string, number],
+        number
+    >,
 ) => {
-    return useQuery({
-        queryKey: [QUERY.CHAT.getChatListForCandidate],
-        queryFn: ({ signal }) => getChatListForCandidate({ signal }),
+    return useInfiniteQuery({
+        queryKey: [QUERY.CHAT.getChatListForCandidate, limit],
+        queryFn: ({ signal, pageParam }) => getChatListForCandidate({ signal, page: pageParam, limit }),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const currentPage = Number(lastPage.pagination.currentPage);
+            const totalPages = Number(lastPage.pagination.totalPages);
+
+            return currentPage < totalPages ? currentPage + 1 : undefined;
+        },
         enabled: role === "CANDIDATE",
         ...options,
     });
@@ -24,12 +39,27 @@ export const useGetChatListForCandidate = (
 
 export const useGetChatListForRecruiter = (
     role: string,
+    // page: number,
+    limit: number,
     companyId: number,
-    options?: UseQueryOptions<ApiPageResponse<chatListResponse[]>, AxiosError<ApiError>>,
+    options?: UseInfiniteQueryOptions<
+        ApiPageResponse<chatListResponse[]>,
+        AxiosError<ApiError>,
+        InfiniteData<ApiPageResponse<chatListResponse[]>>,
+        [string, { limit: number; companyId: number }],
+        number
+    >,
 ) => {
-    return useQuery({
-        queryKey: [QUERY.CHAT.getChatListForRecruiter],
-        queryFn: ({ signal }) => getChatListForRecruiter({ signal, companyId }),
+    return useInfiniteQuery({
+        queryKey: [QUERY.CHAT.getChatListForRecruiter, { limit, companyId }],
+        queryFn: ({ signal, pageParam }) => getChatListForRecruiter({ signal, page: pageParam, limit, companyId }),
+        initialPageParam: 1,
+        getNextPageParam: (lastPage, allPages) => {
+            const currentPage = Number(lastPage.pagination.currentPage);
+            const totalPages = Number(lastPage.pagination.totalPages);
+
+            return currentPage < totalPages ? currentPage + 1 : undefined;
+        },
         enabled: role === "RECRUITER" && !!companyId,
         ...options,
     });
