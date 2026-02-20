@@ -19,9 +19,16 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
     const dispatch = useAppDispatch();
     const router = useRouter();
 
+    const role = useAppSelector((state) => state.app.role);
+
     const handleOnClick = () => {
-        dispatch(appActions.setActiveChat(chatData));
-        router.push(`/dashboard/recruiter/chat/${chatData.chatRoomId}`);
+        // dispatch(appActions.setActiveChat(chatData));
+        if (role === "RECRUITER") {
+            router.push(`/dashboard/recruiter/chat/${chatData.chatRoomId}`);
+        }
+        if (role === "CANDIDATE") {
+            router.push(`/dashboard/candidate/chat/${chatData.chatRoomId}`);
+        }
     };
 
     const lastMessage = chatData.messages.at(-1);

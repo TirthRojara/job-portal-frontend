@@ -1,7 +1,4 @@
-import ChatList from "@/features/dashboard/components/chat/chat-list";
 import ChatPageRecruiter from "@/features/dashboard/components/chat/chat-page-recruiter";
-import EmptyChatState from "@/features/dashboard/components/chat/empty-chat-state";
-import MessageBox from "@/features/dashboard/components/chat/message-box";
 import React from "react";
 
 export default function Page() {
