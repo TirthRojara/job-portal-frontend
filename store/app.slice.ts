@@ -1,4 +1,4 @@
-import { ActiveChat } from "@/features/dashboard/components/chat/chat-page-recruiter";
+import { ChatListItem } from "@/features/dashboard/components/chat/api/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const appSlice = createSlice({
@@ -9,7 +9,7 @@ const appSlice = createSlice({
         role: "",
         companyId: "",
         isDarkTheme: false,
-        activeChat: null as ActiveChat | null,
+        activeChat: null as ChatListItem | null,
     },
     reducers: {
         setAccessToken(state, action) {
@@ -30,7 +30,7 @@ const appSlice = createSlice({
 
         // CHAT
 
-        setActiveChat: (state, action: PayloadAction<ActiveChat>) => {
+        setActiveChat: (state, action: PayloadAction<ChatListItem>) => {
             state.activeChat = action.payload;
         },
         clearActiveChat: (state) => {

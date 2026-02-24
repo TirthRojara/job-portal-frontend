@@ -4,10 +4,17 @@ import React, { useEffect } from "react";
 import Messages from "./messages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TypeBar from "./type-bar";
-import { ActiveChat } from "./chat-page-recruiter";
 import { useAppSelector } from "@/store/index.store";
 import { useSocket } from "@/provider/socket.provider";
 import { useParams } from "next/navigation";
+
+import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+import { getInitials } from "@/lib/utils/utils";
+import { ApiResponse } from "@/types/api";
+import { Chat, ChatListResponse, CreateNewMessageResponse, MessageResponse } from "./api/types";
+import { QUERY } from "@/constants/tanstank.constants";
+import { useCreateChat } from "./api/query";
+import { EmptyState } from "@/components/empty-state";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
@@ -15,14 +22,22 @@ export default function MessageBox() {
     const chatRoomId = params.chatroomId as string;
 
     const socket = useSocket();
+    const queryClient = useQueryClient();
 
+    const role = useAppSelector((state) => state.app.role);
     const token = useAppSelector((state) => state.app.accessToken);
     const activeChat = useAppSelector((state) => state.app.activeChat);
 
-    const [_, companyIdStr, candidateIdStr] = chatRoomId.split("_");
+    const [_, companyIdStr, candidateIdStr, chatId] = chatRoomId.split("_");
 
     const companyId = Number(companyIdStr);
     const candidateProfileId = Number(candidateIdStr);
+
+    const { data, isPending, isSuccess, isError } = useCreateChat(companyId, candidateProfileId);
+    console.log('create chat', data)
+
+    const activeChatQueryKey = [QUERY.CHAT.getMessages, Number(chatId)];
+    const chatListQueryKey = [QUERY.CHAT.getChatList];
 
     useEffect(() => {
         if (!socket) return;
@@ -31,18 +46,95 @@ export default function MessageBox() {
         socket.emit("joinChat", { token, companyId, candidateProfileId });
 
         // 🔵 Listen for new message
-        // const handleNewMessage = (newMessage: any) => {
-        // queryClient.setQueryData(["chat", chatRoomId], (oldData: any) => {
-        //     if (!oldData) return oldData;
+        const handleNewMessage = (newMessage: CreateNewMessageResponse) => {
+            console.log("newMessage from sender \n", newMessage);
 
-        //     return {
-        //         ...oldData,
-        //         messages: [...(oldData.messages || []), newMessage],
-        //     };
-        // });
-        // };
+            queryClient.setQueryData(activeChatQueryKey, (oldData: InfiniteData<ApiResponse<MessageResponse>> | undefined) => {
+                console.log("update chat key");
+                if (!oldData) return oldData;
 
-        // socket.on("newMessage", handleNewMessage);
+                const updatedPages = oldData.pages.map((page, index) => {
+                    if (!page.data) return page;
+
+                    if (index === 0) {
+                        return {
+                            ...page,
+                            data: {
+                                ...page.data,
+                                messages: [
+                                    ...page.data.messages,
+                                    newMessage.newMessage, // 👈 append new message
+                                ],
+                            },
+                        };
+                    }
+
+                    console.log("updated chat key end");
+
+                    return page;
+                });
+
+                return {
+                    ...oldData,
+                    pages: updatedPages,
+                };
+            });
+
+            queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>> | undefined) => {
+                console.log("update chat list");
+                if (!oldData) return oldData;
+
+                const updatedPages = oldData.pages.map((page, index) => {
+                    if (!page.data) return page; // 🔥 important
+
+                    if (index !== 0) return page;
+
+                    const chats = page.data.chatList ?? [];
+
+                    const existingIndex = chats.findIndex((chat) => chat.id === newMessage.newChat.id);
+
+                    let updatedChats;
+
+                    if (existingIndex !== -1) {
+                        const updatedChat = {
+                            ...chats[existingIndex],
+                            lastMessage: newMessage.newMessage.content,
+                            lastMessageAt: newMessage.newMessage.createdAt,
+                        };
+
+                        updatedChats = [updatedChat, ...chats.filter((chat) => chat.id !== newMessage.newChat.id)];
+                    } else {
+                        updatedChats = [
+                            {
+                                ...newMessage.newChat,
+                                lastMessage: newMessage.newMessage.content,
+                                lastMessageAt: newMessage.newMessage.createdAt,
+                            },
+                            ...chats,
+                        ];
+                    }
+
+                    console.log("updated chat list end");
+                    return {
+                        ...page,
+                        data: {
+                            ...page.data,
+                            chatList: updatedChats, // ✅ correct property
+                        },
+                    };
+                });
+
+                return {
+                    ...oldData,
+                    pages: updatedPages,
+                };
+            });
+        };
+
+        socket.on("newMessage", (newMsg) => {
+            console.log({ newMsg });
+            handleNewMessage(newMsg);
+        });
 
         socket.on("error", (error) => {
             alert("Socket error: " + error);
@@ -54,12 +146,20 @@ export default function MessageBox() {
 
         return () => {
             // 🔴 Leave room
-            socket.emit("leaveChat", { companyId, candidateProfileId });
-
-            // socket.off("newMessage", handleNewMessage);
+            socket.off("newMessage", handleNewMessage);
+            socket.off("error", (error) => {
+                alert("Socket error: " + error);
+            });
         };
         // }, [socket, companyId, candidateProfileId, chatRoomId, queryClient]);
     }, [socket, companyId, candidateProfileId, chatRoomId]);
+
+    const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
+
+    if (isPending) return <></>;
+    if (isError) return <EmptyState title="Something went wrong!" />;
+
+    console.log('chat id :',data.data?.id)
 
     return (
         <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden">
@@ -67,10 +167,16 @@ export default function MessageBox() {
             <div className="bg-white dark:bg-card w-full p-3 shadow-2xl flex-none z-10">
                 <div className="flex items-center gap-3   ">
                     <Avatar className=" md:size-15 size-12 ">
-                        <AvatarFallback className="bg-blue-400 text-white md:text-2xl text-lg font-semibold">WJ</AvatarFallback>
+                        <AvatarFallback className="bg-blue-400 text-white md:text-2xl text-lg font-semibold">
+                            {getInitials(name || "")}
+                            {/* TR */}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col gap-2">
-                        <p className="md:text-2xl text-lg  font-semibold">William Johanson</p>
+                        <p className="md:text-2xl text-lg  font-semibold">
+                            {name}
+                            {/* Tirth Rojara */}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -78,13 +184,13 @@ export default function MessageBox() {
             {/* messages */}
             <div className="flex-1 min-h-0 ">
                 <ScrollArea className=" h-full w-full rounded-md border-0  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-                    <Messages chat={activeChat!} /> {/* ======================================================*/}
+                    <Messages />
                 </ScrollArea>
             </div>
 
             {/* typing bar */}
             <div className="flex-none ">
-                <TypeBar />
+                <TypeBar chatId={data.data?.id!} />
             </div>
         </div>
     );

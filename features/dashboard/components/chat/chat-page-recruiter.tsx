@@ -4,19 +4,19 @@ import MessageBox from "./message-box";
 import EmptyChatState from "./empty-chat-state";
 import { chatListResponse } from "./api/api";
 
-export type ActiveChat = {
-    candidateProfileId: number;
-    companyId: number;
-    chatRoomId: string;
-    messages: {
-        content: string;
-        senderId: number;
-        createdAt: string;
-    }[];
-    candidateProfile: {
-        fullName: string;
-    };
-};
+// export type ActiveChat = {
+//     candidateProfileId: number;
+//     companyId: number;
+//     chatRoomId: string;
+//     messages: {
+//         content: string;
+//         senderId: number;
+//         createdAt: string;
+//     }[];
+//     candidateProfile: {
+//         fullName: string;
+//     };
+// };
 
 export default function ChatPageRecruiter() {
     // const [activeChat, setActiveChat] = useState<ActiveChat | null>(null);

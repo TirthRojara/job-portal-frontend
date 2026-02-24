@@ -1,9 +1,15 @@
 "use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import React, { use, useEffect, useMemo, useRef } from "react";
-import { ActiveChat } from "./chat-page-recruiter";
+import React, { useEffect, useMemo, useRef } from "react";
 import { useGetUserData } from "../../api/query";
+import { Spinner } from "@/components/ui/spinner";
+import { EmptyState } from "@/components/empty-state";
+import { useGetMessages } from "./api/query";
+import { useSelector } from "react-redux";
+import { useAppSelector } from "@/store/index.store";
+import { CreateChatResponse } from "./api/types";
+import { useParams } from "next/navigation";
 
 const userId = "1";
 // const currentUserId = "candidate_456";
@@ -85,56 +91,107 @@ const getMessageDateLabel = (dateString: string) => {
     });
 };
 
-// <div>
-// {demoMessages.map((msg) => (
-//     <p key={msg.createdAt} className={`${currentUserId === msg.senderId ? 'bg-green-300 justify-end ' : 'bg-amber-50 '} max-w-[80%] w-fit flex border border-red-500 p-1.5`}>{msg.content}</p>
-// ))}
+// export default function Messages({ chat }: { chat: ActiveChat }) {
+export default function Messages() {
+    const params = useParams();
+    const chatRoomId = params.chatroomId as string;
 
-// </div>
-
-export default function Messages({ chat }: { chat: ActiveChat }) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    const [_, companyIdStr, candidateIdStr, chatId] = chatRoomId.split("_");
+
+    // const chatId = useAppSelector((state) => state.app.activeChat?.id);
+
     const { data: user } = useGetUserData();
-
     const currentUserId = user?.data?.id;
+    // console.log({ currentUserId });
 
-    console.log({ currentUserId });
+    const { data, isPending, isError, error, isEnabled, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetMessages(
+        Number(chatId),
+        20,
+    );
 
-    const messages = chat?.messages ?? [];
+    // console.log("query data \n", data);
 
-    const groupedMessages = useMemo(() => {
-        const groups: Record<
-            string,
-            {
-                content: string;
-                senderId: number;
-                createdAt: string;
-            }[]
-        > = {};
+    //=========================================
 
-        messages.forEach((msg) => {
-            const date = new Date(msg.createdAt);
-            const dateKey = date.toDateString();
+    // const messages = activeData?.data?.messages ?? [];
 
-            if (!groups[dateKey]) {
-                groups[dateKey] = [];
+    const chatItems = useMemo(() => {
+        if (!data?.pages) return [];
+
+        // 🔹 1️⃣ Flatten all pages
+        // const allMessages = data.pages.flatMap((page) => page.data?.messages);
+        const allMessages = data.pages.flatMap((page) => page.data?.messages ?? []);
+
+        if (!allMessages.length) return [];
+
+        // 🔹 2️⃣ Sort ascending (safety)
+        const sortedMessages = [...allMessages].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+        const items: any[] = [];
+        let lastDateKey = "";
+
+        // 🔥 Find first unread message from OTHER user
+        const firstUnreadIndex = sortedMessages.findIndex((msg) => !msg.isRead && msg.senderId !== currentUserId);
+
+        sortedMessages.forEach((msg, index) => {
+            const dateKey = new Date(msg.createdAt).toDateString();
+
+            // Date separator
+            if (dateKey !== lastDateKey) {
+                items.push({
+                    type: "date",
+                    dateKey,
+                });
+                lastDateKey = dateKey;
             }
 
-            groups[dateKey].push(msg);
+            // Unread separator
+            if (index === firstUnreadIndex) {
+                items.push({
+                    type: "unread",
+                });
+            }
+
+            items.push({
+                type: "message",
+                message: msg,
+            });
         });
 
-        return Object.entries(groups).map(([dateKey, msgs]) => ({
-            dateKey,
-            messages: msgs,
-        }));
-    }, [messages]);
+        return items;
+    }, [data, currentUserId]);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
+    }, [data]);
 
-    if (!chat) {
+    if (chatId === undefined) {
+        return (
+            <div className="flex items-center justify-center h-full text-muted-foreground">
+                <p className="mt-3"> Start a conversation </p>
+            </div>
+        );
+    }
+
+    if (isPending) {
+        return (
+            <div className="flex justify-center items-center h-full text-muted-foreground">
+                <Spinner className="size-8 mt-50" />
+            </div>
+        );
+    }
+
+    if (isError) {
+        return <EmptyState title="Something went wrong!" />;
+    }
+
+    const allMessages = data.pages.flatMap((page) => page.data?.messages);
+
+    // console.log("all messages \n", allMessages);
+
+    if (allMessages.length === 0 || chatId === undefined) {
         return (
             <div className="flex items-center justify-center h-full text-muted-foreground">
                 <p className="mt-3"> Start a conversation </p>
@@ -151,45 +208,62 @@ export default function Messages({ chat }: { chat: ActiveChat }) {
 
     return (
         <div className="flex-1 p-5 space-y-4 ">
-            {groupedMessages.map(({ dateKey, messages }) => (
-                <div key={dateKey} className="space-y-4">
-                    {/* Date Separator */}
-                    <div className="flex justify-center my-6">
-                        <div className="bg-muted/50 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
-                            {getMessageDateLabel(dateKey)}
-                        </div>
-                    </div>
-
-                    {/* Messages for this date */}
-                    {messages.map((msg) => (
-                        <div
-                            key={msg.createdAt}
-                            className={cn("flex", {
-                                "justify-end": currentUserId === msg.senderId,
-                                "justify-start": currentUserId !== msg.senderId,
-                            })}
-                        >
-                            <div
-                                className={cn("group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col", {
-                                    "bg-primary text-white ml-4 rounded-br-sm": currentUserId === msg.senderId,
-                                    "bg-gray-100 dark:bg-card border-gray-200 dark:border-none mr-4 rounded-bl-sm":
-                                        currentUserId !== msg.senderId,
-                                })}
-                            >
-                                <p className="text-sm leading-relaxed break-words">{msg.content}</p>
-                                <p
-                                    className={cn("text-xs mt-1 flex items-center gap-1 opacity-75", {
-                                        "text-white/90": currentUserId === msg.senderId,
-                                        "text-gray-500 dark:text-white/50": currentUserId !== msg.senderId,
-                                    })}
-                                >
-                                    {formatTime(msg.createdAt)}
-                                </p>
+            {chatItems.map((item, index) => {
+                // 🔹 DATE LABEL (same UI)
+                if (item.type === "date") {
+                    return (
+                        <div key={`date-${index}`} className="space-y-4">
+                            <div className="flex justify-center my-6">
+                                <div className="bg-muted/50 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
+                                    {getMessageDateLabel(item.dateKey)}
+                                </div>
                             </div>
                         </div>
-                    ))}
-                </div>
-            ))}
+                    );
+                }
+
+                // 🔹 UNREAD LABEL (same structure, small style tweak)
+                if (item.type === "unread") {
+                    return (
+                        <div key="unread-divider" className="flex justify-center my-6">
+                            <div className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs backdrop-blur-sm">
+                                Unread Messages
+                            </div>
+                        </div>
+                    );
+                }
+
+                const msg = item.message;
+
+                return (
+                    <div
+                        key={msg.id}
+                        className={cn("flex", {
+                            "justify-end": currentUserId === msg.senderId,
+                            "justify-start": currentUserId !== msg.senderId,
+                        })}
+                    >
+                        <div
+                            className={cn("group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col", {
+                                "bg-primary text-white ml-4 rounded-br-sm": currentUserId === msg.senderId,
+                                "bg-gray-100 dark:bg-card border-gray-200 dark:border-none mr-4 rounded-bl-sm":
+                                    currentUserId !== msg.senderId,
+                            })}
+                        >
+                            <p className="text-sm leading-relaxed break-words">{msg.content}</p>
+                            <p
+                                className={cn("text-xs mt-1 flex items-center gap-1 opacity-75", {
+                                    "text-white/90": currentUserId === msg.senderId,
+                                    "text-gray-500 dark:text-white/50": currentUserId !== msg.senderId,
+                                })}
+                            >
+                                {formatTime(msg.createdAt)}
+                            </p>
+                        </div>
+                    </div>
+                );
+            })}
+
             <div ref={scrollRef} />
         </div>
     );

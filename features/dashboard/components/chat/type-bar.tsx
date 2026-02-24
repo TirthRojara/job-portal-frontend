@@ -15,11 +15,13 @@ type FormValues = {
     message: string;
 };
 
-export default function ChatInput() {
+export default function ChatInput({ chatId }: { chatId: number }) {
     const params = useParams();
     const chatRoomId = params.chatroomId as string;
     const socket = useSocket();
     const { register, handleSubmit, reset, setFocus } = useForm<FormValues>();
+
+    const [_, companyIdStr, candidateIdStr] = chatRoomId.split("_");
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         if (data.message.trim().length === 0) return;
@@ -30,7 +32,8 @@ export default function ChatInput() {
             return;
         }
 
-        socket.emit("sendMessage", { chatRoomId, message: { content: data.message } }, (response: any) => {
+        // socket.emit("sendMessage", { chatRoomId, message: { content: data.message } }, (response: any) => {
+        socket.emit("sendMessage", { chatRoomId, chatId, message: { content: data.message } }, (response: any) => {
             if (response?.error) {
                 alert("Message send failed: " + response.error);
             }

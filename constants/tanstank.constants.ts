@@ -151,9 +151,12 @@ export const QUERY = {
     },
 
     CHAT: {
-        getChatListForCandidate: "get_chat_list_for_candidate",
-        getChatListForRecruiter: "get_chat_list_for_recruiter",
-        getChatForCandidate: "get_chat_for_candidate", // uses chatroomId params
-        getChatForRecruiter: "get_chat_for_recruiter", // uses chatroomId params
+        // getChatListForCandidate: "get_chat_list_for_candidate",
+        // getChatListForRecruiter: "get_chat_list_for_recruiter",
+        // getChatForCandidate: "get_chat_for_candidate", // uses chatroomId params
+        // getChatForRecruiter: "get_chat_for_recruiter", // uses chatroomId params
+        getChatList: "get_chat_list",
+        getMessages: "get_messages", // uses chatId params
+        createChat: "create_chat", // uses companyId & candidateProfileId
     },
 };

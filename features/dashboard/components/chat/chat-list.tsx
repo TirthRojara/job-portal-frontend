@@ -2,11 +2,10 @@
 import React, { useEffect } from "react";
 import ChatListCard from "./chat-list-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useGetChatListForCandidate, useGetChatListForRecruiter } from "./api/query";
+import { useGetChatList } from "./api/query";
 import { useAppSelector } from "@/store/index.store";
 import { useGetUserData } from "../../api/query";
 import { Spinner } from "@/components/ui/spinner";
-import { ActiveChat } from "./chat-page-recruiter";
 import { useInView } from "react-intersection-observer";
 
 // const chatData: ActiveChat = {
@@ -31,57 +30,33 @@ export default function ChatList() {
         rootMargin: "0px 0px 150px 0px", // Pre-fetch 150px before bottom
     });
 
-    const { data: user, isPending, isError } = useGetUserData();
+    const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();
 
-    const {
-        data: chatListRecruiter,
-        isPending: isChatListPendingRecruiter,
-        isError: isChatListErrorRecruiter,
-        error: chatListErrorRecruiter,
-        fetchNextPage: fetchNextPageRecruiter,
-        hasNextPage: hasNextPageRecruiter,
-        isFetchingNextPage: isFetchingNextPageRecruiter,
-    } = useGetChatListForRecruiter(role, 15, user?.data?.companyId!);
+    let chatListParams: any = {
+        limit: 20,
+    };
 
-    const {
-        data: chatListCandidate,
-        isPending: isChatListPendingCandidate,
-        isError: isChatListErrorCandidate,
-        error: chatListErrorCandidate,
-        fetchNextPage: fetchNextPageCandidate,
-        hasNextPage: hasNextPageCandidate,
-        isFetchingNextPage: isFetchingNextPageCandidate,
-    } = useGetChatListForCandidate(role, 15);
+    if (user?.data?.role === "RECRUITER") {
+        chatListParams.companyId = user.data.companyId;
+    }
 
-    const isCandidate = role === "CANDIDATE";
-    const isRecruiter = role === "RECRUITER";
+    const { data, isPending, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetChatList(chatListParams, {
+        enabled: !!user && !isUserPending && !isUserError,
+    });
 
-    const activeData = isCandidate ? chatListCandidate : isRecruiter ? chatListRecruiter : undefined;
-    const activeError = isCandidate ? chatListErrorCandidate : isRecruiter ? chatListErrorRecruiter : undefined;
-    const activePending = isCandidate ? isChatListPendingCandidate : isRecruiter ? isChatListPendingRecruiter : true;
-    const activeFetchNextPage = isCandidate
-        ? fetchNextPageCandidate
-        : isRecruiter
-          ? fetchNextPageRecruiter
-          : () => Promise.resolve();
-    const activeHasNextPage = isCandidate ? hasNextPageCandidate : isRecruiter ? hasNextPageRecruiter : false;
-    const activeIsFetchingNextPage = isCandidate
-        ? isFetchingNextPageCandidate
-        : isRecruiter
-          ? isFetchingNextPageRecruiter
-          : false;
+    // console.log("chat list ", data);
 
     useEffect(() => {
-        if (inView && activeHasNextPage) {
-            activeFetchNextPage();
+        if (inView && hasNextPage) {
+            fetchNextPage();
         }
-    }, [inView, activeHasNextPage, activeFetchNextPage]);
+    }, [inView, hasNextPage, fetchNextPage]);
 
     useEffect(() => {
         console.log("inView:", inView);
     }, [inView]);
 
-    if (activePending) {
+    if (isPending) {
         return (
             <div className="flex-1 ">
                 <ScrollArea className="h-full md:h-[calc(100vh-73px)] w-full rounded-md border  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
@@ -93,7 +68,7 @@ export default function ChatList() {
         );
     }
 
-    if (activeError?.status === 404) {
+    if (error?.status === 404) {
         return (
             <div className="flex-1 ">
                 <ScrollArea className="h-full md:h-[calc(100vh-73px)] w-full rounded-md border  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
@@ -106,7 +81,7 @@ export default function ChatList() {
         );
     }
 
-    const chatListPage = activeData?.pages.flatMap((page) => page.data) ?? [];
+    const chatListPage = data?.pages.flatMap((page) => page.data?.chatList) ?? [];
 
     return (
         <div className="flex-1 ">
@@ -120,9 +95,9 @@ export default function ChatList() {
                         <ChatListCard key={chat?.chatRoomId} chatData={chat!} />
                     ))}
 
-                    {!activeIsFetchingNextPage && activeHasNextPage && <div ref={ref} className="h-4 w-full bg-transparent" />}
+                    {isFetchingNextPage && hasNextPage && <div ref={ref} className="h-4 w-full bg-transparent" />}
 
-                    {activeIsFetchingNextPage && (
+                    {isFetchingNextPage && (
                         <div className="flex justify-center py-4">
                             <Spinner className="size-6" />
                         </div>
