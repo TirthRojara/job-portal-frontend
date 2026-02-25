@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { SocketContext } from "./socket/socket.context";
 import { io, Socket } from "socket.io-client";
 import { useAppSelector } from "@/store/index.store";
+import { ChatSocketLayer } from "./socket/chat/chat-socket.provider";
 const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const token = useAppSelector((state) => state.app.accessToken);
     const socketRef = useRef<Socket | null>(null);
@@ -35,7 +36,11 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         };
     }, [token]);
 
-    return <SocketContext.Provider value={socketInstance}>{children}</SocketContext.Provider>;
+    return (
+        <SocketContext.Provider value={socketInstance}>
+            <ChatSocketLayer>{children}</ChatSocketLayer>
+        </SocketContext.Provider>
+    );
 };
 
 export default SocketProvider;

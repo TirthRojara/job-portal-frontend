@@ -147,4 +147,5 @@ export type markAsReadResponse = {
     chatRoomId: string;
     companyUnreadCount: number;
     candidateUnreadCount: number;
+    senderId: number;
 };

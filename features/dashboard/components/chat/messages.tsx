@@ -153,7 +153,7 @@ export default function Messages() {
                         return;
                     }
 
-                    // console.log("✅ Activated:", response);
+                    console.log("✅ Activated:", response);
                 },
             );
 
@@ -188,7 +188,7 @@ export default function Messages() {
                                     return;
                                 }
 
-                                // console.log("✅ Activated:", response);
+                                console.log("✅ Activated:", response);
                             },
                         );
 
