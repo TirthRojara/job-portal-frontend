@@ -24,10 +24,12 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
 
     const isActive = chatRoomIdUrl === `${chatData.chatRoomId}_${chatData.id}`;
 
-    console.log({ isActive, chatRoomIdUrl });
-    console.log("chat room id:", chatData.chatRoomId);
-
     const role = useAppSelector((state) => state.app.role);
+
+    const unreadCount = role === "CANDIDATE" ? chatData.candidateUnreadCount : chatData.companyUnreadCount;
+
+    // console.log({ isActive, chatRoomIdUrl });
+    // console.log("chat room id:", chatData.chatRoomId);
 
     const handleOnClick = () => {
         dispatch(appActions.setActiveChat(chatData));
@@ -41,6 +43,8 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
 
     // const lastMessage = chatData.messages.at(-1);
     const lastMessage = chatData.lastMessage;
+
+    const name = role === "CANDIDATE" ? chatData.company.name : chatData.candidateProfile.fullName;
 
     return (
         <Card
@@ -56,10 +60,10 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
         >
             <div className="flex items-center gap-3   ">
                 <Avatar>
-                    <AvatarFallback>{getInitials(chatData.candidateProfile.fullName)}</AvatarFallback>
+                    <AvatarFallback>{getInitials(name)}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col gap-2">
-                    <p className="font-semibold">{chatData.candidateProfile.fullName}</p>
+                    <p className="font-semibold">{name}</p>
                     {lastMessage && (
                         <p className="text-muted-foreground truncate line-clamp-1 whitespace-normal">
                             {/* {chatData.messages[chatData.messages.length -1].content} */}
@@ -67,6 +71,13 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
                         </p>
                     )}
                 </div>
+
+                {/* RIGHT SIDE (Unread Badge) */}
+                {unreadCount > 0 && (
+                    <div className="relative left-45 top-2 top-1/2 transform -translate-y-1/2 flex items-center justify-center min-w-[22px] h-5 px-2 rounded-full bg-primary text-white text-xs font-semibold">
+                        {unreadCount}
+                    </div>
+                )}
             </div>
         </Card>
     );

@@ -7,7 +7,7 @@ import { Send, SendHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSocket } from "@/provider/socket.provider";
+import { useSocket } from "@/provider/socket/socket.context";
 import { useParams } from "next/navigation";
 
 // Define the form data structure

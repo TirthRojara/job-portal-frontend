@@ -5,16 +5,17 @@ import Messages from "./messages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TypeBar from "./type-bar";
 import { useAppSelector } from "@/store/index.store";
-import { useSocket } from "@/provider/socket.provider";
+import { useSocket } from "@/provider/socket/socket.context";
 import { useParams } from "next/navigation";
 
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { getInitials } from "@/lib/utils/utils";
 import { ApiResponse } from "@/types/api";
-import { Chat, ChatListResponse, CreateNewMessageResponse, MessageResponse } from "./api/types";
+import { Chat, ChatListResponse, CreateNewMessageResponse, markAsReadResponse, MessageResponse } from "./api/types";
 import { QUERY } from "@/constants/tanstank.constants";
 import { useCreateChat } from "./api/query";
 import { EmptyState } from "@/components/empty-state";
+import { useGetUserData } from "../../api/query";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
@@ -33,11 +34,17 @@ export default function MessageBox() {
     const companyId = Number(companyIdStr);
     const candidateProfileId = Number(candidateIdStr);
 
+    const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();
+
     const { data, isPending, isSuccess, isError } = useCreateChat(companyId, candidateProfileId);
-    console.log('create chat', data)
+    // console.log('create chat', data)
 
     const activeChatQueryKey = [QUERY.CHAT.getMessages, Number(chatId)];
     const chatListQueryKey = [QUERY.CHAT.getChatList];
+
+    // --------------------------------------------
+    // Set query data when new messages receive
+    // --------------------------------------------
 
     useEffect(() => {
         if (!socket) return;
@@ -154,12 +161,100 @@ export default function MessageBox() {
         // }, [socket, companyId, candidateProfileId, chatRoomId, queryClient]);
     }, [socket, companyId, candidateProfileId, chatRoomId]);
 
+    // --------------------------------------------
+    // Set query data when receive see messages
+    // --------------------------------------------
+
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleMarkAsRead = (updatedChat: markAsReadResponse) => {
+            console.log("Received markAsRead event", updatedChat);
+
+            const currentUserId = user?.data?.id;
+
+            // If user still not loaded → do nothing
+            if (!currentUserId) {
+                console.warn("User not ready yet, skipping markAsRead");
+                return;
+            }
+
+            const markAsReadChatQueryKey = [QUERY.CHAT.getMessages, updatedChat.id];
+            console.log({ markAsReadChatQueryKey });
+
+            // update react-query cache here
+            queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>>) => {
+                console.log("update chat list on mark as read");
+
+                if (!oldData) return oldData;
+
+                return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => {
+                        // guard because data is optional in ApiResponse
+                        if (!page.data) return page;
+
+                        console.log("on mark as read chat list query update");
+
+                        return {
+                            ...page,
+                            data: {
+                                ...page.data,
+                                chatList: page.data.chatList.map((chat) =>
+                                    chat.id === updatedChat.id
+                                        ? {
+                                              ...chat,
+                                              companyUnreadCount: updatedChat.companyUnreadCount,
+                                              candidateUnreadCount: updatedChat.candidateUnreadCount,
+                                          }
+                                        : chat,
+                                ),
+                            },
+                        };
+                    }),
+                };
+            });
+
+            queryClient.setQueryData(
+                markAsReadChatQueryKey,
+                (oldData: InfiniteData<ApiResponse<MessageResponse>> | undefined) => {
+                    if (!oldData) return oldData;
+
+                    console.log("on mark as read chat messagess query update");
+
+                    return {
+                        ...oldData,
+                        pages: oldData.pages.map((page) => {
+                            if (!page.data) return page;
+
+                            return {
+                                ...page,
+                                data: {
+                                    ...page.data,
+                                    messages: page.data.messages.map((msg) =>
+                                        msg.senderId === currentUserId && msg.isRead === false ? { ...msg, isRead: true } : msg,
+                                    ),
+                                },
+                            };
+                        }),
+                    };
+                },
+            );
+        };
+
+        socket.on("markAsRead", handleMarkAsRead);
+
+        return () => {
+            socket.off("markAsRead", handleMarkAsRead);
+        };
+    }, [socket, user]);
+
     const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
 
     if (isPending) return <></>;
     if (isError) return <EmptyState title="Something went wrong!" />;
 
-    console.log('chat id :',data.data?.id)
+    // console.log('chat id :',data.data?.id)
 
     return (
         <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden">

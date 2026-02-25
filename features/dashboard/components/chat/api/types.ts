@@ -141,3 +141,10 @@ export type CreateChatResponse = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type markAsReadResponse = {
+    id: number;
+    chatRoomId: string;
+    companyUnreadCount: number;
+    candidateUnreadCount: number;
+};
