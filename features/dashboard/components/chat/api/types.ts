@@ -108,6 +108,8 @@ export interface MessageResponse {
 export type Chat = {
     id: number;
     chatRoomId: string;
+    candidateProfileId: number;
+    companyId: number;
     companyUnreadCount: number;
     candidateUnreadCount: number;
     lastMessage: string | null;

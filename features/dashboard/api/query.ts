@@ -4,7 +4,7 @@ import { getUserData } from "./api";
 import { ApiError, ApiResponse } from "@/types/api";
 import { AxiosError } from "axios";
 
-type UserData = {
+export type UserData = {
     id: number;
     email: string;
     name: string;

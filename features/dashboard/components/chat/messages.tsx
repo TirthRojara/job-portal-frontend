@@ -12,6 +12,8 @@ import type { CreateChatResponse, Messages } from "./api/types";
 import { useParams } from "next/navigation";
 import { useSocket } from "@/provider/socket/socket.context";
 import { Check, CheckCheck } from "lucide-react";
+import { updateChatListWhenMarkAsReadEmit } from "./api/query-updater";
+import { useQueryClient } from "@tanstack/react-query";
 
 const userId = "1";
 // const currentUserId = "candidate_456";
@@ -96,9 +98,12 @@ const getMessageDateLabel = (dateString: string) => {
 // export default function Messages({ chat }: { chat: ActiveChat }) {
 export default function Messages() {
     const socket = useSocket();
+    const queryClient = useQueryClient();
 
     const params = useParams();
     const chatRoomId = params.chatroomId as string;
+
+    const role = useAppSelector((state) => state.app.role);
 
     const bottomRef = useRef<HTMLDivElement>(null);
     const hasActivatedRef = useRef(false);
@@ -109,8 +114,6 @@ export default function Messages() {
 
     const chatRoom = `chat_${companyIdStr}_${candidateIdStr}`;
     // console.log({ chatRoom });
-
-    // const chatId = useAppSelector((state) => state.app.activeChat?.id);
 
     const { data: user } = useGetUserData();
     const currentUserId = user?.data?.id;
@@ -134,70 +137,185 @@ export default function Messages() {
     // Mark As Read When Chat Opens
     // --------------------------------------------
 
-    useEffect(() => {
-        if (!socket || !chatId || !currentUserId) return;
-        if (!data?.pages?.length) return;
-        if (hasActivatedRef.current) return;
-        if (document.visibilityState !== "visible") return;
-        if (!isAtBottom()) return;
+    // useEffect(() => {
+    //     if (!socket || !chatId || !currentUserId) return;
+    //     if (!data?.pages?.length) return;
+    //     if (hasActivatedRef.current) return;
+    //     if (document.visibilityState !== "visible") return;
+    //     // if (!isAtBottom()) return;
 
-        // socket.emit("chatActive", { chatId: Number(chatId) });
-        socket
-            .timeout(3000)
-            .emit(
-                "chatActive",
-                { chatId: Number(chatId) },
-                (err: Error | null, response: { success: boolean; error?: string }) => {
-                    if (err) {
-                        console.error("Server did not respond ❌");
-                        return;
-                    }
+    //     // socket.emit("chatActive", { chatId: Number(chatId) });
+    //     socket
+    //         .timeout(3000)
+    //         .emit(
+    //             "chatActive",
+    //             { chatId: Number(chatId) },
+    //             (err: Error | null, response: { success: boolean; error?: string }) => {
+    //                 if (err) {
+    //                     console.error("Server did not respond ❌");
+    //                     return;
+    //                 }
 
-                    console.log("✅ Activated:", response);
-                },
-            );
+    //                 console.log("✅ Activated:", response);
+    //             },
+    //         );
 
-        console.log("use effect chatRoom :", chatRoom);
-        socket.emit("markAsRead", {
-            chatId: Number(chatId),
-            chatRoomId: chatRoom,
-        });
+    //     console.log("use effect chatRoom :", chatRoom);
+    //     socket.emit("markAsRead", {
+    //         chatId: Number(chatId),
+    //         chatRoomId: chatRoom,
+    //     });
 
-        hasActivatedRef.current = true;
-    }, [socket, chatId, currentUserId, data, chatRoom]);
+    //     hasActivatedRef.current = true;
+    // }, [socket, chatId, currentUserId, data, chatRoom]);
 
     // --------------------------------------------
     // Handle Visibility Changes
     // --------------------------------------------
 
+    // useEffect(() => {
+    //     if (!socket || !chatId) return;
+
+    //     const handleVisibility = () => {
+    //         if (document.visibilityState === "visible") {
+    //             if (isAtBottom()) {
+    //                 // socket.emit("chatActive", { chatId: Number(chatId) });
+    //                 socket
+    //                     .timeout(3000)
+    //                     .emit(
+    //                         "chatActive",
+    //                         { chatId: Number(chatId) },
+    //                         (err: Error | null, response: { success: boolean; error?: string }) => {
+    //                             if (err) {
+    //                                 console.error("Server did not respond ❌");
+    //                                 return;
+    //                             }
+
+    //                             console.log("✅ Activated:", response);
+    //                         },
+    //                     );
+
+    //                 console.log("use effect 2 chatRoom :", chatRoom);
+    //                 socket.emit("markAsRead", {
+    //                     chatId: Number(chatId),
+    //                     chatRoomId: chatRoom,
+    //                 });
+    //             }
+    //         } else {
+    //             // socket.emit("chatInactive");
+    //             socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
+    //                 if (err) {
+    //                     console.error("Server did not respond ❌");
+    //                     return;
+    //                 }
+
+    //                 if (response?.success) {
+    //                     console.log("Chat deactivated ⏸️ in else");
+    //                 }
+    //             });
+    //         }
+    //     };
+
+    //     document.addEventListener("visibilitychange", handleVisibility);
+
+    //     return () => {
+    //         document.removeEventListener("visibilitychange", handleVisibility);
+    //     };
+    // }, [socket, chatId, chatRoom]);
+
+    // --------------------------------------------
+    // Handle Route Change / Component Unmount
+    // --------------------------------------------
+
+    // useEffect(() => {
+    //     return () => {
+    //         if (socket) {
+    //             // socket.emit("chatInactive");
+    //             socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
+    //                 if (err) {
+    //                     console.error("Server did not respond ❌");
+    //                     return;
+    //                 }
+
+    //                 if (response?.success) {
+    //                     console.log("Chat deactivated ⏸️");
+    //                 }
+    //             });
+    //         }
+    //     };
+    // }, [socket]);
+
+    const hasMessages = useMemo(() => {
+        return data?.pages?.some((page) => page.data?.messages && page.data.messages.length > 0) ?? false;
+    }, [data]);
+
+    // ================================
+    // 🔥 Activate chat when opened / changed
+    // ================================
+    useEffect(() => {
+        if (!socket || !chatId || !currentUserId) return;
+        if (!data) return; // allow even if no messages
+        if (document.visibilityState !== "visible") return;
+
+        // const hasMessages = data.pages.some((page) => page.data?.messages && page.data.messages.length > 0);
+
+        if (!hasMessages) return; // 👈 important
+
+        socket.timeout(3000).emit("chatActive", { chatId: Number(chatId) }, (err: any, response: any) => {
+            if (response?.success) {
+                console.log("✅ Activated 1:", response);
+            }
+        });
+
+        socket.emit(
+            "markAsRead",
+            {
+                chatId: Number(chatId),
+                chatRoomId: chatRoom,
+            },
+            (response: any) => {
+                if (response?.success) {
+                    console.log("📗 markAsRead 1:", response);
+
+                    updateChatListWhenMarkAsReadEmit(queryClient, role, Number(chatId));
+                }
+            },
+        );
+    }, [socket, chatId, currentUserId, data, chatRoom]);
+
+    // ================================
+    // 🔥 Handle tab visibility
+    // ================================
     useEffect(() => {
         if (!socket || !chatId) return;
 
+        // const hasMessages = data.pages.some((page) => page.data?.messages && page.data.messages.length > 0);
+
+        if (!hasMessages) return; // 👈 important
+
         const handleVisibility = () => {
             if (document.visibilityState === "visible") {
-                if (isAtBottom()) {
-                    // socket.emit("chatActive", { chatId: Number(chatId) });
-                    socket
-                        .timeout(3000)
-                        .emit(
-                            "chatActive",
-                            { chatId: Number(chatId) },
-                            (err: Error | null, response: { success: boolean; error?: string }) => {
-                                if (err) {
-                                    console.error("Server did not respond ❌");
-                                    return;
-                                }
+                // socket.emit("chatActive", { chatId: Number(chatId) });
+                socket.timeout(3000).emit("chatActive", { chatId: Number(chatId) }, (err: any, response: any) => {
+                    if (response?.success) {
+                        console.log("✅ Activated 2:", response);
 
-                                console.log("✅ Activated:", response);
-                            },
-                        );
+                        updateChatListWhenMarkAsReadEmit(queryClient, role, Number(chatId));
+                    }
+                });
 
-                    console.log("use effect 2 chatRoom :", chatRoom);
-                    socket.emit("markAsRead", {
+                socket.emit(
+                    "markAsRead",
+                    {
                         chatId: Number(chatId),
                         chatRoomId: chatRoom,
-                    });
-                }
+                    },
+                    (response: any) => {
+                        if (response?.success) {
+                            console.log("📗 markAsRead 2:", response);
+                        }
+                    },
+                );
             } else {
                 // socket.emit("chatInactive");
                 socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
@@ -207,7 +325,7 @@ export default function Messages() {
                     }
 
                     if (response?.success) {
-                        // console.log("Chat deactivated ✅");
+                        console.log("Chat deactivated ⏸️");
                     }
                 });
             }
@@ -221,33 +339,11 @@ export default function Messages() {
     }, [socket, chatId, chatRoom]);
 
     // --------------------------------------------
-    // Handle Route Change / Component Unmount
-    // --------------------------------------------
-
-    useEffect(() => {
-        return () => {
-            if (socket) {
-                // socket.emit("chatInactive");
-                socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
-                    if (err) {
-                        console.error("Server did not respond ❌");
-                        return;
-                    }
-
-                    if (response?.success) {
-                        // console.log("Chat deactivated ✅");
-                    }
-                });
-            }
-        };
-    }, [socket]);
-
-    // --------------------------------------------
     // Auto Scroll
     // --------------------------------------------
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "instant" });
     }, [data]);
 
     // --------------------------------------------
@@ -359,7 +455,7 @@ export default function Messages() {
                     return (
                         <div key={`date-${index}`} className="space-y-4">
                             <div className="flex justify-center my-6">
-                                <div className="bg-muted/50 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
+                                <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
                                     {getMessageDateLabel(item.dateKey)}
                                 </div>
                             </div>
@@ -371,7 +467,8 @@ export default function Messages() {
                 if (item.type === "unread") {
                     return (
                         <div key="unread-divider" className="flex justify-center my-6">
-                            <div className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs backdrop-blur-sm">
+                            {/* <div className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs backdrop-blur-sm"> */}
+                            <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
                                 Unread Messages
                             </div>
                         </div>

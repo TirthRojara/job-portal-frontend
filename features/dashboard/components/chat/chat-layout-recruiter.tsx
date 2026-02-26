@@ -1,5 +1,4 @@
 import React from "react";
-import { ActiveChat } from "./chat-page-recruiter";
 import ChatList from "./chat-list";
 
 export default function ChatLayoutRecruiter({ children }: { children: React.ReactNode }) {

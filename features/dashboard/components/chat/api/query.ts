@@ -145,7 +145,7 @@ export const useGetMessages = (
         initialPageParam: null,
         getNextPageParam: (lastPage) => lastPage.data?.nextCursor ?? null,
         enabled: !!chatId,
-        staleTime: Infinity,
+        staleTime: 1000 * 60 * 5,
         ...options,
     });
 };

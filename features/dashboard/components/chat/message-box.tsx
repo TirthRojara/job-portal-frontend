@@ -19,6 +19,8 @@ import { useGetUserData } from "../../api/query";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
+    console.log("MESSAGE BOX ‼️‼️‼️‼️‼️");
+
     const params = useParams();
     const chatRoomId = params.chatroomId as string;
 
@@ -34,17 +36,20 @@ export default function MessageBox() {
     const companyId = Number(companyIdStr);
     const candidateProfileId = Number(candidateIdStr);
 
+    // queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getMessages, Number(chatId)] });
+
     const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();
 
     const { data, isPending, isSuccess, isError } = useCreateChat(companyId, candidateProfileId);
     // console.log('create chat', data)
 
-    // const activeChatQueryKey = [QUERY.CHAT.getMessages, Number(chatId)];
-    // const chatListQueryKey = [QUERY.CHAT.getChatList];
+    useEffect(() => {
+        if (!chatId) return;
 
-    // --------------------------------------------
-    // Set query data when new messages receive
-    // --------------------------------------------
+        queryClient.invalidateQueries({
+            queryKey: [QUERY.CHAT.getMessages, Number(chatId)],
+        });
+    }, [chatId]);
 
     useEffect(() => {
         if (!socket) return;
@@ -53,98 +58,10 @@ export default function MessageBox() {
         socket.emit("joinChat", { token, companyId, candidateProfileId });
     }, [socket, companyId, candidateProfileId, chatRoomId]);
 
-    // --------------------------------------------
-    // Set query data when receive see messages
-    // --------------------------------------------
-
-    // useEffect(() => {
-    //     if (!socket) return;
-
-    //     const handleMarkAsRead = (updatedChat: markAsReadResponse) => {
-    //         console.log("Received markAsRead event", updatedChat);
-
-    //         const currentUserId = user?.data?.id;
-
-    //         // If user still not loaded → do nothing
-    //         if (!currentUserId) {
-    //             console.warn("User not ready yet, skipping markAsRead");
-    //             return;
-    //         }
-
-    //         const markAsReadChatQueryKey = [QUERY.CHAT.getMessages, updatedChat.id];
-    //         console.log({ markAsReadChatQueryKey });
-
-            // update react-query cache here
-    //         queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>>) => {
-    //             console.log("update chat list on mark as read");
-
-    //             if (!oldData) return oldData;
-
-    //             return {
-    //                 ...oldData,
-    //                 pages: oldData.pages.map((page) => {
-    //                     // guard because data is optional in ApiResponse
-    //                     if (!page.data) return page;
-
-    //                     console.log("on mark as read chat list query update");
-
-    //                     return {
-    //                         ...page,
-    //                         data: {
-    //                             ...page.data,
-    //                             chatList: page.data.chatList.map((chat) =>
-    //                                 chat.id === updatedChat.id
-    //                                     ? {
-    //                                           ...chat,
-    //                                           companyUnreadCount: updatedChat.companyUnreadCount,
-    //                                           candidateUnreadCount: updatedChat.candidateUnreadCount,
-    //                                       }
-    //                                     : chat,
-    //                             ),
-    //                         },
-    //                     };
-    //                 }),
-    //             };
-    //         });
-
-    //         queryClient.setQueryData(
-    //             markAsReadChatQueryKey,
-    //             (oldData: InfiniteData<ApiResponse<MessageResponse>> | undefined) => {
-    //                 if (!oldData) return oldData;
-
-    //                 console.log("on mark as read chat messagess query update");
-
-    //                 return {
-    //                     ...oldData,
-    //                     pages: oldData.pages.map((page) => {
-    //                         if (!page.data) return page;
-
-    //                         return {
-    //                             ...page,
-    //                             data: {
-    //                                 ...page.data,
-    //                                 messages: page.data.messages.map((msg) =>
-    //                                     msg.senderId === currentUserId && msg.isRead === false ? { ...msg, isRead: true } : msg,
-    //                                 ),
-    //                             },
-    //                         };
-    //                     }),
-    //                 };
-    //             },
-    //         );
-    //     };
-
-    //     socket.on("markAsRead", handleMarkAsRead);
-
-    //     return () => {
-    //         socket.off("markAsRead", handleMarkAsRead);
-    //     };
-    // }, [socket, user]);
-
     const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
 
-    if (isPending) return <></>;
-    if (isError) return <EmptyState title="Something went wrong!" />;
+    if (isPending || isUserPending) return <></>;
+    if (isError || isUserError) return <EmptyState title="Something went wrong!" />;
 
     // console.log('chat id :',data.data?.id)
 
@@ -177,7 +94,7 @@ export default function MessageBox() {
 
             {/* typing bar */}
             <div className="flex-none ">
-                <TypeBar chatId={data.data?.id!} />
+                <TypeBar chatId={data.data?.id!} user={user.data!} />
             </div>
         </div>
     );

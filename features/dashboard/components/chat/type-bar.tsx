@@ -9,16 +9,22 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSocket } from "@/provider/socket/socket.context";
 import { useParams } from "next/navigation";
+import { UserData } from "../../api/query";
+import { useQueryClient } from "@tanstack/react-query";
+import { updateIsReadTrueForUnreadLabel } from "./api/query-updater";
 
 // Define the form data structure
 type FormValues = {
     message: string;
 };
 
-export default function ChatInput({ chatId }: { chatId: number }) {
+export default function ChatInput({ chatId, user }: { chatId: number; user: UserData }) {
     const params = useParams();
     const chatRoomId = params.chatroomId as string;
+
     const socket = useSocket();
+    const queryClient = useQueryClient();
+
     const { register, handleSubmit, reset, setFocus } = useForm<FormValues>();
 
     const [_, companyIdStr, candidateIdStr] = chatRoomId.split("_");
@@ -37,9 +43,18 @@ export default function ChatInput({ chatId }: { chatId: number }) {
             if (response?.error) {
                 alert("Message send failed: " + response.error);
             }
+
+            if (response?.success) {
+                console.log("✅ Message sent successfully", response);
+
+                // Clear input
+                reset();
+
+                updateIsReadTrueForUnreadLabel(queryClient, chatId, user.id);
+            }
         });
 
-        reset();
+        // reset();
         // Optional: Focus back on input after sending
         setTimeout(() => setFocus("message"), 10);
     };

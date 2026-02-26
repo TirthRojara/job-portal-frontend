@@ -28,7 +28,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
     useEffect(() => {
         if (!socket) return;
 
-         console.log("🟢 Listener attaching");
+        console.log("🟢 Listener attaching");
 
         // 🔵 Listen for new message
         const handleNewMessage = (newMessage: CreateNewMessageResponse) => {
@@ -67,9 +67,89 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                 };
             });
 
+            // queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>> | undefined) => {
+            //     console.log("update chat list");
+            //     if (!oldData) return oldData;
+
+            //     const updatedPages = oldData.pages.map((page, index) => {
+            //         if (!page.data) return page; // 🔥 important
+
+            //         if (index !== 0) return page;
+
+            //         const chats = page.data.chatList ?? [];
+
+            //         const existingIndex = chats.findIndex((chat) => chat.id === newMessage.newChat.id);
+
+            //         let updatedChats;
+
+            //         if (existingIndex !== -1) {
+            //             const updatedChat = {
+            //                 ...chats[existingIndex],
+            //                 lastMessage: newMessage.newMessage.content,
+            //                 lastMessageAt: newMessage.newMessage.createdAt,
+            //             };
+
+            //             updatedChats = [updatedChat, ...chats.filter((chat) => chat.id !== newMessage.newChat.id)];
+            //         } else {
+            //             updatedChats = [
+            //                 {
+            //                     ...newMessage.newChat,
+            //                     lastMessage: newMessage.newMessage.content,
+            //                     lastMessageAt: newMessage.newMessage.createdAt,
+            //                 },
+            //                 ...chats,
+            //             ];
+            //         }
+
+            //         console.log("updated chat list end");
+            //         return {
+            //             ...page,
+            //             data: {
+            //                 ...page.data,
+            //                 chatList: updatedChats, // ✅ correct property
+            //             },
+            //         };
+            //     });
+
+            //     return {
+            //         ...oldData,
+            //         pages: updatedPages,
+            //     };
+            // });
+        };
+
+        socket.on("newMessage", (newMsg) => {
+            console.log("🔥 SOCKET EVENT RECEIVED:", newMsg);
+            handleNewMessage(newMsg);
+        });
+
+        socket.on("error", (error) => {
+            alert("Socket error: " + error);
+        });
+
+        return () => {
+            // 🔴 Leave room
+            console.log("🔴 Listener removed");
+            socket.off("newMessage", handleNewMessage);
+            socket.off("error", (error) => {
+                alert("Socket error: " + error);
+            });
+        };
+    }, [socket, queryClient]);
+
+    // --------------------------------------------
+    // Set chatList query data when user is not in chat room
+    // --------------------------------------------
+
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleChatListOnNewMessage = (newMessage: CreateNewMessageResponse) => {
             queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>> | undefined) => {
                 console.log("update chat list");
                 if (!oldData) return oldData;
+
+                console.log("chat list update start 🔰");
 
                 const updatedPages = oldData.pages.map((page, index) => {
                     if (!page.data) return page; // 🔥 important
@@ -87,6 +167,8 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                             ...chats[existingIndex],
                             lastMessage: newMessage.newMessage.content,
                             lastMessageAt: newMessage.newMessage.createdAt,
+                            companyUnreadCount: newMessage.newChat.companyUnreadCount,
+                            candidateUnreadCount: newMessage.newChat.candidateUnreadCount,
                         };
 
                         updatedChats = [updatedChat, ...chats.filter((chat) => chat.id !== newMessage.newChat.id)];
@@ -118,22 +200,12 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
             });
         };
 
-        socket.on("newMessage", (newMsg) => {
-            console.log("🔥 SOCKET EVENT RECEIVED:", newMsg);
-            handleNewMessage(newMsg);
-        });
+        socket.on("newChatList", handleChatListOnNewMessage);
 
-        socket.on("error", (error) => {
-            alert("Socket error: " + error);
-        });
+        console.log("chat list update end 🔚");
 
         return () => {
-            // 🔴 Leave room
-             console.log("🔴 Listener removed");
-            socket.off("newMessage", handleNewMessage);
-            socket.off("error", (error) => {
-                alert("Socket error: " + error);
-            });
+            socket.off("newChatList", handleChatListOnNewMessage);
         };
     }, [socket, queryClient]);
 
