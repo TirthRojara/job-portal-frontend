@@ -1,7 +1,7 @@
 "use client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useGetUserData } from "../../api/query";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptyState } from "@/components/empty-state";
@@ -14,6 +14,7 @@ import { useSocket } from "@/provider/socket/socket.context";
 import { Check, CheckCheck } from "lucide-react";
 import { updateChatListWhenMarkAsReadEmit } from "./api/query-updater";
 import { useQueryClient } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
 
 const userId = "1";
 // const currentUserId = "candidate_456";
@@ -106,7 +107,11 @@ export default function Messages() {
     const role = useAppSelector((state) => state.app.role);
 
     const bottomRef = useRef<HTMLDivElement>(null);
-    const hasActivatedRef = useRef(false);
+
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const prevScrollHeightRef = useRef(0);
+    const prevLatestMessageIdRef = useRef<string | number | null>(null);
+    const isFetchingLock = useRef(false);
 
     // const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -119,10 +124,10 @@ export default function Messages() {
     const currentUserId = user?.data?.id;
     // console.log({ currentUserId });
 
-    const { data, isPending, isError, error, isEnabled, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetMessages(
-        Number(chatId),
-        20,
-    );
+    const { data, isPending, isError, error, isEnabled, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetMessages({
+        chatId: Number(chatId),
+        limit: 20,
+    });
 
     //=========================================
 
@@ -133,121 +138,47 @@ export default function Messages() {
         return rect.top <= window.innerHeight;
     };
 
-    // --------------------------------------------
-    // Mark As Read When Chat Opens
-    // --------------------------------------------
-
-    // useEffect(() => {
-    //     if (!socket || !chatId || !currentUserId) return;
-    //     if (!data?.pages?.length) return;
-    //     if (hasActivatedRef.current) return;
-    //     if (document.visibilityState !== "visible") return;
-    //     // if (!isAtBottom()) return;
-
-    //     // socket.emit("chatActive", { chatId: Number(chatId) });
-    //     socket
-    //         .timeout(3000)
-    //         .emit(
-    //             "chatActive",
-    //             { chatId: Number(chatId) },
-    //             (err: Error | null, response: { success: boolean; error?: string }) => {
-    //                 if (err) {
-    //                     console.error("Server did not respond ❌");
-    //                     return;
-    //                 }
-
-    //                 console.log("✅ Activated:", response);
-    //             },
-    //         );
-
-    //     console.log("use effect chatRoom :", chatRoom);
-    //     socket.emit("markAsRead", {
-    //         chatId: Number(chatId),
-    //         chatRoomId: chatRoom,
-    //     });
-
-    //     hasActivatedRef.current = true;
-    // }, [socket, chatId, currentUserId, data, chatRoom]);
-
-    // --------------------------------------------
-    // Handle Visibility Changes
-    // --------------------------------------------
-
-    // useEffect(() => {
-    //     if (!socket || !chatId) return;
-
-    //     const handleVisibility = () => {
-    //         if (document.visibilityState === "visible") {
-    //             if (isAtBottom()) {
-    //                 // socket.emit("chatActive", { chatId: Number(chatId) });
-    //                 socket
-    //                     .timeout(3000)
-    //                     .emit(
-    //                         "chatActive",
-    //                         { chatId: Number(chatId) },
-    //                         (err: Error | null, response: { success: boolean; error?: string }) => {
-    //                             if (err) {
-    //                                 console.error("Server did not respond ❌");
-    //                                 return;
-    //                             }
-
-    //                             console.log("✅ Activated:", response);
-    //                         },
-    //                     );
-
-    //                 console.log("use effect 2 chatRoom :", chatRoom);
-    //                 socket.emit("markAsRead", {
-    //                     chatId: Number(chatId),
-    //                     chatRoomId: chatRoom,
-    //                 });
-    //             }
-    //         } else {
-    //             // socket.emit("chatInactive");
-    //             socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
-    //                 if (err) {
-    //                     console.error("Server did not respond ❌");
-    //                     return;
-    //                 }
-
-    //                 if (response?.success) {
-    //                     console.log("Chat deactivated ⏸️ in else");
-    //                 }
-    //             });
-    //         }
-    //     };
-
-    //     document.addEventListener("visibilitychange", handleVisibility);
-
-    //     return () => {
-    //         document.removeEventListener("visibilitychange", handleVisibility);
-    //     };
-    // }, [socket, chatId, chatRoom]);
-
-    // --------------------------------------------
-    // Handle Route Change / Component Unmount
-    // --------------------------------------------
-
-    // useEffect(() => {
-    //     return () => {
-    //         if (socket) {
-    //             // socket.emit("chatInactive");
-    //             socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
-    //                 if (err) {
-    //                     console.error("Server did not respond ❌");
-    //                     return;
-    //                 }
-
-    //                 if (response?.success) {
-    //                     console.log("Chat deactivated ⏸️");
-    //                 }
-    //             });
-    //         }
-    //     };
-    // }, [socket]);
-
     const hasMessages = useMemo(() => {
         return data?.pages?.some((page) => page.data?.messages && page.data.messages.length > 0) ?? false;
     }, [data]);
+
+    //--------------------------------------------------
+
+    // 1. Sentinel for Intersection Observer (Place at the TOP now)
+    const { ref: topSentinelRef, inView } = useInView({
+        threshold: 0,
+        rootMargin: "100px 0px 0px 0px",
+    });
+
+    // 2. Fetch next page when scrolling to top
+    useEffect(() => {
+        // We only fetch if we are NOT locked
+        if (inView && hasNextPage && !isFetchingNextPage && !isFetchingLock.current) {
+            isFetchingLock.current = true; // Lock immediately
+
+            const container = scrollAreaRef.current?.querySelector("[data-radix-scroll-area-viewport]");
+            if (container) {
+                prevScrollHeightRef.current = container.scrollHeight;
+            }
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    // 3. CENTRALIZED SCROLL MANAGEMENT (The Fix)
+
+    // 4. Initial Scroll to Bottom (Only on first load or new message)
+    // useEffect(() => {
+    //     // Only auto-scroll to bottom if we aren't currently loading previous pages
+    //     if (!isFetchingNextPage && scrollHeight === 0) {
+    //         bottomRef.current?.scrollIntoView({ behavior: "instant" });
+    //     }
+    // }, [data, isFetchingNextPage]);
+
+    // useEffect(() => {
+    //     if (inView && hasNextPage) {
+    //         fetchNextPage();
+    //     }
+    // }, [inView, hasNextPage, fetchNextPage]);
 
     // ================================
     // 🔥 Activate chat when opened / changed
@@ -342,9 +273,9 @@ export default function Messages() {
     // Auto Scroll
     // --------------------------------------------
 
-    useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "instant" });
-    }, [data]);
+    // useEffect(() => {
+    //     bottomRef.current?.scrollIntoView({ behavior: "instant" });
+    // }, [data]);
 
     // --------------------------------------------
     // UI Processing
@@ -409,6 +340,44 @@ export default function Messages() {
         return items;
     }, [data, currentUserId]);
 
+    // 3. CENTRALIZED SCROLL MANAGEMENT
+    useLayoutEffect(() => {
+        const container = scrollAreaRef.current?.querySelector("[data-radix-scroll-area-viewport]");
+        if (!container) return;
+
+        // SCENARIO A: We just fetched older messages (Pagination)
+        if (prevScrollHeightRef.current > 0 && !isFetchingNextPage) {
+            const newHeight = container.scrollHeight;
+            const heightDifference = newHeight - prevScrollHeightRef.current;
+
+            // Maintain scroll position manually
+            container.scrollTop = container.scrollTop + heightDifference;
+
+            // Reset the height tracker
+            prevScrollHeightRef.current = 0;
+
+            // 🚨 Unlock after a tiny delay!
+            // This gives the IntersectionObserver time to realize we scrolled down
+            // before it accidentally triggers another fetch.
+            setTimeout(() => {
+                isFetchingLock.current = false;
+            }, 150);
+
+            return; // Exit early
+        }
+
+        // SCENARIO B: Initial load or receiving a NEW message at the bottom
+        if (!isFetchingNextPage) {
+            const lastMessageItem = [...chatItems].reverse().find((item) => item.type === "message");
+            const currentLatestMessageId = lastMessageItem?.type === "message" ? lastMessageItem.message.id : null;
+
+            if (currentLatestMessageId && currentLatestMessageId !== prevLatestMessageIdRef.current) {
+                bottomRef.current?.scrollIntoView({ behavior: "instant" });
+                prevLatestMessageIdRef.current = currentLatestMessageId;
+            }
+        }
+    }, [chatItems, isFetchingNextPage]);
+
     // --------------------------------------------
     // Loading / Error / Empty / New chat for recruiter
     // --------------------------------------------
@@ -448,67 +417,80 @@ export default function Messages() {
     // --------------------------------------------
 
     return (
-        <div className="flex-1 p-5 space-y-4 ">
-            {chatItems.map((item, index) => {
-                // 🔹 DATE LABEL (same UI)
-                if (item.type === "date") {
-                    return (
-                        <div key={`date-${index}`} className="space-y-4">
-                            <div className="flex justify-center my-6">
-                                <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
-                                    {getMessageDateLabel(item.dateKey)}
+        <ScrollArea
+            ref={scrollAreaRef}
+            className=" h-full w-full rounded-md border-0  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
+        >
+            <div className="flex-1 p-5 space-y-4 " style={{ overflowAnchor: "none" }}>
+                {/* 5. Top Sentinel moved here */}
+                {hasNextPage && (
+                    <div ref={topSentinelRef} className="h-10 w-full flex items-center justify-center">
+                        {isFetchingNextPage ? <Spinner className="size-4" /> : <div className="h-1" />}
+                    </div>
+                )}
+
+                {chatItems.map((item, index) => {
+                    // 🔹 DATE LABEL (same UI)
+                    if (item.type === "date") {
+                        return (
+                            <div key={`date-${index}`} className="space-y-4">
+                                <div className="flex justify-center my-6">
+                                    <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
+                                        {getMessageDateLabel(item.dateKey)}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                }
+                        );
+                    }
 
-                // 🔹 UNREAD LABEL (same structure, small style tweak)
-                if (item.type === "unread") {
+                    // 🔹 UNREAD LABEL (same structure, small style tweak)
+                    if (item.type === "unread") {
+                        return (
+                            <div key="unread-divider" className="flex justify-center my-6">
+                                {/* <div className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs backdrop-blur-sm"> */}
+                                <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
+                                    Unread Messages
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    const msg = item.message;
+
                     return (
-                        <div key="unread-divider" className="flex justify-center my-6">
-                            {/* <div className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs backdrop-blur-sm"> */}
-                            <div className="dark:bg-muted bg-gray-200 px-4 py-1 rounded-full text-xs text-muted-foreground backdrop-blur-sm">
-                                Unread Messages
+                        <div
+                            key={msg.id}
+                            className={cn("flex", {
+                                "justify-end": currentUserId === msg.senderId,
+                                "justify-start": currentUserId !== msg.senderId,
+                            })}
+                        >
+                            <div
+                                className={cn("group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col", {
+                                    "bg-primary text-white ml-4 rounded-br-sm": currentUserId === msg.senderId,
+                                    "bg-gray-100 dark:bg-card border-gray-200 dark:border-none mr-4 rounded-bl-sm":
+                                        currentUserId !== msg.senderId,
+                                })}
+                            >
+                                <p className="text-sm leading-relaxed break-words">{msg.content}</p>
+                                <p
+                                    className={cn("text-xs mt-1 flex items-center gap-1 opacity-75", {
+                                        "text-white/90": currentUserId === msg.senderId,
+                                        "text-gray-500 dark:text-white/50": currentUserId !== msg.senderId,
+                                    })}
+                                >
+                                    {formatTime(msg.createdAt)}
+                                    {currentUserId === msg.senderId &&
+                                        (msg.isRead ? <CheckCheck size={16} /> : <Check size={16} />)}
+                                </p>
                             </div>
                         </div>
                     );
-                }
+                })}
 
-                const msg = item.message;
-
-                return (
-                    <div
-                        key={msg.id}
-                        className={cn("flex", {
-                            "justify-end": currentUserId === msg.senderId,
-                            "justify-start": currentUserId !== msg.senderId,
-                        })}
-                    >
-                        <div
-                            className={cn("group max-w-[70%] px-4 py-2.5 rounded-2xl shadow-sm border flex flex-col", {
-                                "bg-primary text-white ml-4 rounded-br-sm": currentUserId === msg.senderId,
-                                "bg-gray-100 dark:bg-card border-gray-200 dark:border-none mr-4 rounded-bl-sm":
-                                    currentUserId !== msg.senderId,
-                            })}
-                        >
-                            <p className="text-sm leading-relaxed break-words">{msg.content}</p>
-                            <p
-                                className={cn("text-xs mt-1 flex items-center gap-1 opacity-75", {
-                                    "text-white/90": currentUserId === msg.senderId,
-                                    "text-gray-500 dark:text-white/50": currentUserId !== msg.senderId,
-                                })}
-                            >
-                                {formatTime(msg.createdAt)}
-                                {currentUserId === msg.senderId && (msg.isRead ? <CheckCheck size={16} /> : <Check size={16} />)}
-                            </p>
-                        </div>
-                    </div>
-                );
-            })}
-
-            {/* <div ref={scrollRef} /> */}
-            <div ref={bottomRef} />
-        </div>
+                {/* <div ref={scrollRef} /> */}
+                <div ref={bottomRef} />
+            </div>
+        </ScrollArea>
     );
 }

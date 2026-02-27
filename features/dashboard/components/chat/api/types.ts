@@ -7,6 +7,13 @@ export type ChatListParams = {
     chatId?: number;
 };
 
+export type MessageParams = {
+    limit: number;
+    chatId: number;
+    // createdAt: string;
+    // id: number;
+};
+
 export interface ChatListItem {
     id: number;
     candidateProfileId: number;
@@ -81,12 +88,13 @@ export interface Messages {
 }
 
 export interface MessageCursor {
-    nextCursor: number | null;
+    createdAt: string;
+    id: number;
 }
 
 export interface MessageResponse {
     messages: Messages[];
-    nextCursor: number | null;
+    nextCursor: MessageCursor | null;
 }
 
 // export interface MessageResponse {

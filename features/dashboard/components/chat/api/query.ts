@@ -2,7 +2,15 @@ import { QUERY } from "@/constants/tanstank.constants";
 import { ApiError, ApiPageResponse, ApiResponse } from "@/types/api";
 import { InfiniteData, useInfiniteQuery, UseInfiniteQueryOptions, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { ChatListCursor, ChatListParams, ChatListResponse, CreateChatResponse, MessageCursor, MessageResponse } from "./types";
+import {
+    ChatListCursor,
+    ChatListParams,
+    ChatListResponse,
+    CreateChatResponse,
+    MessageCursor,
+    MessageParams,
+    MessageResponse,
+} from "./types";
 import { createChat, getChatList, getMessages } from "./api";
 
 // export const useGetChatListForCandidate = (
@@ -123,28 +131,27 @@ export const useGetChatList = (
 };
 
 export const useGetMessages = (
-    chatId: number,
-    limit: number,
+    params: MessageParams,
     options?: UseInfiniteQueryOptions<
         ApiResponse<MessageResponse>, // response type
         AxiosError<ApiError>, // error type
         InfiniteData<ApiResponse<MessageResponse>>, // selected data
         [string, number], // query key type
-        number | null // pageParam type (cursor)
+        MessageCursor | null // pageParam type (cursor)
     >,
 ) => {
     return useInfiniteQuery({
-        queryKey: [QUERY.CHAT.getMessages, chatId],
+        queryKey: [QUERY.CHAT.getMessages, params.chatId],
         queryFn: ({ signal, pageParam }) =>
             getMessages({
                 signal,
-                chatId,
-                limit,
+                chatId: params.chatId,
+                limit: params.limit,
                 cursor: pageParam ?? undefined,
             }),
         initialPageParam: null,
         getNextPageParam: (lastPage) => lastPage.data?.nextCursor ?? null,
-        enabled: !!chatId,
+        enabled: !!params.chatId,
         staleTime: 1000 * 60 * 5,
         ...options,
     });

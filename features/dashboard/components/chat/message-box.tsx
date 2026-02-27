@@ -87,9 +87,7 @@ export default function MessageBox() {
 
             {/* messages */}
             <div className="flex-1 min-h-0 ">
-                <ScrollArea className=" h-full w-full rounded-md border-0  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-                    <Messages />
-                </ScrollArea>
+                <Messages />
             </div>
 
             {/* typing bar */}

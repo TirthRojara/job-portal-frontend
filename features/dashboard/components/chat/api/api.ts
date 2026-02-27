@@ -1,6 +1,6 @@
 import api from "@/lib/axios/client";
 import { ApiPageResponse, ApiResponse } from "@/types/api";
-import { ChatListParams, ChatListResponse, CreateChatResponse, MessageResponse } from "./types";
+import { ChatListParams, ChatListResponse, CreateChatResponse, MessageCursor, MessageParams, MessageResponse } from "./types";
 import { number, string } from "zod";
 
 // export type chatListResponse = {
@@ -102,11 +102,18 @@ export const getMessages = async ({
     signal?: AbortSignal;
     chatId: number;
     limit: number;
-    cursor?: number | null;
+    cursor?: MessageCursor | null;
 }): Promise<ApiResponse<MessageResponse>> => {
     const res = await api.get(`v1/chat/message/${chatId}`, {
         signal,
-        params: { limit, cursor },
+        // params: { limit, cursor },
+        params: {
+            limit,
+            ...(cursor && {
+                messageId: cursor.id,
+                messageCreatedAt: cursor.createdAt,
+            }),
+        },
     });
     return res.data;
 };
