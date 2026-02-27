@@ -8,16 +8,19 @@ import Empty from "@/features/dashboard/recruiter/company/components/empty";
 import Industry from "@/features/dashboard/recruiter/company/components/industry";
 import LocationBox from "@/features/dashboard/recruiter/company/components/location";
 import MainCard from "@/features/dashboard/recruiter/company/components/main-card";
+import { useAppSelector } from "@/store/index.store";
 import { AlertCircle } from "lucide-react";
 import React from "react";
 
 export default function Company({ companyId }: { companyId: number }) {
+    const role = useAppSelector((state) => state.app.role);
+
     const {
         data: companyData,
         isLoading: isCompanyLoading,
         error: companyError,
         isError: isCompanyError,
-    } = useGetCompanyById(Number(companyId));
+    } = useGetCompanyById(role, Number(companyId));
 
     const LoadingState = (
         <div className="flex min-h-screen flex-col items-center gap-6 px-4 py-6">

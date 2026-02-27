@@ -23,13 +23,14 @@ export const useGetMyComanyDetails = (options?: UseQueryOptions<ApiPageResponse<
 };
 
 export const useGetCompanyById = (
+    role: string,
     companyId: number,
     options?: UseQueryOptions<ApiResponse<CompanyApiResponse>, AxiosError<ApiError>>,
 ) => {
     return useQuery({
         queryKey: [QUERY.COMPANY.getCompanyById, companyId],
         queryFn: ({ signal }) => getCompanyById({ signal, companyId: companyId }),
-        enabled: !!companyId,
+        enabled: !!companyId && role === "CANDIDATE",
         ...options,
     });
 };

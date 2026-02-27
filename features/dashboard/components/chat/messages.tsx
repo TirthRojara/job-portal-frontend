@@ -131,13 +131,6 @@ export default function Messages() {
 
     //=========================================
 
-    const isAtBottom = () => {
-        if (!bottomRef.current) return false;
-
-        const rect = bottomRef.current.getBoundingClientRect();
-        return rect.top <= window.innerHeight;
-    };
-
     const hasMessages = useMemo(() => {
         return data?.pages?.some((page) => page.data?.messages && page.data.messages.length > 0) ?? false;
     }, [data]);
@@ -164,25 +157,10 @@ export default function Messages() {
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    // 3. CENTRALIZED SCROLL MANAGEMENT (The Fix)
-
-    // 4. Initial Scroll to Bottom (Only on first load or new message)
-    // useEffect(() => {
-    //     // Only auto-scroll to bottom if we aren't currently loading previous pages
-    //     if (!isFetchingNextPage && scrollHeight === 0) {
-    //         bottomRef.current?.scrollIntoView({ behavior: "instant" });
-    //     }
-    // }, [data, isFetchingNextPage]);
-
-    // useEffect(() => {
-    //     if (inView && hasNextPage) {
-    //         fetchNextPage();
-    //     }
-    // }, [inView, hasNextPage, fetchNextPage]);
-
     // ================================
     // 🔥 Activate chat when opened / changed
     // ================================
+
     useEffect(() => {
         if (!socket || !chatId || !currentUserId) return;
         if (!data) return; // allow even if no messages
@@ -268,14 +246,6 @@ export default function Messages() {
             document.removeEventListener("visibilitychange", handleVisibility);
         };
     }, [socket, chatId, chatRoom]);
-
-    // --------------------------------------------
-    // Auto Scroll
-    // --------------------------------------------
-
-    // useEffect(() => {
-    //     bottomRef.current?.scrollIntoView({ behavior: "instant" });
-    // }, [data]);
 
     // --------------------------------------------
     // UI Processing

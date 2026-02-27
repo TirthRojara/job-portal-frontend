@@ -16,6 +16,8 @@ import { QUERY } from "@/constants/tanstank.constants";
 import { useCreateChat } from "./api/query";
 import { EmptyState } from "@/components/empty-state";
 import { useGetUserData } from "../../api/query";
+import { useGetCandidateProfilById } from "../../candidate/profile/api/query";
+import { useGetCompanyById } from "../../recruiter/company/api/query";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
@@ -29,19 +31,30 @@ export default function MessageBox() {
 
     const role = useAppSelector((state) => state.app.role);
     const token = useAppSelector((state) => state.app.accessToken);
-    const activeChat = useAppSelector((state) => state.app.activeChat);
+    // const activeChat = useAppSelector((state) => state.app.activeChat);
 
     const [_, companyIdStr, candidateIdStr, chatId] = chatRoomId.split("_");
 
     const companyId = Number(companyIdStr);
     const candidateProfileId = Number(candidateIdStr);
 
-    // queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getMessages, Number(chatId)] });
-
     const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();
-
     const { data, isPending, isSuccess, isError } = useCreateChat(companyId, candidateProfileId);
-    // console.log('create chat', data)
+    const {
+        data: candidateProfile,
+        isPending: isCandidatePending,
+        isError: isCandidateError,
+        isEnabled: isCandidateEnabled,
+    } = useGetCandidateProfilById(role, candidateIdStr);
+    const {
+        data: company,
+        isPending: isCompanyPending,
+        isError: isCompanyError,
+        isEnabled: isCompanyEnabled,
+    } = useGetCompanyById(role, companyId);
+
+    const isCandidate = role === "CANDIDATE";
+    const isRecruiter = role === "RECRUITER";
 
     useEffect(() => {
         if (!chatId) return;
@@ -58,12 +71,12 @@ export default function MessageBox() {
         socket.emit("joinChat", { token, companyId, candidateProfileId });
     }, [socket, companyId, candidateProfileId, chatRoomId]);
 
-    const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
+    const name = isRecruiter ? candidateProfile?.data?.fullName : isCandidate ? company?.data?.name : undefined;
 
     if (isPending || isUserPending) return <></>;
     if (isError || isUserError) return <EmptyState title="Something went wrong!" />;
 
-    // console.log('chat id :',data.data?.id)
+    // const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
 
     return (
         <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden">
