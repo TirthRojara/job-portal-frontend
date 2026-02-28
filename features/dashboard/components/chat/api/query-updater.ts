@@ -4,6 +4,8 @@ import { InfiniteData, QueryClient } from "@tanstack/react-query";
 import { ChatListResponse, MessageResponse } from "./types";
 
 export function updateChatListWhenMarkAsReadEmit(queryClient: QueryClient, role: string, chatId: number) {
+    queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getUnReadCount] });
+
     const chatListQueryKey = [QUERY.CHAT.getChatList];
 
     queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>>) => {

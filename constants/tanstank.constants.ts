@@ -158,5 +158,6 @@ export const QUERY = {
         getChatList: "get_chat_list",
         getMessages: "get_messages", // uses chatId params
         createChat: "create_chat", // uses companyId & candidateProfileId
+        getUnReadCount: "get_unread_count", 
     },
 };

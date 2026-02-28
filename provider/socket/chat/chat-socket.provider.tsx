@@ -145,6 +145,10 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
         if (!socket) return;
 
         const handleChatListOnNewMessage = (newMessage: CreateNewMessageResponse) => {
+            console.log(" handleChatListOnNewMessage");
+
+            queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getUnReadCount] });
+
             queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>> | undefined) => {
                 console.log("update chat list");
                 if (!oldData) return oldData;
@@ -217,7 +221,9 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
         if (!socket) return;
 
         const handleMarkAsRead = (updatedChat: markAsReadResponse) => {
-            console.log("Received markAsRead event", updatedChat);
+            console.log("Received markAsRead event ", updatedChat);
+
+            queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getUnReadCount] });
 
             const markAsReadChatQueryKey = [QUERY.CHAT.getMessages, updatedChat.id];
             console.log({ markAsReadChatQueryKey });

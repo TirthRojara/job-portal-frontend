@@ -11,7 +11,7 @@ import {
     MessageParams,
     MessageResponse,
 } from "./types";
-import { createChat, getChatList, getMessages } from "./api";
+import { createChat, getChatList, getMessages, getUnReadCount } from "./api";
 
 // export const useGetChatListForCandidate = (
 //     role: string,
@@ -166,6 +166,19 @@ export const useCreateChat = (
         queryKey: [QUERY.CHAT.createChat, companyId, candidateProfileId],
         queryFn: ({ signal }) => createChat({ signal, companyId, candidateProfileId }),
         enabled: !!companyId && !!candidateProfileId,
+        ...options,
+    });
+};
+
+export const useGetUnReadCount = (
+    enable: boolean,
+    companyId?: number,
+    options?: UseQueryOptions<ApiResponse<{ unreadCount: number }>, AxiosError<ApiError>>,
+) => {
+    return useQuery({
+        queryKey: [QUERY.CHAT.getUnReadCount],
+        queryFn: ({ signal }) => getUnReadCount({ signal, companyId }),
+        enabled: !!enable,
         ...options,
     });
 };

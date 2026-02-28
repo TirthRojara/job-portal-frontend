@@ -10,6 +10,7 @@ const appSlice = createSlice({
         companyId: "",
         isDarkTheme: false,
         activeChat: null as ChatListItem | null,
+        unReamCount: 0,
     },
     reducers: {
         setAccessToken(state, action) {
@@ -35,6 +36,10 @@ const appSlice = createSlice({
         },
         clearActiveChat: (state) => {
             state.activeChat = null;
+        },
+
+        setUnReadCount: (state, action) => {
+            state.unReamCount = action.payload;
         },
 
         // toggleMenu(state) {

@@ -132,3 +132,17 @@ export const createChat = async ({
     });
     return res.data;
 };
+
+export const getUnReadCount = async ({
+    signal,
+    companyId,
+}: {
+    signal?: AbortSignal;
+    companyId?: number;
+}): Promise<ApiResponse<{ unreadCount: number }>> => {
+    const res = await api.get(`v1/chat/unReadCount`, {
+        signal,
+        params: { companyId },
+    });
+    return res.data;
+};
