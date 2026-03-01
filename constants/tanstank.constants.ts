@@ -86,6 +86,8 @@ export const MUTATION = {
 export const QUERY = {
     USER: {
         getUserData: "get_user_data",
+        getCandidateStates: "get_candidate_states",
+        getRecruiterStates: "get_recruiter_states",
     },
 
     COMPANY: {

@@ -12,10 +12,7 @@ import { useApplyJob, useToggleSaveJob } from "../api/mutate";
 import { JobResponseCandidate } from "../api/types";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { never } from "zod";
 import ViewCount from "@/features/dashboard/recruiter/jobpost/[jobId]/components/view-count";
-
-const isBtnHide = true;
 
 export function JobPreviewCard({ jobData }: { jobData: JobResponseCandidate | JobResponseRecruiter }) {
     const role = useAppSelector((state) => state.app.role);
