@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import Messages from "./messages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import TypeBar from "./type-bar";
-import { useAppSelector } from "@/store/index.store";
+import { useAppDispatch, useAppSelector } from "@/store/index.store";
 import { useSocket } from "@/provider/socket/socket.context";
 import { useParams } from "next/navigation";
 
@@ -18,6 +18,8 @@ import { EmptyState } from "@/components/empty-state";
 import { useGetUserData } from "../../api/query";
 import { useGetCandidateProfilById } from "../../candidate/profile/api/query";
 import { useGetCompanyById } from "../../recruiter/company/api/query";
+import { MoveLeft } from "lucide-react";
+import { appActions } from "@/store/app.slice";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
@@ -28,9 +30,11 @@ export default function MessageBox() {
 
     const socket = useSocket();
     const queryClient = useQueryClient();
+    const dispatch = useAppDispatch();
 
     const role = useAppSelector((state) => state.app.role);
     const token = useAppSelector((state) => state.app.accessToken);
+    const isChatListCardClick = useAppSelector((state) => state.app.isChatListCardClick);
     // const activeChat = useAppSelector((state) => state.app.activeChat);
 
     const [_, companyIdStr, candidateIdStr, chatId] = chatRoomId.split("_");
@@ -79,10 +83,15 @@ export default function MessageBox() {
     // const name = role === "CANDIDATE" ? activeChat?.company.name : activeChat?.candidateProfile.fullName;
 
     return (
-        <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden">
+        <div className="flex flex-col h-[calc(100vh-73px)] w-full overflow-hidden ">
             {/* top-bar */}
             <div className="bg-white dark:bg-card w-full p-3 shadow-2xl flex-none z-10">
                 <div className="flex items-center gap-3   ">
+                    <div 
+                    className={`md:hidden`}
+                    onClick={() => dispatch(appActions.setIsChatListCardClick(false))}>
+                        <MoveLeft className={`cursor-pointer ${isChatListCardClick ? "" : "hidden"}`} />
+                    </div>
                     <Avatar className=" md:size-15 size-12 ">
                         <AvatarFallback className="bg-blue-400 text-white md:text-2xl text-lg font-semibold">
                             {getInitials(name || "")}

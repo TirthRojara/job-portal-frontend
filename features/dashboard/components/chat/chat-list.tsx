@@ -24,6 +24,7 @@ import { useInView } from "react-intersection-observer";
 
 export default function ChatList() {
     const role = useAppSelector((state) => state.app.role);
+    const isChatListCardClick = useAppSelector((state) => state.app.isChatListCardClick);
 
     const { ref, inView } = useInView({
         delay: 100,
@@ -84,7 +85,7 @@ export default function ChatList() {
     const chatListPage = data?.pages.flatMap((page) => page.data?.chatList) ?? [];
 
     return (
-        <div className="flex-1 ">
+        <div className={`flex-1 ${isChatListCardClick ? "hidden" : ""}`}>
             <ScrollArea className="h-full md:h-[calc(100vh-73px)] w-full rounded-md border  scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                 {/* <div className="md:max-w-sm max-w-5xl min-w-sm w-full flex flex-col gap-1 h-[calc(100vh-73px)]  "> */}
                 <div className="md:max-w-sm max-w-5xl min-w-sm w-full flex flex-col gap-1  ">

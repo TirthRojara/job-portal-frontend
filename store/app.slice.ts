@@ -1,5 +1,6 @@
 import { ChatListItem } from "@/features/dashboard/components/chat/api/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { set } from "zod";
 
 const appSlice = createSlice({
     name: "app",
@@ -11,6 +12,7 @@ const appSlice = createSlice({
         isDarkTheme: false,
         activeChat: null as ChatListItem | null,
         unReamCount: 0,
+        isChatListCardClick: false,
     },
     reducers: {
         setAccessToken(state, action) {
@@ -40,6 +42,10 @@ const appSlice = createSlice({
 
         setUnReadCount: (state, action) => {
             state.unReamCount = action.payload;
+        },
+
+        setIsChatListCardClick: (state, action) => {
+            state.isChatListCardClick = action.payload;
         },
 
         // toggleMenu(state) {

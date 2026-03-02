@@ -11,11 +11,8 @@ import { cn } from "@/lib/utils";
 
 type ChatListCardProps = {
     chatData: ChatListItem;
-    // onClickCard: (value: ActiveChat | null) => void;
 };
 
-// export default function ChatListCard({ onClickCard, chatData }: ChatListCardProps) {
-// export default function ChatListCard() {
 export default function ChatListCard({ chatData }: ChatListCardProps) {
     const dispatch = useAppDispatch();
     const router = useRouter();
@@ -32,7 +29,11 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
     // console.log("chat room id:", chatData.chatRoomId);
 
     const handleOnClick = () => {
-        dispatch(appActions.setActiveChat(chatData));
+        if (window.matchMedia("(max-width: 767px)").matches) {
+            dispatch(appActions.setIsChatListCardClick(true));
+        }
+        // dispatch(appActions.setActiveChat(chatData));
+
         if (role === "RECRUITER") {
             router.push(`/dashboard/recruiter/chat/${chatData.chatRoomId}_${chatData.id}`);
         }
