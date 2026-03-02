@@ -27,11 +27,6 @@ import { useLogout } from "../api/mutation";
 import { useGetUserData } from "../../api/query";
 import { getInitials } from "@/lib/utils/utils";
 
-// const user = {
-//     name: "Tirth",
-//     email: "work.tirthrojara@gmail.com",
-//     avatar: "TR",
-// };
 
 export default function CandidateSidebarFooter() {
     const { isMobile, state } = useSidebar();

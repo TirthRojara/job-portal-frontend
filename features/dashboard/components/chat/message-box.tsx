@@ -23,7 +23,7 @@ import { appActions } from "@/store/app.slice";
 
 // export default function MessageBox({ chat }: { chat: ActiveChat }) {
 export default function MessageBox() {
-    console.log("MESSAGE BOX ‼️‼️‼️‼️‼️");
+   
 
     const params = useParams();
     const chatRoomId = params.chatroomId as string;

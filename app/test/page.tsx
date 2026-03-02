@@ -10,9 +10,9 @@ export const test = () => {
     const fetchUserData = async () => {
         try {
             const response = await api.get("/v1/users/me");
-            console.log("User data:", response);
+            // console.log("User data:", response);
         } catch (error) {
-            console.error("Error fetching user data:", error);
+            // console.error("Error fetching user data:", error);
         }
     };
 
