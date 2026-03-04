@@ -26,9 +26,10 @@ import React from "react";
 import { useLogout } from "../api/mutation";
 import { useGetUserData } from "../../api/query";
 import { getInitials } from "@/lib/utils/utils";
-
+import { useRouter } from "next/navigation";
 
 export default function CandidateSidebarFooter() {
+    const router = useRouter();
     const { isMobile, state } = useSidebar();
 
     const { data, isError, error, isLoading } = useGetUserData();
@@ -88,7 +89,7 @@ export default function CandidateSidebarFooter() {
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
-                                    <DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => router.push("/dashboard/candidate/account?tab=account")}>
                                         <BadgeCheck />
                                         Account
                                     </DropdownMenuItem>

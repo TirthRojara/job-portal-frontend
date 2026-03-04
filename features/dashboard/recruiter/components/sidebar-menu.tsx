@@ -21,7 +21,7 @@ const items = [
     { title: "Job Posts", url: "/dashboard/recruiter/jobpost", icon: BriefcaseBusiness },
     // { title: "Applicants", url: "#", icon: Users },
     { title: "Message", url: "/dashboard/recruiter/chat", icon: MessageSquareMore },
-    { title: "Notification", url: "/dashboard/recruiter/notification", icon: Bell },
+    // { title: "Notification", url: "/dashboard/recruiter/notification", icon: Bell },
 ];
 
 export default function RecruiterSidebarMenu() {

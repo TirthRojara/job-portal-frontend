@@ -56,9 +56,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                     {/* <Moon className="size-5" /> */}
                                     {isDarkTheme ? <Moon className="size-5" /> : <Sun className="size-5" />}
                                 </Button>
-                                <Button variant="ghost" size="icon">
+                                {/* <Button variant="ghost" size="icon">
                                     <Bell className="size-5" />
-                                </Button>
+                                </Button> */}
                             </div>
                         </header>
                         <SidebarSeparator className="m-0" />

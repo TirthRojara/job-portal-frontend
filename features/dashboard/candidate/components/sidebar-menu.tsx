@@ -21,7 +21,7 @@ const items = [
     // { title: "Quick Apply", url: "#", icon: Zap },
     { title: "Application", url: "/dashboard/candidate/application", icon: FileUser },
     { title: "Message", url: "/dashboard/candidate/chat", icon: MessageSquareMore },
-    { title: "Notification", url: "/dashboard/candidate/notification", icon: Bell },
+    // { title: "Notification", url: "/dashboard/candidate/notification", icon: Bell },
 ];
 
 export default function CandidateSidebarMenu() {

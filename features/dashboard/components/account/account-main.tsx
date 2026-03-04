@@ -7,13 +7,14 @@ import ManageSubscriptionTab from "./manage-subscription-tab";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
-
-const role = "RECRUITER";
+import { useAppSelector } from "@/store/index.store";
 
 export default function AccountMain() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
+
+    const role = useAppSelector((state) => state.app.role);
 
     // Read tab from URL
     const currentTab = searchParams.get("tab") || "account";
