@@ -53,8 +53,6 @@ export default function ApplicationPage() {
         );
     }
 
-    console.log({ data });
-
     return (
         <div className=" py-6 flex flex-col items-center gap-6">
             {/* <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6"> */}

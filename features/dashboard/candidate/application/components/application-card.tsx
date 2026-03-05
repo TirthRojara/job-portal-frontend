@@ -10,8 +10,6 @@ import { table } from "console";
 export default function ApplicationCard({ tableData }: { tableData: ApplicationResponse }) {
     const role = useAppSelector((state) => state.app.role);
 
-    console.log({tableData})
-
     const handleCompanyClick = (companyID: number) => {
         if (role === "CANDIDATE") {
             window.open(`/dashboard/candidate/company/${companyID}`, "_blank", "noopener,noreferrer");
