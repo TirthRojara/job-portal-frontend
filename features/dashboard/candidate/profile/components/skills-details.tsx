@@ -24,12 +24,30 @@ const ALL_SKILLS = [
     { value: 11, label: "NodeJs" },
     { value: 12, label: "ExpressJs" },
     { value: 13, label: "NextJs" },
+
+    { value: 53, label: "SpringBoot" },
+    { value: 54, label: "Prisma" },
+    { value: 55, label: "SQL" },
+    { value: 56, label: "Postgresql" },
+    { value: 57, label: "Mongodb" },
+    { value: 58, label: "Go" },
+    { value: 59, label: "Rust" },
+    { value: 60, label: "Docker" },
+    { value: 61, label: "CI/CD" },
+    { value: 62, label: "Jest" },
+    { value: 63, label: "Gen Ai" },
+    { value: 64, label: "Postman" },
+    { value: 65, label: "Git" },
+    { value: 66, label: "Redis" },
+    { value: 67, label: "Socket.io" },
 ];
 
 export default function SkillsDetails({ jobId, applicantId }: { jobId?: string; applicantId?: string }) {
     const [skillResults, setSkillResults] = useState(ALL_SKILLS);
 
     const role = useAppSelector((state) => state.app.role);
+
+    console.log({role, jobId, applicantId});
 
     const { data: candidateSkill, error } = useGetCandidateSkill(role);
     const { data: candidateskillForRecruiter, error: recruiterError } = useGetCandidateSkillById(role, jobId!, applicantId!);

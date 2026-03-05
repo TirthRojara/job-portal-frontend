@@ -11,7 +11,7 @@ export default function ApplicantsCard({ applicant }: { applicant: ApplicantsRes
 
     return (
         <Card
-            onClick={() => window.open(`/dashboard/recruiter/jobpost/1/applicants/${applicant.candidateProfile.id}`, "_blank")}
+            onClick={() => window.open(`/dashboard/recruiter/jobpost/${applicant.job.id}/applicants/${applicant.candidateProfile.id}`, "_blank")}
             className="w-full max-w-4xl transition-all hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.1)]  cursor-pointer "
         >
             <CardHeader className="flex flex-row items-start justify-between pb-0 space-y-0">

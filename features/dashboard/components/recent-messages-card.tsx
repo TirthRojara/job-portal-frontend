@@ -7,13 +7,6 @@ import { EmptyChat } from "./empty-chat";
 import { useGetUserData } from "../api/query";
 import { useGetChatList } from "./chat/api/query";
 
-const chat = {
-    name: "Mike Chen",
-    company: "StartupXYZ",
-    role: "React Developer",
-    message: "Thank you for your application. We'll be in touch...",
-    timeAgo: "1 day ago",
-};
 
 export default function RecentMessagesCard() {
     const { data: user, isPending: isUserPending, isError: isUserError } = useGetUserData();

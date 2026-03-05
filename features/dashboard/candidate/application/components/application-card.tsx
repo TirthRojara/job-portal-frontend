@@ -5,9 +5,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ApplicationResponse } from "../api/types";
 import { formatShortDate } from "@/lib/utils/utils";
 import { useAppSelector } from "@/store/index.store";
+import { table } from "console";
 
 export default function ApplicationCard({ tableData }: { tableData: ApplicationResponse }) {
     const role = useAppSelector((state) => state.app.role);
+
+    console.log({tableData})
 
     const handleCompanyClick = (companyID: number) => {
         if (role === "CANDIDATE") {

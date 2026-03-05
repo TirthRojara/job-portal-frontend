@@ -25,6 +25,8 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
 
     const unreadCount = role === "CANDIDATE" ? chatData.candidateUnreadCount : chatData.companyUnreadCount;
 
+    console.log("UNREAD COUNT:", unreadCount, typeof unreadCount);
+
     // console.log({ isActive, chatRoomIdUrl });
     // console.log("chat room id:", chatData.chatRoomId);
 
@@ -75,7 +77,7 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
 
                 {/* RIGHT SIDE (Unread Badge) */}
                 {unreadCount > 0 && (
-                    <div className="relative left-45 top-2 top-1/2 transform -translate-y-1/2 flex items-center justify-center min-w-[22px] h-5 px-2 rounded-full bg-primary text-white text-xs font-semibold">
+                    <div className="relative left-0 top-2  transform -translate-y-1/2 flex items-center justify-center min-w-5.5 h-5 px-2 rounded-full bg-primary text-white text-xs font-semibold">
                         {unreadCount}
                     </div>
                 )}

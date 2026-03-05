@@ -2,9 +2,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import PasswordHandleCard from "./password-handle-card";
+import { useGetUserData } from "../../api/query";
 
 
 export default function AccountTab() {
+
+    const {data} = useGetUserData()
+
     return (
         <div className="flex flex-col gap-6">
             <div className="w-full max-w-md ">
@@ -17,7 +21,7 @@ export default function AccountTab() {
                             </Label>
 
                             <div className="w-full max-w-full min-h-[40px] font-medium items-start rounded-md border border-input bg-muted px-3 py-2 text-sm leading-relaxed break-all">
-                                work.amazon.hr.team.123456@amazon.com
+                                {data?.data?.email ?? 'Loading...'}
                             </div>
                         </div>
                     </CardContent>
