@@ -40,7 +40,7 @@ export default function RecentMessagesCard() {
         );
     }
 
-    if (error?.status === 404) {
+    if (error?.status === 404 || error?.status === 400) {
         return (
             <Card className="gap-6">
                 <CardHeader className=" flex flex-row items-center justify-between">
