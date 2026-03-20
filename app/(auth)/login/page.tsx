@@ -6,7 +6,7 @@ export default function Page() {
             <div className="w-full max-w-sm ">
                 <LoginForm />
             </div>
-            {/* <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4">
                 <div>
                     <h3 className=" text-red-500 text-2xl">Recruiter Id & password</h3>
                     <p className=" text-green-500 text-xl">Email: test2@gmail.com</p>
@@ -17,7 +17,7 @@ export default function Page() {
                     <p className=" text-green-500 text-xl">Email: test1@gmail.com</p>
                     <p className=" text-green-500 text-xl">Password: test1234</p>
                 </div>
-            </div> */}
+            </div>
         </div>
     );
 }

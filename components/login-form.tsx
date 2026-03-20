@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { ApiResponse } from "@/types/api";
 import { LoginPayLoad, LoginResponse, loginSchema } from "@/features/auth/login/api/types";
 import { useLogin } from "@/features/auth/login/api/mutation";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { appActions } from "@/store/app.slice";
 import { useAppDispatch } from "@/store/index.store";
 import api from "@/lib/axios/client";
@@ -23,10 +23,10 @@ import { useEffect, useRef } from "react";
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
     const { mutate, isPending } = useLogin();
 
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const toastShown = useRef(false);
+    // const searchParams = useSearchParams();
+    // const toastShown = useRef(false);
 
     const form = useForm<LoginPayLoad>({
         resolver: zodResolver(loginSchema),
