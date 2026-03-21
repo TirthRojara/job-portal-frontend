@@ -29,7 +29,7 @@ export default function CandidateProfilePage() {
     return (
         <>
             <div className="flex flex-col justify-centers items-center gap-6 px-4 py-6">
-                {!isProfileReady ? (
+                {!isProfileReady && !candidateData ? (
                     <CreateProfile />
                 ) : (
                     <>
