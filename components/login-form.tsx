@@ -23,7 +23,7 @@ import { useEffect, useRef } from "react";
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
     const { mutate, isPending } = useLogin();
 
-    // const dispatch = useAppDispatch();
+    const dispatch = useAppDispatch();
     const router = useRouter();
     // const searchParams = useSearchParams();
     // const toastShown = useRef(false);
@@ -48,7 +48,8 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         mutate(mutateData, {
             onSuccess: (data: ApiResponse<LoginResponse>) => {
                 //     toast.success("Login successful!");
-                //     dispatch(appActions.setAccessToken(data.data?.token));
+                dispatch(appActions.setAccessToken(data.data?.token));
+                dispatch(appActions.setRole(data.data?.role));
                 router.push(`/dashboard/${data.data?.role.toLowerCase()}`);
             },
         });

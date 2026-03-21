@@ -13,7 +13,7 @@ export const useLogin = (options?: UseMutationOptions<ApiResponse<LoginResponse>
         mutationFn: (payload) => login(payload),
         onSuccess: (data: ApiResponse<LoginResponse>) => {
             toast.success("Login successful!");
-            store.dispatch(appActions.setAccessToken(data.data?.token));
+            // store.dispatch(appActions.setAccessToken(data.data?.token));
         },
         onError: (error: any) => {
             // toast.error(`Login failed: ${error.response.data?.message}`);
