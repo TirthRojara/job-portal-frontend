@@ -35,8 +35,7 @@ export default function CandidateSidebarFooter() {
     const { data, isError, error, isLoading } = useGetUserData();
     const { mutate: logoutMutation, isPending } = useLogout();
 
-    if (isLoading) return <></>
-    // if (isError) return <div>Error loading user</div>;
+    if (isLoading || isError) return <></>
 
     function handleLogout() {
         logoutMutation();
