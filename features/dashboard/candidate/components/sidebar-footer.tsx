@@ -35,11 +35,7 @@ export default function CandidateSidebarFooter() {
     const { data, isError, error, isLoading } = useGetUserData();
     const { mutate: logoutMutation, isPending } = useLogout();
 
-    // console.log("Loading:", isLoading); // Is this true?
-    // console.log("Data:", data); // This will be undefined initially
-    // console.log("Error:", error); // Is there an auth error?
-
-    // if (isLoading) return <div>Loading user...</div>;
+    if (isLoading) return <></>
     // if (isError) return <div>Error loading user</div>;
 
     function handleLogout() {
