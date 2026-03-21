@@ -9,6 +9,11 @@ const api: AxiosInstance = axios.create({
     withCredentials: true,
 });
 
+const refreshApi = axios.create({
+    baseURL: SERVER_BASE_URL,
+    withCredentials: true,
+});
+
 api.interceptors.request.use((config) => {
     const accessToken = store.getState().app.accessToken;
 
@@ -38,12 +43,18 @@ api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const { data } = await api.post("/v1/auth/getAccessToken");
+                // const { data } = await api.post("/v1/auth/getAccessToken");
+                const { data } = await refreshApi.post("/v1/auth/getAccessToken");
+
                 store.dispatch(appActions.setAccessToken(data.data.token));
                 store.dispatch(appActions.setRole(data.data.role));
 
                 // Retry original request
-                originalRequest.headers.Authorization = `Bearer ${data.data.token}`;
+                // originalRequest.headers.Authorization = `Bearer ${data.data.token}`;
+                originalRequest.headers = {
+                    ...originalRequest.headers,
+                    Authorization: `Bearer ${data.data.token}`,
+                };
                 return api(originalRequest);
             } catch (refreshError) {
                 // Refresh failed → No valid refresh token → Login
