@@ -2,8 +2,7 @@ import { appActions } from "@/store/app.slice";
 import store from "@/store/index.store";
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 
-
-const SERVER_BASE_URL = process.env.NEXT_PUBLIC_API_URL  // || "http://localhost:5000/api";
+const SERVER_BASE_URL = process.env.NEXT_PUBLIC_API_URL; // || "http://localhost:5000/api";
 
 const api: AxiosInstance = axios.create({
     baseURL: SERVER_BASE_URL,
@@ -11,7 +10,6 @@ const api: AxiosInstance = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-
     const accessToken = store.getState().app.accessToken;
 
     if (accessToken && !config.headers.Authorization) {
@@ -26,7 +24,9 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (originalRequest.url?.includes("/auth/getAccessToken") && error.response?.status === 401) {
+        const status = error.response?.status;
+
+        if (originalRequest.url?.includes("/auth/getAccessToken") && (status === 401 || status === 403)) {
             sessionStorage.setItem("session_expired", "true");
 
             window.location.href = "/login";
@@ -34,7 +34,7 @@ api.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if ((status === 401 || status === 403) && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
@@ -45,7 +45,6 @@ api.interceptors.response.use(
                 // Retry original request
                 originalRequest.headers.Authorization = `Bearer ${data.data.token}`;
                 return api(originalRequest);
-
             } catch (refreshError) {
                 // Refresh failed → No valid refresh token → Login
                 sessionStorage.setItem("session_expired", "true");
