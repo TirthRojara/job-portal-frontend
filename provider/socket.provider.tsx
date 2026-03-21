@@ -12,7 +12,8 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         if (!token) return;
 
-        const socket = io("http://localhost:5000", {
+        // const socket = io("http://localhost:5000", {
+        const socket = io("https://job-portal-api.tirthrojara.in", {
             auth: { token },
         });
 
