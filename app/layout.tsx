@@ -4,6 +4,7 @@ import "./globals.css";
 import AppProvider from "@/provider/index.provider";
 import Script from "next/script";
 import ReduxProvider from "@/provider/redux.provider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const inter = Inter({
     subsets: ["latin"],
@@ -37,7 +38,10 @@ export default function RootLayout({
                 //   className={`${aclonica.variable} ${arbutus.variable} ${jetbrainsMono.variable} antialiased`}
             >
                 <ReduxProvider>
-                    <AppProvider>{children}</AppProvider>
+                    <AppProvider>
+                        {children}
+                        <Analytics />
+                    </AppProvider>
                 </ReduxProvider>
                 <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
             </body>
