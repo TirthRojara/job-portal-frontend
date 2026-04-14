@@ -9,13 +9,17 @@ import z from "zod";
 import { CreateProfilePayload, createProfileSchema, Gender, ICreateProfile } from "../api/types";
 import { useCreateJob } from "../api/mutation";
 import { Spinner } from "@/components/ui/spinner";
-import { da } from "date-fns/locale";
 import { YYYYMMDD } from "@/lib/utils/utils";
+import { GenerateAIButton } from "@/components/GenerateAIButton";
+import { toast } from "sonner";
+import { useGenerateCandidateSummary } from "../edit/api/mutation";
+import { useAppSelector } from "@/store/index.store";
 
 export default function CreateProfile() {
+    const token = useAppSelector((state) => state.app.accessToken);
 
-    const { mutate: createProfileMutate , isPending} = useCreateJob()
-
+    const { mutate: createProfileMutate, isPending } = useCreateJob();
+    const { mutate: generateSummaryMutate, isPending: isGeneratingSummary } = useGenerateCandidateSummary();
 
     const form = useForm<ICreateProfile>({
         resolver: zodResolver(createProfileSchema),
@@ -36,20 +40,59 @@ export default function CreateProfile() {
         console.log("create click");
         console.log({ data });
 
-        const payload: CreateProfilePayload = { 
+        const payload: CreateProfilePayload = {
             fullName: data.fullname,
             summary: data.summary,
             phone: data.phone,
             address: data.address,
             gender: data.gender as Gender,
             birthDate: YYYYMMDD(data.birthDate.toString()),
-            openToWork: data.openToWork
-        }
+            openToWork: data.openToWork,
+        };
 
         createProfileMutate({
-            payload
-        })
+            payload,
+        });
     }
+
+    const handleGenerate = () => {
+        const controller = new AbortController();
+
+        // ✅ get current summary from form
+        const currentSummary = form.getValues("summary");
+
+        // optional: reset field before streaming
+        form.setValue("summary", "");
+
+        generateSummaryMutate(
+            {
+                payload: {
+                    summary: currentSummary,
+                    skills: [],
+                },
+                token,
+                signal: controller.signal,
+
+                onChunk: (chunk) => {
+                    // ✅ append streamed text into form field
+                    const prev = form.getValues("summary") || "";
+                    form.setValue("summary", prev + chunk);
+                },
+            },
+            {
+                onError: (err: any) => {
+                    const message = err?.response?.data?.message;
+
+                    console.log("err in mutation", err);
+
+                    if (err?.message === "RATE_LIMITED") {
+                        console.log("in side mutation onError", err);
+                        toast.error("AI usage limit reached. Please try again later.");
+                    }
+                },
+            },
+        );
+    };
 
     return (
         <Card className="flex flex-col max-w-4xl w-full border px-6">
@@ -102,9 +145,11 @@ export default function CreateProfile() {
                     <FormTextarea control={form.control} name="summary" label="Summary" form={form} required errorReserve />
 
                     <FormSwitch form={form} control={form.control} name="openToWork" label="Open To Work" errorReserve />
+
+                    <GenerateAIButton onClick={handleGenerate} loading={isGeneratingSummary} className=" md:justify-self-end mt-1" />
                 </form>
                 <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-                    {isPending ? <Spinner /> : 'Create'}
+                    {isPending ? <Spinner /> : "Create"}
                 </Button>
             </div>
         </Card>

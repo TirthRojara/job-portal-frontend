@@ -235,7 +235,7 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
                                     <GenerateAIButton
                                         onClick={handleGenerate}
                                         loading={isGeneratingSummary}
-                                        className="justify-self-end mt-1"
+                                        className="md:justify-self-end mt-1"
                                     />
                                 </form>
                             </CardContent>
