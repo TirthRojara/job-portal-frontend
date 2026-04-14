@@ -13,9 +13,19 @@ import { CreateProfileResponse, Gender, UpdateProfileFormData, UpdateProfilePayl
 import { useUpdateCandidateProfile } from "../../api/mutation";
 import { YYYYMMDD } from "@/lib/utils/utils";
 import { Spinner } from "@/components/ui/spinner";
+import { useGenerateCandidateSummary } from "../api/mutation";
+import { GenerateAIButton } from "@/components/GenerateAIButton";
+import { useAppSelector } from "@/store/index.store";
+import { toast } from "sonner";
+import { useGetCandidateSkill } from "../../api/query";
 
 export default function PersonalDetailsEdit({ profileData }: { profileData: CreateProfileResponse }) {
+    const token = useAppSelector((state) => state.app.accessToken);
+    const role = useAppSelector((state) => state.app.role);
+
+    const { data: skill } = useGetCandidateSkill(role);
     const { mutate: updateProfileMutate, isPending } = useUpdateCandidateProfile();
+    const { mutate: generateSummaryMutate, isPending: isGeneratingSummary } = useGenerateCandidateSummary();
 
     const form = useForm<UpdateProfileFormData>({
         resolver: zodResolver(UpdateProfileSchema),
@@ -75,6 +85,48 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
             payload,
         });
     }
+
+    const handleGenerate = () => {
+        const controller = new AbortController();
+
+        // ✅ get current summary from form
+        const currentSummary = form.getValues("summary");
+
+        // optional: reset field before streaming
+        form.setValue("summary", "");
+
+        const skillNames: string[] = skill?.data?.map((item) => item.skill.name) || [];
+        console.log("skills for summary generation:", skillNames);
+
+        generateSummaryMutate(
+            {
+                payload: {
+                    summary: currentSummary,
+                    skills: skillNames || [],
+                },
+                token,
+                signal: controller.signal,
+
+                onChunk: (chunk) => {
+                    // ✅ append streamed text into form field
+                    const prev = form.getValues("summary") || "";
+                    form.setValue("summary", prev + chunk);
+                },
+            },
+            {
+                onError: (err: any) => {
+                    const message = err?.response?.data?.message;
+
+                    console.log("err in mutation", err);
+
+                    if (err?.message === "RATE_LIMITED") {
+                        console.log("in side mutation onError", err);
+                        toast.error("AI usage limit reached. Please try again later.");
+                    }
+                },
+            },
+        );
+    };
 
     return (
         <>
@@ -178,6 +230,12 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
                                         name="openToWork"
                                         label="Open To Work"
                                         errorReserve
+                                    />
+
+                                    <GenerateAIButton
+                                        onClick={handleGenerate}
+                                        loading={isGeneratingSummary}
+                                        className="justify-self-end mt-1"
                                     />
                                 </form>
                             </CardContent>

@@ -1,4 +1,5 @@
 "use client";
+import { GenerateAIButton } from "@/components/GenerateAIButton";
 import { Button } from "@/components/ui/button";
 import api from "@/lib/axios/client";
 import { User } from "lucide-react";
@@ -36,6 +37,17 @@ export const test = () => {
                 {/* <Image src='/recruiter-bg.png' alt="candidate" width={64} height={64} /> */}
                 <User className="size-20" />
                 <Button onClick={fetchUserData}>Get user data</Button>
+
+                <div className="flex flex-col gap-5">
+                    <div className="flex flex-col gap-2">
+                        <GenerateAIButton loading={true} />
+                        <GenerateAIButton />
+                    </div>
+                    <div className="flex gap-2">
+                        <GenerateAIButton />
+                        <GenerateAIButton />
+                    </div>
+                </div>
             </main>
         </>
     );

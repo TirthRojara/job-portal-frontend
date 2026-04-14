@@ -13,7 +13,8 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
         if (!token) return;
 
         // const socket = io("http://localhost:5000", {
-        const socket = io("https://job-portal-api.tirthrojara.in", {
+        // const socket = io("https://job-portal-api.tirthrojara.in", {
+        const socket = io( process.env.NEXT_PUBLIC_API_URL , {
             auth: { token },
         });
 

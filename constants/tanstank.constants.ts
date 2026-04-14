@@ -81,6 +81,10 @@ export const MUTATION = {
             cancelSubscription: "cancel_subscription",
         },
     },
+
+    AI: {
+        generateSummary: "generate_summary",
+    }
 };
 
 export const QUERY = {

@@ -57,7 +57,7 @@ export const UpdateProfileSchema = z
         address: z.string().min(1).optional(),
         openToWork: z.boolean().optional(),
         birthDate: z.date().optional(),
-        summary: z.string().min(1).optional(),
+        summary: z.string().optional(),
     })
     .refine((data) => Object.values(data).some((value) => value !== undefined && value !== "" && value !== null), {
         message: "At least one field is required",
