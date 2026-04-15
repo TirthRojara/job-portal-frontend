@@ -1,7 +1,6 @@
 import z from "zod";
 import { Status, WorkPlace } from "../../api/types";
 
-
 export type CreateJobResponse = {
     id: number;
     title: string;
@@ -140,12 +139,25 @@ export type addBenefitResponse = {
 // UPDATE STATUS
 
 export enum EditJobStatus {
-  ACTIVE = "ACTIVE",
-//   PENDING = "PENDING",
-//   EXPIRED = "EXPIRED",
-//   REJECTED = "REJECTED",
+    ACTIVE = "ACTIVE",
+    //   PENDING = "PENDING",
+    //   EXPIRED = "EXPIRED",
+    //   REJECTED = "REJECTED",
 }
 
 export type updateStatusPayload = {
-    status: EditJobStatus
+    status: EditJobStatus;
+};
+
+export interface GenerateJobAIInput {
+    payload: {
+        prompt?: string;
+        title?: string;
+        description?: string;
+        responsibilities?: string;
+        requirements?: string;
+    };
+    onChunk: (data: { field: string; text: string }) => void;
+    token: string;
+    signal?: AbortSignal;
 }

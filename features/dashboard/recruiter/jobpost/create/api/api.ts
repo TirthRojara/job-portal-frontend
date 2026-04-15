@@ -7,9 +7,10 @@ import {
     CreateJobResponse,
     EditJobPayload,
     EditJobResponse,
+    GenerateJobAIInput,
     updateStatusPayload,
 } from "./types";
-
+import { toast } from "sonner";
 
 // JOB
 
@@ -59,4 +60,88 @@ export const addBenefit = async (jobId: number, benefitName: string): Promise<Ap
 export const removeBenefit = async (jobId: number, benefitName: string): Promise<ApiError> => {
     const res = await api.delete(`v1/job-benefit/me/${jobId}/${encodeURIComponent(benefitName)}`);
     return res.data;
+};
+
+// RECRUITER JOB POST USING AI
+
+export const generateJobAI = async ({ payload, onChunk, token, signal }: GenerateJobAIInput): Promise<void> => {
+    async function startStream(accessToken: string): Promise<void> {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/ai/jobpost`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify(payload),
+            signal,
+        });
+
+        if (res.status === 401) throw new Error("UNAUTHORIZED");
+        if (res.status === 429) throw new Error("RATE_LIMITED");
+
+        if (!res.ok) {
+            throw new Error(await res.text());
+        }
+
+        if (!res.body) {
+            throw new Error("Streaming not supported");
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+
+        let buffer = "";
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+
+            // ✅ handle NDJSON (newline separated JSON)
+            const parts = buffer.split("\n");
+            buffer = parts.pop() || ""; // keep incomplete chunk
+
+            for (const part of parts) {
+                if (!part.trim()) continue;
+
+                try {
+                    const parsed = JSON.parse(part);
+
+                    // 🔥 expected: { field, text }
+                    if (parsed.field && parsed.text) {
+                        onChunk(parsed);
+                        // console.log("Received chunk:", parsed);
+                    }
+                } catch (err) {
+                    console.error("Parse error:", err);
+                }
+            }
+        }
+    }
+
+    // 🔥 SAME RETRY LOGIC (like your summary)
+    try {
+        await startStream(token);
+    } catch (err: any) {
+        console.error("Error in job AI:", err);
+
+        if (err.message === "UNAUTHORIZED") {
+            const newTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/getAccessToken`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const newTokenData = await newTokenResponse.json();
+            const newToken = newTokenData.data.token;
+
+            return startStream(newToken);
+        }
+
+        if (err.message === "RATE_LIMITED") {
+            toast.error("AI usage limit reached. Please try again later.");
+        }
+
+        throw err;
+    }
 };

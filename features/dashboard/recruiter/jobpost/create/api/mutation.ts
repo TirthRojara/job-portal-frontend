@@ -8,11 +8,22 @@ import {
     CreateJobResponse,
     EditJobPayload,
     EditJobResponse,
+    GenerateJobAIInput,
     updateStatusPayload,
 } from "./types";
 import { AxiosError } from "axios";
 import { MUTATION, QUERY } from "@/constants/tanstank.constants";
-import { addBenefit, addSkill, createJob, deleteJob, editJob, removeBenefit, removeSkill, updateJobStatus } from "./api";
+import {
+    addBenefit,
+    addSkill,
+    createJob,
+    deleteJob,
+    editJob,
+    generateJobAI,
+    removeBenefit,
+    removeSkill,
+    updateJobStatus,
+} from "./api";
 import { error } from "console";
 import { number } from "zod";
 import { JobBenefitResponse } from "../../[jobId]/api/types";
@@ -210,6 +221,19 @@ export const useRemoveBenefit = (
             const queryKey = [QUERY.JOBBENEFIT.getJobIdBenefit, variables.jobId];
             queryClient.invalidateQueries({ queryKey: queryKey });
         },
+        ...options,
+    });
+};
+
+// RECRUITER JOB POST USING AI
+
+export const useGenerateJobAI = (options?: UseMutationOptions<void, any, GenerateJobAIInput>) => {
+    return useMutation({
+        mutationKey: [MUTATION.AI.generateJobPost],
+
+        mutationFn: ({ payload, onChunk, token, signal }: GenerateJobAIInput) =>
+            generateJobAI({ payload, onChunk, token, signal }),
+
         ...options,
     });
 };

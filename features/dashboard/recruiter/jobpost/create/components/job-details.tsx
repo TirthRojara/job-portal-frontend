@@ -21,15 +21,21 @@ import {
     EditJobSchema,
     EditJobStatus,
 } from "../api/types";
-import { useCreateJob, useDeleteJOb, useEditJob, useUpdateJobStatus } from "../api/mutation";
+import { useCreateJob, useDeleteJOb, useEditJob, useGenerateJobAI, useUpdateJobStatus } from "../api/mutation";
 import { YYYYMMDD } from "@/lib/utils/utils";
 import { useGetJobById } from "../../[jobId]/api/query";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { GenerateAIButton } from "@/components/GenerateAIButton";
+import { Input } from "@/components/ui/input";
+import { useAppSelector } from "@/store/index.store";
 
 export default function JobDetails({ companyId }: { companyId: number }) {
+    const [prompt, setPrompt] = useState("");
     const [isCreatedJob, setIsCreatedJob] = useState(false);
     const [step, setStep] = useState<number | null>(null);
+
+    const token = useAppSelector((state) => state.app.accessToken);
 
     const pathname = usePathname();
     const params = useParams();
@@ -40,13 +46,13 @@ export default function JobDetails({ companyId }: { companyId: number }) {
 
     const { data: jobData, isError, isLoading } = useGetJobById(jobIdFromParams!);
 
-    console.log("job data by id : ", jobData);
     const job = jobData?.data;
 
     const { mutate: createJobMutate, isPending: createJobIsPending, isSuccess: createJobIsSuccess } = useCreateJob();
     const { mutate: editJobMutate } = useEditJob();
     const { mutate: updateStatusMutate, isPending: isUpdateStatusPending } = useUpdateJobStatus();
     const { mutate: deleteMutate } = useDeleteJOb();
+    const { mutate: generateJobAIMutate, isPending: isGeneratingAI } = useGenerateJobAI();
 
     const isCreatePath = pathname === "/dashboard/recruiter/jobpost/create";
     const isEditPath = pathname.startsWith("/dashboard/recruiter/jobpost/") && pathname.endsWith("/edit");
@@ -250,6 +256,42 @@ export default function JobDetails({ companyId }: { companyId: number }) {
         );
     };
 
+    const handleGenerateAI = () => {
+        const controller = new AbortController();
+
+        const values = form.getValues();
+
+        // optional reset
+        form.setValue("title", "");
+        form.setValue("description", "");
+        form.setValue("responsibilities", "");
+        form.setValue("requirements", "");
+
+        generateJobAIMutate(
+            {
+                payload: {
+                    prompt,
+                    title: values.title,
+                    description: values.description,
+                    responsibilities: values.responsibilities,
+                    requirements: values.requirements,
+                },
+                token,
+                signal: controller.signal,
+
+                onChunk: ({ field, text }) => {
+                    const prev = form.getValues(field as any) || "";
+                    form.setValue(field as any, prev + text);
+                },
+            },
+            {
+                onSuccess: () => {
+                    setPrompt("");
+                },
+            },
+        );
+    };
+
     if (step === null) return null; // optional loading
 
     return (
@@ -334,6 +376,15 @@ export default function JobDetails({ companyId }: { companyId: number }) {
                                 required
                                 errorReserve
                             />
+
+                            <div className="flex flex-col md:flex-row gap-4 md:items-center">
+                                <Input
+                                    placeholder="Enter prompt here..."
+                                    value={prompt}
+                                    onChange={(e) => setPrompt(e.target.value)}
+                                />
+                                <GenerateAIButton loading={isGeneratingAI} onClick={handleGenerateAI} />
+                            </div>
                         </div>
                     </CardHeaderWrapper>
                     <CardHeaderWrapper title="Location & Work Type" isButton={false}>
@@ -425,7 +476,6 @@ export default function JobDetails({ companyId }: { companyId: number }) {
             )}
 
             {/* AFTER JOB CREATED  */}
-            {/* {isCreatePath && isCreatedJob && ( */}
             {isCreatePath && step === 2 && (
                 <div className="flex flex-col sm:flex-row sm:justify-between max-w-3xl w-full sm:items-center gap-5">
                     <div className="flex flex-col">
@@ -459,7 +509,6 @@ export default function JobDetails({ companyId }: { companyId: number }) {
             {(step === 2 || isEditPath) && <JobBenefitAndPerks />}
 
             {/* mobile view */}
-            {/* {isCreatePath && !isCreatedJob && ( */}
             {isCreatePath && step === 1 && (
                 <div className="w-full flex justify-end gap-4 mt-2 mb-1 sm:hidden">
                     {/* <Button variant={"outline"} className="bg-muted">
@@ -472,7 +521,7 @@ export default function JobDetails({ companyId }: { companyId: number }) {
                     </Button>
                 </div>
             )}
-            {/* {isCreatePath && isCreatedJob && ( */}
+
             {isCreatePath && step === 2 && (
                 <div className="w-full flex gap-4 mt-2 mb-1 sm:hidden justify-end">
                     <Button onClick={handlePostNow}>

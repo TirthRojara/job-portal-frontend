@@ -84,6 +84,7 @@ export const MUTATION = {
 
     AI: {
         generateSummary: "generate_summary",
+        generateJobPost: "generate_job_post",
     }
 };
 

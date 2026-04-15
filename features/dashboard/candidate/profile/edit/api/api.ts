@@ -50,12 +50,7 @@ import { toast } from "sonner";
 //     return fullText;
 // };
 
-interface GenerateCandidateSummaryInput {
-    payload: GenerateSummaryPayload;
-    onChunk: (chunk: string) => void;
-    token: string;
-    signal?: AbortSignal;
-}
+
 
 // export const generateCandidateSummary = async ({
 //     payload,
@@ -130,6 +125,13 @@ interface GenerateCandidateSummaryInput {
 //     }
 // };
 
+interface GenerateCandidateSummaryInput {
+    payload: GenerateSummaryPayload;
+    onChunk: (chunk: string) => void;
+    token: string;
+    signal?: AbortSignal;
+}
+
 export const generateCandidateSummary = async ({
     payload,
     onChunk,
@@ -137,7 +139,8 @@ export const generateCandidateSummary = async ({
     signal,
 }: GenerateCandidateSummaryInput): Promise<string> => {
     async function startStream(accessToken: string): Promise<string> {
-        const res = await fetch("http://localhost:5000/api/v1/ai", {
+        // const res = await fetch("http://localhost:5000/api/v1/ai", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/ai`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -201,7 +204,8 @@ export const generateCandidateSummary = async ({
         console.error("Error in api:", err);
 
         if (err.message === "UNAUTHORIZED") {
-            const newTokenResponse = await fetch("http://localhost:5000/api/v1/auth/getAccessToken", {
+            const newTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/getAccessToken`, {
+            // const newTokenResponse = await fetch("http://localhost:5000/api/v1/auth/getAccessToken", {
                 method: "POST",
                 credentials: "include",
             });
