@@ -178,7 +178,7 @@ export const generateCandidateSummary = async ({
                 if (line.startsWith("data: ")) {
                     const data = line.replace("data: ", "").trim();
 
-                    // console.log("Received chunk:", data);
+                    console.log("Received chunk:", data);
 
                     if (data === "[DONE]") {
                         return fullText;

@@ -102,19 +102,52 @@ export const generateJobAI = async ({ payload, onChunk, token, signal }: Generat
             const parts = buffer.split("\n");
             buffer = parts.pop() || ""; // keep incomplete chunk
 
+            // for (const part of parts) {
+            //     if (!part.trim()) continue;
+
+            //     try {
+            //         const parsed = JSON.parse(part);
+
+            //         // 🔥 expected: { field, text }
+            //         if (parsed.field && parsed.text) {
+            //             onChunk(parsed);
+            //             console.log("Received chunk:", parsed);
+            //         }
+            //     } catch (err) {
+            //         console.error("Parse error:", err);
+            //     }
+            // }
+
             for (const part of parts) {
-                if (!part.trim()) continue;
+                const line = part.trim();
+
+                if (!line.startsWith("data:")) continue;
+
+                const jsonStr = line.replace("data: ", "").trim();
+
+                // ✅ ignore empty
+                if (!jsonStr) continue;
+
+                // ✅ handle DONE
+                if (jsonStr === "[DONE]") {
+                    console.log("Stream finished");
+                    return;
+                }
 
                 try {
-                    const parsed = JSON.parse(part);
+                    const parsed = JSON.parse(jsonStr);
 
-                    // 🔥 expected: { field, text }
                     if (parsed.field && parsed.text) {
                         onChunk(parsed);
-                        // console.log("Received chunk:", parsed);
+                        console.log("Received chunk:", parsed);
+                    }
+
+                    // ✅ handle SSE error
+                    if (parsed.error) {
+                        throw new Error(parsed.message);
                     }
                 } catch (err) {
-                    console.error("Parse error:", err);
+                    console.error("Parse error:", jsonStr);
                 }
             }
         }
