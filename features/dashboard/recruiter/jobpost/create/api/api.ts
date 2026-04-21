@@ -130,7 +130,7 @@ export const generateJobAI = async ({ payload, onChunk, token, signal }: Generat
 
                 // ✅ handle DONE
                 if (jsonStr === "[DONE]") {
-                    console.log("Stream finished");
+                    // console.log("Stream finished");
                     return;
                 }
 
@@ -139,7 +139,7 @@ export const generateJobAI = async ({ payload, onChunk, token, signal }: Generat
 
                     if (parsed.field && parsed.text) {
                         onChunk(parsed);
-                        console.log("Received chunk:", parsed);
+                        // console.log("Received chunk:", parsed);
                     }
 
                     // ✅ handle SSE error
@@ -147,7 +147,7 @@ export const generateJobAI = async ({ payload, onChunk, token, signal }: Generat
                         throw new Error(parsed.message);
                     }
                 } catch (err) {
-                    console.error("Parse error:", jsonStr);
+                    // console.error("Parse error:", jsonStr);
                 }
             }
         }
@@ -157,7 +157,7 @@ export const generateJobAI = async ({ payload, onChunk, token, signal }: Generat
     try {
         await startStream(token);
     } catch (err: any) {
-        console.error("Error in job AI:", err);
+        // console.error("Error in job AI:", err);
 
         if (err.message === "UNAUTHORIZED") {
             const newTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/getAccessToken`, {
