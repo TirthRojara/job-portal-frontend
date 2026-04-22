@@ -53,7 +53,7 @@ export default function ApplicationStatusCard({ jobId, applicantId }: { jobId: s
     if (isError) return <EmptyState title="Something went wrong." />;
 
     function onSubmit(data: UpdateJobStatus) {
-        console.log({ data });
+        // console.log({ data });
 
         if (data.status) {
             updateApplicatioinStatusMutate(

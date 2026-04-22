@@ -18,7 +18,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
     const chatListQueryKey = [QUERY.CHAT.getChatList];
 
     useEffect(() => {
-        console.log("Socket changed:", socket);
+        // console.log("Socket changed:", socket);
     }, [socket]);
 
     // --------------------------------------------
@@ -28,16 +28,16 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
     useEffect(() => {
         if (!socket) return;
 
-        console.log("🟢 Listener attaching");
+        // console.log("🟢 Listener attaching");
 
         // 🔵 Listen for new message
         const handleNewMessage = (newMessage: CreateNewMessageResponse) => {
-            console.log("newMessage from sender \n", newMessage);
+            // console.log("newMessage from sender \n", newMessage);
 
             const activeChatQueryKey = [QUERY.CHAT.getMessages, newMessage.newChat.id];
 
             queryClient.setQueryData(activeChatQueryKey, (oldData: InfiniteData<ApiResponse<MessageResponse>> | undefined) => {
-                console.log("update chat key");
+                // console.log("update chat key");
                 if (!oldData) return oldData;
 
                 const updatedPages = oldData.pages.map((page, index) => {
@@ -56,7 +56,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                         };
                     }
 
-                    console.log("updated chat key end");
+                    // console.log("updated chat key end");
 
                     return page;
                 });
@@ -119,7 +119,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
         };
 
         socket.on("newMessage", (newMsg) => {
-            console.log("🔥 SOCKET EVENT RECEIVED:", newMsg);
+            // console.log("🔥 SOCKET EVENT RECEIVED:", newMsg);
             handleNewMessage(newMsg);
         });
 
@@ -129,7 +129,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
 
         return () => {
             // 🔴 Leave room
-            console.log("🔴 Listener removed");
+            // console.log("🔴 Listener removed");
             socket.off("newMessage", handleNewMessage);
             socket.off("error", (error) => {
                 alert("Socket error: " + error);
@@ -145,15 +145,15 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
         if (!socket) return;
 
         const handleChatListOnNewMessage = (newMessage: CreateNewMessageResponse) => {
-            console.log(" handleChatListOnNewMessage");
+            // console.log(" handleChatListOnNewMessage");
 
             queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getUnReadCount] });
 
             queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>> | undefined) => {
-                console.log("update chat list");
+                // console.log("update chat list");
                 if (!oldData) return oldData;
 
-                console.log("chat list update start 🔰");
+                // console.log("chat list update start 🔰");
 
                 const updatedPages = oldData.pages.map((page, index) => {
                     if (!page.data) return page; // 🔥 important
@@ -187,7 +187,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                         ];
                     }
 
-                    console.log("updated chat list end");
+                    // console.log("updated chat list end");
                     return {
                         ...page,
                         data: {
@@ -206,7 +206,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
 
         socket.on("newChatList", handleChatListOnNewMessage);
 
-        console.log("chat list update end 🔚");
+        // console.log("chat list update end 🔚");
 
         return () => {
             socket.off("newChatList", handleChatListOnNewMessage);
@@ -221,16 +221,16 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
         if (!socket) return;
 
         const handleMarkAsRead = (updatedChat: markAsReadResponse) => {
-            console.log("Received markAsRead event ", updatedChat);
+            // console.log("Received markAsRead event ", updatedChat);
 
             queryClient.invalidateQueries({ queryKey: [QUERY.CHAT.getUnReadCount] });
 
             const markAsReadChatQueryKey = [QUERY.CHAT.getMessages, updatedChat.id];
-            console.log({ markAsReadChatQueryKey });
+            // console.log({ markAsReadChatQueryKey });
 
             // update react-query cache here
             queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>>) => {
-                console.log("update chat list on mark as read");
+                // console.log("update chat list on mark as read");
 
                 if (!oldData) return oldData;
 
@@ -240,7 +240,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                         // guard because data is optional in ApiResponse
                         if (!page.data) return page;
 
-                        console.log("on mark as read chat list query update");
+                        // console.log("on mark as read chat list query update");
 
                         return {
                             ...page,
@@ -266,7 +266,7 @@ export const ChatSocketLayer = ({ children }: { children: React.ReactNode }) => 
                 (oldData: InfiniteData<ApiResponse<MessageResponse>> | undefined) => {
                     if (!oldData) return oldData;
 
-                    console.log("on mark as read chat messagess query update");
+                    // console.log("on mark as read chat messagess query update");
 
                     return {
                         ...oldData,

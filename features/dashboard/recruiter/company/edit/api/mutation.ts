@@ -57,7 +57,7 @@ export const useUpdateCompany = (options?: UseMutationOptions<ApiResponse<Compan
         },
         onError: (error: AxiosError<ApiError>) => {
             toast.error(`${error.response?.data.message}` || "Failed to update company. Please try again.");
-            console.error("Update company error details:", error);
+            // console.error("Update company error details:", error);
         },
         ...options,
     });
@@ -86,7 +86,7 @@ export const useAddIndustry = (
                 const exists = oldData.data.some((item) => item.industry.name.toLowerCase() === industryName.toLowerCase());
 
                 if (exists) {
-                    console.log("Industry already exists in list, skipping optimistic add.");
+                    // console.log("Industry already exists in list, skipping optimistic add.");
                     return oldData;
                 }
 
@@ -149,10 +149,10 @@ export const useRemoveIndustry = (
             return previousIndustries;
         },
         onError: (error: AxiosError<ApiError>) => {
-            console.log("Remove Industry Error", error);
+            // console.log("Remove Industry Error", error);
         },
         onSuccess: (data: ApiResponse<IAddIndustryResponse>) => {
-            console.log("Remove industry success", data);
+            // console.log("Remove industry success", data);
         },
         ...options,
     });

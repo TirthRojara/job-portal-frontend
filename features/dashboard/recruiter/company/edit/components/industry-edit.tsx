@@ -55,7 +55,7 @@ export default function IndustryEdit() {
 
     const handleAddIndustry = (item: SearchItem) => {
         if (!company?.id) {
-            console.error("Company ID is missing!");
+            // console.error("Company ID is missing!");
             return;
         }
 
@@ -67,7 +67,7 @@ export default function IndustryEdit() {
     };
 
     const handleRemoveIndustry = (industryId: number) => {
-        console.log("Remove industry clicked");
+        // console.log("Remove industry clicked");
 
         removeIndustryMutate({
             companyId: company!.id,

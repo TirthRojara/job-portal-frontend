@@ -96,7 +96,7 @@ export default function PricingPage() {
         isError: isSubscriptionError,
     } = useGetSubscription(user?.data?.role);
 
-    console.log({ subscription });
+    // console.log({ subscription });
 
     const { mutateAsync, isPending: isRazorPayPopUpPending } = useBuySubscription();
 
@@ -105,7 +105,7 @@ export default function PricingPage() {
     // const currentPlanId = 4;
 
     const handleUpgrade = async (planId: number) => {
-        console.log(`Redirecting to payment provider for plan: ${planId}`);
+        // console.log(`Redirecting to payment provider for plan: ${planId}`);
 
         setPendingPlanId(planId);
 
@@ -147,7 +147,7 @@ export default function PricingPage() {
             const paymentObject = new window.Razorpay(options);
             paymentObject.open();
         } catch (error) {
-            console.log("handleUpgrade", error);
+            // console.log("handleUpgrade", error);
         }
     };
 

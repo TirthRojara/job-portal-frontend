@@ -129,7 +129,7 @@ export default function JobDetails({ companyId }: { companyId: number }) {
                 ...data,
             } as CreateJobFormData;
 
-            console.log({ modifyFormData });
+            // console.log({ modifyFormData });
 
             const createJobPayload: CreateJobPayload = {
                 title: modifyFormData.title,
@@ -165,7 +165,7 @@ export default function JobDetails({ companyId }: { companyId: number }) {
 
             // 2. Stop if nothing changed
             if (Object.keys(dirtyFields).length === 0) {
-                console.log("No changes detected");
+                // console.log("No changes detected");
                 return;
             }
 
@@ -213,7 +213,7 @@ export default function JobDetails({ companyId }: { companyId: number }) {
             });
 
             // 🔍 CHECK THIS LOG (Not the one at the top of onSubmit)
-            console.log("Final Filtered Payload:", payloadData);
+            // console.log("Final Filtered Payload:", payloadData);
 
             // 4. Send Request (Ensure you have jobIdInParams available)
             // You might need to import your update mutation hook (e.g., useUpdateJob)

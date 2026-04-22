@@ -11,7 +11,7 @@ export default function JobSkill({jobId}: {jobId: number}) {
     if(isError) return <p className="text-destructive">Error</p>
     if(data?.data?.length === 0) return <></>
 
-    console.log('job skill data' , data)
+    // console.log('job skill data' , data)
 
     return (
         <div className="flex flex-col gap-4">

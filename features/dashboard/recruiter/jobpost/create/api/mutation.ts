@@ -117,10 +117,10 @@ export const useRemoveSkillInJob = (
         mutationKey: [MUTATION.JOBSKILL.removeSkill],
         mutationFn: ({ jobId, skillId }: { jobId: number; skillId: number }) => removeSkill(jobId, skillId),
         onSuccess: (data) => {
-            console.log("Remove job skill on success \n", data);
+            // console.log("Remove job skill on success \n", data);
         },
         onError: (error: AxiosError<ApiError>) => {
-            console.log("Remove job skill error \n", error);
+            // console.log("Remove job skill error \n", error);
         },
         ...options,
     });

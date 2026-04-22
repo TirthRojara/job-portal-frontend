@@ -28,12 +28,12 @@ export default function CompanyDetailsEdit() {
     } = useGetMyComanyDetails();
 
     const company = companyData?.data?.[0];
-    console.log({ company });
+    // console.log({ company });
 
     const { mutate: createCompanyMutate } = useCreateCompany();
     const { mutate: updateCompanyMutate } = useUpdateCompany();
 
-    console.log({ isCreatePage });
+    // console.log({ isCreatePage });
 
     const baseDefaults = {
         name: "",
@@ -90,7 +90,7 @@ export default function CompanyDetailsEdit() {
                 return acc;
             }, {} as any);
 
-            console.log("Only changed:", changedData);
+            // console.log("Only changed:", changedData);
 
             // Handle Date
             if (changedData.establishedDate) {
@@ -110,7 +110,7 @@ export default function CompanyDetailsEdit() {
 
             // 3. Stop if nothing changed
             if (Object.keys(changedData).length === 0) {
-                console.log("No changes detected");
+                // console.log("No changes detected");
                 return;
             }
 
@@ -119,7 +119,7 @@ export default function CompanyDetailsEdit() {
                 data: changedData,
             };
 
-            console.log({ payloadData });
+            // console.log({ payloadData });
             updateCompanyMutate(payloadData);
         }
     }
