@@ -172,7 +172,7 @@ export default function Messages() {
 
         socket.timeout(3000).emit("chatActive", { chatId: Number(chatId) }, (err: any, response: any) => {
             if (response?.success) {
-                console.log("✅ Activated 1:", response);
+                // console.log("✅ Activated 1:", response);
             }
         });
 
@@ -184,7 +184,7 @@ export default function Messages() {
             },
             (response: any) => {
                 if (response?.success) {
-                    console.log("📗 markAsRead 1:", response);
+                    // console.log("📗 markAsRead 1:", response);
 
                     updateChatListWhenMarkAsReadEmit(queryClient, role, Number(chatId));
                 }
@@ -207,7 +207,7 @@ export default function Messages() {
                 // socket.emit("chatActive", { chatId: Number(chatId) });
                 socket.timeout(3000).emit("chatActive", { chatId: Number(chatId) }, (err: any, response: any) => {
                     if (response?.success) {
-                        console.log("✅ Activated 2:", response);
+                        // console.log("✅ Activated 2:", response);
 
                         updateChatListWhenMarkAsReadEmit(queryClient, role, Number(chatId));
                     }
@@ -221,7 +221,7 @@ export default function Messages() {
                     },
                     (response: any) => {
                         if (response?.success) {
-                            console.log("📗 markAsRead 2:", response);
+                            // console.log("📗 markAsRead 2:", response);
                         }
                     },
                 );
@@ -229,12 +229,12 @@ export default function Messages() {
                 // socket.emit("chatInactive");
                 socket.timeout(3000).emit("chatInactive", (err: any, response: any) => {
                     if (err) {
-                        console.error("Server did not respond ❌");
+                        // console.error("Server did not respond ❌");
                         return;
                     }
 
                     if (response?.success) {
-                        console.log("Chat deactivated ⏸️");
+                        // console.log("Chat deactivated ⏸️");
                     }
                 });
             }

@@ -22,7 +22,7 @@ export default function ManageSubscriptionTab() {
     } = useGetSubscription(role);
     // console.log("sub tab: ", subscription);
 
-    console.log({ isFetching, isEnabled });
+    // console.log({ isFetching, isEnabled });
 
     const { mutate: pauseMutate, isPending: isPausePending } = usePauseSubscription();
     const { mutate: resumeMutate, isPending: isResumePending } = useResumeSubscription();
@@ -39,7 +39,7 @@ export default function ManageSubscriptionTab() {
     };
 
     // useEffect(() => {
-    console.log({ isResumePending });
+    // console.log({ isResumePending });
     // }, [isResumePending]);
 
     return (

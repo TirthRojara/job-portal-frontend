@@ -32,14 +32,14 @@ export const useVerifySignupOTP = (
         mutationKey: [MUTATION.AUTH.verifySignupOTP],
         mutationFn: (payload: VerifySignupOTPPayload) => verifySignupOTP(payload),
         onSuccess: (data: ApiResponse<VerifySignupOTPResponse>) => {
-            console.log("OTP verified successfully:", data);
+            // console.log("OTP verified successfully:", data);
             dispatch(appActions.setAccessToken(data.data!.token));
             toast.success("Sign Up successfully!");
             router.push(`/dashboard/${data.data?.role.toLowerCase()}`);
         },
         onError: (error: any) => {
             toast.error(`OTP verification failed: ${error.response.data?.message}`);
-            console.error("OTP verification error details:", error);
+            // console.error("OTP verification error details:", error);
         },
     });
 };
@@ -50,7 +50,7 @@ export const useResendSignupOTP = (options?: UseMutationOptions<ApiError, ApiErr
         mutationFn: (payload: ResendSignupOTPPayload) => resendSignupOTP(payload.type),
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "OTP resent successfully!");
-            console.log("OTP resent successfully:", data);
+            // console.log("OTP resent successfully:", data);
         },
         onError: (error: any) => {
             if (error.status === 429) {
@@ -61,7 +61,7 @@ export const useResendSignupOTP = (options?: UseMutationOptions<ApiError, ApiErr
                 return;
             } else {
                 toast.error(`Resend OTP failed! Please try again later.`);
-                console.error("Resend OTP error details:", error);
+                // console.error("Resend OTP error details:", error);
             }
         },
     });

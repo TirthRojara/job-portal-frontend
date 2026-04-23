@@ -6,7 +6,7 @@ export default async function Page({
     params: Promise<{ jobId: string }>;
 }) {
     const { jobId } = await params;
-    console.log({ jobId });
+    // console.log({ jobId });
 
     return (
         <>

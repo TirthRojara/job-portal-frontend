@@ -85,7 +85,7 @@ export default function Resume() {
     };
 
     const onsubmit = (data: FormValues) => {
-        console.log("submit", data);
+        // console.log("submit", data);
 
         resumeMutate(
             {

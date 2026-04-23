@@ -25,7 +25,7 @@ export default function ChatListCard({ chatData }: ChatListCardProps) {
 
     const unreadCount = role === "CANDIDATE" ? chatData.candidateUnreadCount : chatData.companyUnreadCount;
 
-    console.log("UNREAD COUNT:", unreadCount, typeof unreadCount);
+    // console.log("UNREAD COUNT:", unreadCount, typeof unreadCount);
 
     // console.log({ isActive, chatRoomIdUrl });
     // console.log("chat room id:", chatData.chatRoomId);

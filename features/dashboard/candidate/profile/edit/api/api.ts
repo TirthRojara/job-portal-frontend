@@ -178,7 +178,7 @@ export const generateCandidateSummary = async ({
                 if (line.startsWith("data: ")) {
                     const data = line.replace("data: ", "").trim();
 
-                    console.log("Received chunk:", data);
+                    // console.log("Received chunk:", data);
 
                     if (data === "[DONE]") {
                         return fullText;
@@ -201,7 +201,7 @@ export const generateCandidateSummary = async ({
     try {
         return await startStream(token);
     } catch (err: any) {
-        console.error("Error in api:", err);
+        // console.error("Error in api:", err);
 
         if (err.message === "UNAUTHORIZED") {
             const newTokenResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/auth/getAccessToken`, {

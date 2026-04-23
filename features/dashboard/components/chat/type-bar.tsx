@@ -31,10 +31,10 @@ export default function ChatInput({ chatId, user }: { chatId: number; user: User
 
     const onSubmit: SubmitHandler<FormValues> = (data) => {
         if (data.message.trim().length === 0) return;
-        console.log("Message sent:", data.message);
+        // console.log("Message sent:", data.message);
 
         if (!socket) {
-            console.log("Connecting to chat...");
+            // console.log("Connecting to chat...");
             return;
         }
 
@@ -45,7 +45,7 @@ export default function ChatInput({ chatId, user }: { chatId: number; user: User
             }
 
             if (response?.success) {
-                console.log("✅ Message sent successfully", response);
+                // console.log("✅ Message sent successfully", response);
 
                 // Clear input
                 reset();

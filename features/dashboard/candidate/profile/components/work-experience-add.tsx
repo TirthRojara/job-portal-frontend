@@ -88,7 +88,7 @@ export default function WorkExperienceAdd({ isEdit, trigger, initialData }: Educ
     }, [isEditSuccess, isCreateSuccess]);
 
     function onSubmit(data: CreateExperienceForm | EditExperienceForm) {
-        console.log({ data });
+        // console.log({ data });
 
         if (!isEdit) {
             const modify = { ...data } as CreateExperienceForm;
@@ -106,7 +106,7 @@ export default function WorkExperienceAdd({ isEdit, trigger, initialData }: Educ
                 endDate: modify.currentlyWorking ? undefined : modify.endDate ? YYYYMMDD(modify.endDate.toString()) : undefined,
             };
 
-            console.log("create payload", payload);
+            // console.log("create payload", payload);
 
             createMutate({
                 payload,
@@ -117,7 +117,7 @@ export default function WorkExperienceAdd({ isEdit, trigger, initialData }: Educ
 
         if (isEdit) {
             if (Object.keys(dirtyFields).length === 0) {
-                console.log("No changes detected");
+                // console.log("No changes detected");
                 return;
             }
 
@@ -143,7 +143,7 @@ export default function WorkExperienceAdd({ isEdit, trigger, initialData }: Educ
 
             if (dirtyFields.currentlyWorking && data.currentlyWorking === true) payload.endDate = undefined;
 
-            console.log("edit payload", payload);
+            // console.log("edit payload", payload);
 
             editMutate({
                 candidateExperienceId: initialData?.id!,

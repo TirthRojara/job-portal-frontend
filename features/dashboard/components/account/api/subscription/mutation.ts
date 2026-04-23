@@ -117,7 +117,7 @@ export const useResumeSubscription = (
                 queryClient.invalidateQueries({ queryKey });
             }, 5000);
 
-            console.log("on success resume success");
+            // console.log("on success resume success");
             toast.success("Subscription Resumed.");
         },
         ...options,

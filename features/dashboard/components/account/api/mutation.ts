@@ -33,11 +33,11 @@ export const useSetPasswordForOauth = (options?: UseMutationOptions<ApiError, Ap
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "Password set successfully!");
             queryClient.invalidateQueries({ queryKey: ["isPasswordSetForOauth"] });
-            console.log("Set password successful:", data);
+            // console.log("Set password successful:", data);
         },
         onError: (error: AxiosError<ApiError>) => {
             toast.error(`${error.response?.data.message}` || "Failed to set password. Please try again.");
-            console.error("Set password error details:", error);
+            // console.error("Set password error details:", error);
         },
         ...options,
     });

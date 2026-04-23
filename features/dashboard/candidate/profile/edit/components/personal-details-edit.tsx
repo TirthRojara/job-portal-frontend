@@ -57,13 +57,13 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
     }, [profileData, form]);
 
     function onSubmit(data: UpdateProfileFormData) {
-        console.log({ data });
+        // console.log({ data });
 
         const dirtyFields = form.formState.dirtyFields;
 
         // 2. Stop if nothing changed
         if (Object.keys(dirtyFields).length === 0) {
-            console.log("No changes detected");
+            // console.log("No changes detected");
             return;
         }
 
@@ -79,7 +79,7 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
             payload.birthDate = YYYYMMDD(data.birthDate.toString());
         }
 
-        console.log("only changed:", payload);
+        // console.log("only changed:", payload);
 
         updateProfileMutate({
             payload,
@@ -96,7 +96,7 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
         form.setValue("summary", "");
 
         const skillNames: string[] = skill?.data?.map((item) => item.skill.name) || [];
-        console.log("skills for summary generation:", skillNames);
+        // console.log("skills for summary generation:", skillNames);
 
         generateSummaryMutate(
             {
@@ -117,10 +117,10 @@ export default function PersonalDetailsEdit({ profileData }: { profileData: Crea
                 onError: (err: any) => {
                     const message = err?.response?.data?.message;
 
-                    console.log("err in mutation", err);
+                    // console.log("err in mutation", err);
 
                     if (err?.message === "RATE_LIMITED") {
-                        console.log("in side mutation onError", err);
+                        // console.log("in side mutation onError", err);
                         toast.error("AI usage limit reached. Please try again later.");
                     }
                 },

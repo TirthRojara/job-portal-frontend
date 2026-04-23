@@ -31,11 +31,11 @@ export const useToggleSaveJob = (
         mutationKey: [MUTATION.JOB.toggleSaveJob],
         mutationFn: ({ jobId }: { jobId: number }) => toggleSaveJob({ jobId }),
         onError: (error) => {
-            console.error("Toggle save job error details:", error);
+            // console.error("Toggle save job error details:", error);
             toast.error(`${error.response?.data.message}` || "Failed to save/unsave job. Please try again.");
         },
         onSuccess: (data) => {
-            console.log("Toggle save job success details:", data);
+            // console.log("Toggle save job success details:", data);
             toast.success(data.message || "Job save/unsave action successful!");
         },
         ...options,

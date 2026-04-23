@@ -26,11 +26,11 @@ export const useForgotPassword = (options?: UseMutationOptions<ApiError, ApiErro
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "Forgot password request successful! Please check your email.");
             router.push(`/forgotpassword/otp`);
-            console.log("Forgot password request successful:", data);
+            // console.log("Forgot password request successful:", data);
         },
         onError: (error: any) => {
             toast.error(`Forgot password request failed: ${error.response.data?.message}`);
-            console.error("Forgot password error details:", error);
+            // console.error("Forgot password error details:", error);
         },
         ...options,
     });
@@ -50,11 +50,11 @@ export const useVerifyForgotOTP = (
             dispatch(appActions.setResetToken(data.data!.resetToken));
             router.push(`/forgotpassword/set`);
             toast.success(data.message || "OTP verified successfully!");
-            console.log("OTP verified successfully:", data);
+            // console.log("OTP verified successfully:", data);
         },
         onError: (error: any) => {
             toast.error(`Verify OTP failed! Please try again later.`);
-            console.error("Verify OTP error details:", error);
+            // console.error("Verify OTP error details:", error);
         },
     });
 };
@@ -66,7 +66,7 @@ export const useResendForgotOTP = (options?: UseMutationOptions<ApiError, ApiErr
         mutationFn: (payload: ResendForgotOTPPayload) => resendForgotOTP(payload.type),
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "OTP resent successfully!");
-            console.log("OTP resent successfully:", data);
+            // console.log("OTP resent successfully:", data);
         },
         onError: (error: any) => {
             if (error.status === 429) {
@@ -79,7 +79,7 @@ export const useResendForgotOTP = (options?: UseMutationOptions<ApiError, ApiErr
                 return;
             } else {
                 toast.error(`Resend OTP failed! Please try again later.`);
-                console.error("Resend OTP error details:", error);
+                // console.error("Resend OTP error details:", error);
             }
         },
     });
@@ -94,7 +94,7 @@ export const useSetNewPassword = (options?: UseMutationOptions<ApiError, ApiErro
         onSuccess: (data: ApiError) => {
             toast.success(data.message || "Password reset successful! You can now log in with your new password.");
             router.push(`/login`);
-            console.log("Password reset successful:", data);
+            // console.log("Password reset successful:", data);
         },
         onError: (error: any) => {
             if(error.response?.status === 400){
@@ -103,7 +103,7 @@ export const useSetNewPassword = (options?: UseMutationOptions<ApiError, ApiErro
             }
 
             toast.error(`Set new password failed! Please try again later.`);
-            console.error("Set new password error details:", error);
+            // console.error("Set new password error details:", error);
         },
     });
 }

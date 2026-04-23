@@ -169,7 +169,7 @@ export default function EducationDetailsAdd({ trigger, isEdit, initialData }: Ed
 
         if (isEdit) {
             if (Object.keys(dirtyFields).length === 0) {
-                console.log("No changes detected");
+                // console.log("No changes detected");
                 return;
             }
 

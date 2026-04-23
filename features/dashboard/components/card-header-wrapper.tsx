@@ -46,7 +46,7 @@ export default function CardHeaderWrapper({
 
     // Function 2: Handle Skill Selection
     const handleAddSkill = () => {
-        console.log("Saving Skill to DB:");
+        // console.log("Saving Skill to DB:");
     };
 
     return (

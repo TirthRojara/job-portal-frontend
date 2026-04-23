@@ -37,8 +37,8 @@ export default function CreateProfile() {
     });
 
     function onSubmit(data: ICreateProfile) {
-        console.log("create click");
-        console.log({ data });
+        // console.log("create click");
+        // console.log({ data });
 
         const payload: CreateProfilePayload = {
             fullName: data.fullname,
@@ -83,10 +83,10 @@ export default function CreateProfile() {
                 onError: (err: any) => {
                     const message = err?.response?.data?.message;
 
-                    console.log("err in mutation", err);
+                    // console.log("err in mutation", err);
 
                     if (err?.message === "RATE_LIMITED") {
-                        console.log("in side mutation onError", err);
+                        // console.log("in side mutation onError", err);
                         toast.error("AI usage limit reached. Please try again later.");
                     }
                 },

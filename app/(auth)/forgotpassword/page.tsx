@@ -27,7 +27,7 @@ export default function Page() {
     });
 
     function onSubmit(data: any) {
-        console.log({ data });
+        // console.log({ data });
         mutate(data.email);
     }
 

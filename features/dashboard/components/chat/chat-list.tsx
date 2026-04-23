@@ -54,7 +54,7 @@ export default function ChatList() {
     }, [inView, hasNextPage, fetchNextPage]);
 
     useEffect(() => {
-        console.log("inView:", inView);
+        // console.log("inView:", inView);
     }, [inView]);
 
     if (isPending) {

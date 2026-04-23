@@ -37,7 +37,7 @@ export default function CandidateSidebarFooter() {
 
     if (isLoading || isError) return <></>
 
-    console.log("‼️‼️ user data", data)
+    // console.log("‼️‼️ user data", data)
 
     function handleLogout() {
         logoutMutation();

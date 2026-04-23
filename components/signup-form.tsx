@@ -45,12 +45,12 @@ export function SignupForm({
     });
 
     function onSubmit(data: SignupFormData) {
-        console.log({ data });
+        // console.log({ data });
 
         mutate(data, {
             onSuccess: (data: ApiError) => {
                 toast.success(`${data.message}`);
-                console.log("Signup successful:", data);
+                // console.log("Signup successful:", data);
                 router.push(`/signup/otp`);
             },
         });

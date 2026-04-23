@@ -9,7 +9,7 @@ export function updateChatListWhenMarkAsReadEmit(queryClient: QueryClient, role:
     const chatListQueryKey = [QUERY.CHAT.getChatList];
 
     queryClient.setQueryData(chatListQueryKey, (oldData: InfiniteData<ApiResponse<ChatListResponse>>) => {
-        console.log("update chat list on mark as read");
+        // console.log("update chat list on mark as read");
 
         if (!oldData) return oldData;
 
@@ -45,7 +45,7 @@ export function updateIsReadTrueForUnreadLabel(queryClient: QueryClient, chatId:
     queryClient.setQueryData(markAsReadChatQueryKey, (oldData: InfiniteData<ApiResponse<MessageResponse>>) => {
         if (!oldData) return oldData;
 
-        console.log("on messages send update the unread label 🏷️🏷️🏷️🏷️🏷️");
+        // console.log("on messages send update the unread label 🏷️🏷️🏷️🏷️🏷️");
 
         const updatedData = {
             ...oldData,

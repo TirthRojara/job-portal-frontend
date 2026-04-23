@@ -47,7 +47,7 @@ export default function SkillsDetails({ jobId, applicantId }: { jobId?: string; 
 
     const role = useAppSelector((state) => state.app.role);
 
-    console.log({role, jobId, applicantId});
+    // console.log({role, jobId, applicantId});
 
     const { data: candidateSkill, error } = useGetCandidateSkill(role);
     const { data: candidateskillForRecruiter, error: recruiterError } = useGetCandidateSkillById(role, jobId!, applicantId!);

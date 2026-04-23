@@ -28,7 +28,7 @@ export function OTPForm<TData = any, TError = unknown, TVariables = any>({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log({ otpValue });
+        // console.log({ otpValue });
         mutate({ otp: Number(otpValue) } as any);
     };
 

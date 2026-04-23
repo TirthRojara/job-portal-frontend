@@ -19,7 +19,7 @@ export default function CandidateProfilePage() {
     const { data: userData, isError, isLoading } = useGetUserData();
     const { data: candidateData, isLoading: isLoadingCandidateData } = useGetCandidateProfile(role);
 
-    console.log("candidate data", userData);
+    // console.log("candidate data", userData);
 
     if (isLoading || isLoadingCandidateData) return <></>;
     if (!userData?.data) return <></>;
